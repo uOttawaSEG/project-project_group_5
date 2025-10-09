@@ -1,3 +1,27 @@
 <resources>
+
     <string name="app_name">OTAMS</string>
+    <string name="profile_pic">Profile pic</string>
+    <string name="username">Username:</string>
+    <string name="password">Password:</string>
+    <string name="login">Login</string>
+    <string name="register_as_tutor">Register as Tutor</string>
+    <string name="register_as_student">Register as Student</string>
+    <string name="tutor_registration_form">Tutor Registration Form</string>
+    <string name="student_registration_form">Student Registration Form</string>
+
+
+
+    <string name="first_name">First Name:</string>
+    <string name="last_name">Last Name:</string>
+    <string name="email_address">Email address (username):</string>
+    <string name="account_password">Account Password:</string>
+    <string name="phone_number">Phone number:</string>
+    <string name="highest_degree">Highest degree:</string>
+    <string name="courses_offered">Courses offered (one or more):</string>
+    <string name="program_of_study">Program of study:</string>
+
+
+
+
 </resources>

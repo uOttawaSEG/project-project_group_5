@@ -18,7 +18,7 @@
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:layout_marginTop="120dp"
-            android:contentDescription="Profile pic"
+            android:contentDescription="@string/profile_pic"
             android:src="@drawable/icon_account_circle_"
 
             />
@@ -29,13 +29,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:background="@drawable/rounded_corner"
-            android:hint="Username:"
+            android:hint="@string/username"
             android:inputType="textEmailAddress"
             android:padding="15dp"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="Autofill" />
 
         <EditText
             android:id="@+id/password_input"
@@ -43,13 +44,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/rounded_corner"
-            android:hint="Password:"
+            android:hint="@string/password"
             android:inputType="textPassword"
             android:padding="15dp"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="Autofill" />
 
         <Button
             android:id="@+id/login_btn"
@@ -58,7 +60,7 @@
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/white"
             android:padding="1dp"
-            android:text="Login"
+            android:text="@string/login"
             android:textColor="#673AB7"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -72,7 +74,7 @@
             android:layout_marginEnd="8dp"
             android:backgroundTint="@color/white"
             android:padding="1dp"
-            android:text="Register as Tutor"
+            android:text="@string/register_as_tutor"
             android:textColor="#673AB7"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -86,7 +88,7 @@
             android:layout_marginEnd="8dp"
             android:backgroundTint="@color/white"
             android:padding="1dp"
-            android:text="Register as Student"
+            android:text="@string/register_as_student"
             android:textColor="#673AB7"
             android:textSize="20sp"
             android:textStyle="bold" />
