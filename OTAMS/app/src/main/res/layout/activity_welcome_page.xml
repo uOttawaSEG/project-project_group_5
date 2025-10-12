@@ -38,13 +38,13 @@
         android:gravity="center"/>
 
     <Button
-        android:id="@+id/button-log-off"
+        android:id="@+id/button_log_off"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_gravity="center_horizontal"
         android:padding="10dp"
-        android:text="@string/Log-Off"
+        android:text="@string/log_off"
         android:textSize="20sp"
         android:textStyle="bold" />
 

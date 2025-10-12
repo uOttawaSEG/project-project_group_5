@@ -77,7 +77,8 @@
             android:text="@string/register_as_tutor"
             android:textColor="#673AB7"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:onClick="onClickRegistration"/>
 
         <Button
             android:id="@+id/register_student_btn"
@@ -91,7 +92,9 @@
             android:text="@string/register_as_student"
             android:textColor="#673AB7"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:onClick="onClickRegistration"/>
+
     </LinearLayout>
 </RelativeLayout>
 
