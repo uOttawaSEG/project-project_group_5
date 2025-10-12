@@ -7,6 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import android.view.View;
+import android.content.Intent;
+
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,4 +25,21 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
     }
+
+    public void onClickRegistration(View view){
+
+        int pressID=view.getId();
+
+        if(pressID==R.id.register_student_btn){
+            Intent intent = new Intent(MainActivity.this, StudentRegistrationActivity.class);
+            startActivity(intent);
+        }
+
+        if(pressID==R.id.register_tutor_btn){
+            Intent intent = new Intent(MainActivity.this, TutorRegistrationActivity.class);
+            startActivity(intent);
+        }
+    }
+
+
 }
