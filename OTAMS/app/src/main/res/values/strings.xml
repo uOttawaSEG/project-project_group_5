@@ -10,8 +10,6 @@
     <string name="tutor_registration_form">Tutor Registration Form</string>
     <string name="student_registration_form">Student Registration Form</string>
 
-
-
     <string name="first_name">First Name:</string>
     <string name="last_name">Last Name:</string>
     <string name="email_address">Email address (username):</string>

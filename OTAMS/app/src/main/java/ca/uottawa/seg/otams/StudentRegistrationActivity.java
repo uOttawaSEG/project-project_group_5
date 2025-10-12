@@ -10,9 +10,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class StudentRegistrationActivity extends AppCompatActivity {
+
+    // Variables to access realtime database
+    FirebaseDatabase rootNode;
+    DatabaseReference reference;
 
     EditText firstName;
     EditText lastName;
@@ -83,6 +89,18 @@ public class StudentRegistrationActivity extends AppCompatActivity {
         }
 
         if(valid==true){//check if all fields have been filled in with appropriate infomratio
+
+            // If all inputs are valid and filled, then store all
+            // the information within the users tree of the database
+            rootNode = FirebaseDatabase.getInstance();
+            reference = rootNode.getReference("users");
+
+            // Create an object with the entered information
+            UserRegistrationInfoDatabase studentRegistration = new UserRegistrationInfoDatabase(firstNameInput, lastNameInput, emailInput, passwordInput, numberInput, programInput, "", "", "Student");
+
+            // Create a new user entry for the newly registered student and assign their phone number as their key (since phone numbers are unique for each individual)
+            reference.child(numberInput).setValue(studentRegistration);
+
             setContentView(R.layout.activity_welcome_page);//redirect to welcome page
 
         }
