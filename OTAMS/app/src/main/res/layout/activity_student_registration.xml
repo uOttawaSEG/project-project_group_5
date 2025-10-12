@@ -103,7 +103,9 @@
         android:padding="10dp"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:text="Register" />
+        android:text="Register"
+        android:onClick="onClickStudentRegistrationButton"/>
+
 
 
 </LinearLayout>
