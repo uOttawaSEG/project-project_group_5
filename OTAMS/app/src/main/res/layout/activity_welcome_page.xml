@@ -13,7 +13,7 @@
         android:id="@+id/welcomeTitleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome!"
+        android:text="@string/welcome"
         android:textSize="30sp"
         android:textStyle="bold"
         android:textColor="@color/white"
@@ -24,10 +24,24 @@
         android:gravity="center"/>
 
     <TextView
+        android:id="@+id/welcomeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/logged_in_as"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="150dp"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
+        android:gravity="center"/>
+
+    <TextView
         android:id="@+id/welcomeRoleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="You are logged in as _____"
+        android:text="@string/role"
         android:textSize="30sp"
         android:textStyle="bold"
         android:textColor="@color/white"
@@ -41,7 +55,7 @@
         android:id="@+id/button_log_off"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="150dp"
         android:layout_gravity="center_horizontal"
         android:padding="10dp"
         android:text="@string/log_off"

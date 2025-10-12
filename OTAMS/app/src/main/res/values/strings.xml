@@ -19,6 +19,9 @@
     <string name="courses_offered">Courses offered (one or more):</string>
     <string name="program_of_study">Program of study:</string>
 
-    <string name="log_off">Log Out</string>
+    <string name="welcome">Welcome!</string>
+    <string name="logged_in_as">You are logged in as</string>
+    <string name="role">___[role]___</string>
+    <string name="log_off">Log Off</string>
 
 </resources>
