@@ -19,6 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Iterator;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,15 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Check if the user is trying to log in
         if (pressID == R.id.login_btn) {
-
-            Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
-
-            // Also save the user's role
-            // intent.putExtra("role", roleFromDatabase);
-
-            //Intent intent = new Intent(MainActivity.this, StudentRegistrationActivity.class);
-
-            startActivity(intent);
             // Check if the user is registered in the database
             isRegistered();
         }
@@ -71,13 +64,23 @@ public class MainActivity extends AppCompatActivity {
         String usernameInput = username.getText().toString().trim();
         String passwordInput = password.getText().toString().trim();
 
+        // Check if any info is missing and tell the user to fill those fields out if so
+        if (usernameInput.isEmpty()) {
+            username.setError("Please fill out all fields");
+            return;
+        }
+        if (passwordInput.isEmpty()) {
+            password.setError("Please fill out all fields");
+            return;
+        }
+
         // Grab all users info from database
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
 
-        // Check if there is a user listed there that has a first name (username) that matches the password entered
-        Query searchForUser = reference.orderByChild("firstName").equalTo(usernameInput);
+        // Store all users listed in the database with the same first name (username) was entered
+        Query searchForUsers = reference.orderByChild("firstName").equalTo(usernameInput);
 
-        searchForUser.addListenerForSingleValueEvent(new ValueEventListener() {
+        searchForUsers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // If a user exists in the database with the entered info
@@ -85,29 +88,35 @@ public class MainActivity extends AppCompatActivity {
                     username.setError(null);
                     // username.setErrorEnabled(false);
 
-                    // Then fetch the password of the specific user with the entered username
-                    String passwordFromDatabase = snapshot.child(usernameInput).child("password").getValue(String.class);
+                    // Iterate through every user in the database with a matching username to the one entered
+                    Iterator<DataSnapshot> iterator = snapshot.getChildren().iterator();
+                    while (iterator.hasNext()) {
+                        DataSnapshot userSnapshot = iterator.next();
 
-                    // If the password entered matches the password stored under that user's entry
-                    if (passwordFromDatabase.equals(passwordInput)) {
-                        password.setError(null);
-                        // password.setErrorEnabled(false);
+                        // Then fetch the password of any user with the entered username
+                        String passwordFromDatabase = userSnapshot.child("password").getValue(String.class);
 
-                        // Then fetch the user's role from the database
-                        String roleFromDatabase = snapshot.child(usernameInput).child("typeOfUser").getValue(String.class);
+                        // If the password entered matches the password stored under that user's entry
+                        if (passwordFromDatabase.equals(passwordInput)) {
+                            password.setError(null);
+                            // password.setErrorEnabled(false);
 
-                        // Send the user to the welcome page
-                        Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
+                            // Then fetch the user's role from the database
+                            String roleFromDatabase = snapshot.child(usernameInput).child("typeOfUser").getValue(String.class);
 
-                        // Also save the user's role
-                        intent.putExtra("role", roleFromDatabase);
+                            // Send the user to the welcome page
+                            Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
 
-                        startActivity(intent);
-                    }
-                    else {
-                        // Tell the user if the password did not match
-                        password.setError("Incorrect password.");
-                        password.requestFocus();
+                            // Also save the user's role
+                            intent.putExtra("role", roleFromDatabase);
+
+                            startActivity(intent);
+                        }
+                        else {
+                            // Tell the user if the password did not match
+                            password.setError("Incorrect password.");
+                            password.requestFocus();
+                        }
                     }
                 }
                 else {
