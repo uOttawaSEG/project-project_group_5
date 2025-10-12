@@ -1,5 +1,6 @@
 package ca.uottawa.seg.otams;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -79,7 +80,7 @@ public class StudentRegistrationActivity extends AppCompatActivity {
         if(numberInput.isEmpty()) {//check if their input is empty
             number.setError("Phone number is required");
             valid = false;
-        }else if(numberInput.matches("\\d{10}")) {//check if the number matches 10 digits
+        }else if(numberInput.matches("\\d{9}")) { //check if the number matches 10 digits
             number.setError("Phone number must be 10 digits");
             valid = false;
         }
@@ -101,8 +102,16 @@ public class StudentRegistrationActivity extends AppCompatActivity {
             // Create a new user entry for the newly registered student and assign their phone number as their key (since phone numbers are unique for each individual)
             reference.child(numberInput).setValue(studentRegistration);
 
-            setContentView(R.layout.activity_welcome_page);//redirect to welcome page
+            // setContentView(R.layout.activity_welcome_page);//redirect to welcome page
 
+            // Set the next page as the welcome page
+            Intent intent = new Intent(StudentRegistrationActivity.this, WelcomePageActivity.class);
+
+            // Pass the user's role to the next page so it can be displayed there
+            intent.putExtra("role", "Student");
+
+            // Send the user to the welcome page
+            startActivity(intent);
         }
 
 

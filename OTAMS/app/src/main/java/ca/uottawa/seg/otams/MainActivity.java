@@ -105,12 +105,13 @@ public class MainActivity extends AppCompatActivity {
                             // Then fetch the user's role from the database
                             String roleFromDatabase = userSnapshot.child("typeOfUser").getValue(String.class);
 
-                            // Send the user to the welcome page
+                            // Set the next page as the welcome page
                             Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
 
                             // Pass the user's role to the next page so it can be displayed there
                             intent.putExtra("role", roleFromDatabase);
 
+                            // Send the user to the welcome page
                             startActivity(intent);
                         }
                         else {
