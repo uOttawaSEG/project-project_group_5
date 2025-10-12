@@ -21,7 +21,7 @@
 
     <string name="welcome">Welcome!</string>
     <string name="logged_in_as">You are logged in as</string>
-    <string name="role">___[role]___</string>
+    <string name="role">[role]</string>
     <string name="log_off">Log Off</string>
 
 </resources>

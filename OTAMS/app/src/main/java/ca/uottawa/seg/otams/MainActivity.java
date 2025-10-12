@@ -19,9 +19,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Iterator;
-
-
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -88,10 +85,14 @@ public class MainActivity extends AppCompatActivity {
                     username.setError(null);
                     // username.setErrorEnabled(false);
 
-                    // Iterate through every user in the database with a matching username to the one entered
+                    /*
                     Iterator<DataSnapshot> iterator = snapshot.getChildren().iterator();
                     while (iterator.hasNext()) {
                         DataSnapshot userSnapshot = iterator.next();
+                    */
+
+                    // Iterate through every user in the database with a matching username to the one entered
+                    for (DataSnapshot userSnapshot : snapshot.getChildren()) {
 
                         // Then fetch the password of any user with the entered username
                         String passwordFromDatabase = userSnapshot.child("password").getValue(String.class);
@@ -102,12 +103,12 @@ public class MainActivity extends AppCompatActivity {
                             // password.setErrorEnabled(false);
 
                             // Then fetch the user's role from the database
-                            String roleFromDatabase = snapshot.child(usernameInput).child("typeOfUser").getValue(String.class);
+                            String roleFromDatabase = userSnapshot.child("typeOfUser").getValue(String.class);
 
                             // Send the user to the welcome page
                             Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
 
-                            // Also save the user's role
+                            // Pass the user's role to the next page so it can be displayed there
                             intent.putExtra("role", roleFromDatabase);
 
                             startActivity(intent);
