@@ -24,7 +24,7 @@ public class TutorRegistrationActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        /*TextInputEditText firstName = this.findViewById(R.id.tutor_first_name);
-        String s = Objects.requireNonNull(firstName.getText()).toString(); **/
+        TextInputEditText firstName = this.findViewById(R.id.tutor_first_name);
+        String s = Objects.requireNonNull(firstName.getText()).toString();
     }
 }
