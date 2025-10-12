@@ -37,12 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
         int pressID=view.getId();
 
-        // Check if the user is trying to log in
-        if (pressID == R.id.login_btn) {
-            // Check if the user is registered in the database
-            isRegistered();
-        }
-
         if(pressID==R.id.register_student_btn){
             Intent intent = new Intent(MainActivity.this, StudentRegistrationActivity.class);
             startActivity(intent);
@@ -51,6 +45,16 @@ public class MainActivity extends AppCompatActivity {
         if(pressID==R.id.register_tutor_btn){
             Intent intent = new Intent(MainActivity.this, TutorRegistrationActivity.class);
             startActivity(intent);
+        }
+    }
+
+    public void onClickLogin(View view) {
+        int pressID=view.getId();
+
+        // Check if the user is trying to log in
+        if (pressID == R.id.login_btn) {
+            // Check if the user is registered in the database
+            isRegistered();
         }
     }
 

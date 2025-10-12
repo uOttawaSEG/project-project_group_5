@@ -33,4 +33,17 @@ public class WelcomePageActivity extends AppCompatActivity {
 
         role.setText(userRole); // Changes the role placeholder text to the user's actual role (displays the user's role)
     }
+
+    public void onClickLogOff(View view) {
+        int pressID=view.getId();
+
+        // Check if the user is trying to log out
+        if (pressID == R.id.button_log_off) {
+            // Set the next page to the login page
+            Intent intent = new Intent(WelcomePageActivity.this, MainActivity.class);
+
+            // Send the user to the login page
+            startActivity(intent);
+        }
+    }
 }

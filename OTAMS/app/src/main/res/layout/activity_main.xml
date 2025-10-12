@@ -64,7 +64,7 @@
             android:textColor="#673AB7"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:onClick="onClickRegistration"/>
+            android:onClick="onClickLogin"/>
 
         <Button
             android:id="@+id/register_tutor_btn"

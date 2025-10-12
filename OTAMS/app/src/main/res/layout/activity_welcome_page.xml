@@ -60,7 +60,8 @@
         android:padding="10dp"
         android:text="@string/log_off"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:onClick="onClickLogOff"/>
 
 
 </LinearLayout>
