@@ -3,13 +3,21 @@ package ca.uottawa.seg.otams;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import android.view.View;
 import android.content.Intent;
+import android.widget.EditText;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +38,21 @@ public class MainActivity extends AppCompatActivity {
 
         int pressID=view.getId();
 
+        // Check if the user is trying to log in
+        if (pressID == R.id.login_btn) {
+
+            Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
+
+            // Also save the user's role
+            // intent.putExtra("role", roleFromDatabase);
+
+            //Intent intent = new Intent(MainActivity.this, StudentRegistrationActivity.class);
+
+            startActivity(intent);
+            // Check if the user is registered in the database
+            isRegistered();
+        }
+
         if(pressID==R.id.register_student_btn){
             Intent intent = new Intent(MainActivity.this, StudentRegistrationActivity.class);
             startActivity(intent);
@@ -41,5 +64,63 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void isRegistered() {
+        EditText username = findViewById(R.id.username_input);
+        EditText password = findViewById(R.id.password_input);
 
+        String usernameInput = username.getText().toString().trim();
+        String passwordInput = password.getText().toString().trim();
+
+        // Grab all users info from database
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+
+        // Check if there is a user listed there that has a first name (username) that matches the password entered
+        Query searchForUser = reference.orderByChild("firstName").equalTo(usernameInput);
+
+        searchForUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // If a user exists in the database with the entered info
+                if(snapshot.exists()) {
+                    username.setError(null);
+                    // username.setErrorEnabled(false);
+
+                    // Then fetch the password of the specific user with the entered username
+                    String passwordFromDatabase = snapshot.child(usernameInput).child("password").getValue(String.class);
+
+                    // If the password entered matches the password stored under that user's entry
+                    if (passwordFromDatabase.equals(passwordInput)) {
+                        password.setError(null);
+                        // password.setErrorEnabled(false);
+
+                        // Then fetch the user's role from the database
+                        String roleFromDatabase = snapshot.child(usernameInput).child("typeOfUser").getValue(String.class);
+
+                        // Send the user to the welcome page
+                        Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
+
+                        // Also save the user's role
+                        intent.putExtra("role", roleFromDatabase);
+
+                        startActivity(intent);
+                    }
+                    else {
+                        // Tell the user if the password did not match
+                        password.setError("Incorrect password.");
+                        password.requestFocus();
+                    }
+                }
+                else {
+                    // If the user does not exist in the database then they have not yet registered
+                    username.setError("No such user exists. Please register before attempting to login.");
+                    username.requestFocus();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 }
