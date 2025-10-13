@@ -41,11 +41,19 @@ public class StudentRegistrationActivity extends AppCompatActivity {
         number=findViewById(R.id.student_phone_number);
         program=findViewById(R.id.student_program_of_study);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.back_button), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    public void onClickTutorBackButton(View view){
+        // Set the next page as the main page
+        Intent intent = new Intent(StudentRegistrationActivity.this, MainActivity.class);
+
+        // Send the user to the main page
+        startActivity(intent);
     }
 
     public void onClickStudentRegistrationButton(View view) {

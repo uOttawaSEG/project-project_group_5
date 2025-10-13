@@ -20,7 +20,6 @@ public class TutorRegistrationActivity extends AppCompatActivity {
     // Variables to access realtime database
     FirebaseDatabase rootNode;
     DatabaseReference reference;
-
     EditText firstName;
     EditText lastName;
     EditText email;
@@ -43,11 +42,19 @@ public class TutorRegistrationActivity extends AppCompatActivity {
         highestDegree=findViewById(R.id.tutor_highest_degree);
         coursesOffered=findViewById(R.id.tutor_courses_offered);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.back_button), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    public void onClickTutorBackButton(View view){
+        // Set the next page as the main page
+        Intent intent = new Intent(TutorRegistrationActivity.this, MainActivity.class);
+
+        // Send the user to the main page
+        startActivity(intent);
     }
 
     public void onClickTutorRegistrationButton(View view) {
@@ -115,7 +122,7 @@ public class TutorRegistrationActivity extends AppCompatActivity {
             // Pass the user's role to the next page so it can be displayed there
             intent.putExtra("role", "Tutor");
 
-            // Send the user to the welcome pag
+            // Send the user to the welcome page
             startActivity(intent);
         }
     }

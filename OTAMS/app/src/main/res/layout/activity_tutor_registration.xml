@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/back_button"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/default_background"
@@ -112,13 +112,20 @@
         android:id="@+id/button"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:onClick="onClickTutorRegistrationButton"
         android:padding="10dp"
         android:text="Register"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:onClick="onClickTutorRegistrationButton"/>
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/tutor_back_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:onClick="onClickStudenBackButton"/>
 
 
 </LinearLayout>
