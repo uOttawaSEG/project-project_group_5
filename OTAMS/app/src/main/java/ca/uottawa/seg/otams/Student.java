@@ -5,7 +5,7 @@ public class Student extends User {
     static String role = "Student";
 
     //Instance variables
-    public String programOfStudy;
+    public String program;
 
 
 }
