@@ -78,17 +78,43 @@ public class StudentRegistrationActivity extends AppCompatActivity {
             email.setError("Email address is required");
             valid=false;
         }
+        else if (valid && !emailInput.contains("@")){ //checks if the address contains @
+            email.setError("Valid email address is required");
+            valid=false;
+        }
+        if (valid){ //checks if email domain is valid and after @
+            int atIndex = emailInput.indexOf("@");
+            valid = false;
+            //if emailInput contains valid domain
+            if((emailInput.indexOf("gmail.com", atIndex)) != -1){
+                valid=true;
+            }
+            else if(emailInput.indexOf("yahoo.com", atIndex) != -1){
+                valid=true;
+            }
+            else if(emailInput.indexOf("uottawa.ca", atIndex) != -1){
+                valid=true;
+            }
+            else if(emailInput.indexOf("hotmail.com", atIndex) != -1){
+                valid=true;
+            }
+            else if(emailInput.indexOf("rogers.ca", atIndex) != -1) {
+                valid = true;
+            }
+        }
+        else email.setError("Valid email address is required");
+
         if(passwordInput.isEmpty()){//check if their input is empty
             password.setError("Password is required");
             valid=false;
-        }else if(valid && passwordInput.length()<6){//check if the password length is enough
+        }else if(passwordInput.length()<6){//check if the password length is enough
             password.setError("Please enter a password 6 or more characters");
             valid=false;
         }
         if(numberInput.isEmpty()) {//check if their input is empty
             number.setError("Phone number is required");
             valid = false;
-        }else if(valid && numberInput.matches("\\d{9}")) { //check if the number matches 10 digits
+        }else if(numberInput.matches("\\d{9}")) { //check if the number matches 10 digits
             number.setError("Phone number must be 10 digits");
             valid = false;
         }
