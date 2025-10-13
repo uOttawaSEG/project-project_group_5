@@ -9,5 +9,5 @@ public abstract class User {
     public String lastName;
     public String email;
     public String password;
-    public int phoneNumber;
+    public int number;
 }

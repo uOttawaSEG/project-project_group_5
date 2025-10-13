@@ -56,7 +56,7 @@ public class StudentRegistrationActivity extends AppCompatActivity {
         String numberInput=number.getText().toString();
         String programInput=program.getText().toString();
 
-        boolean valid=true;//initalize validity
+        boolean valid=true;//initialize validity
 
         if(firstNameInput.isEmpty()){//check if their input is empty
             firstName.setError("First name is required");
@@ -73,7 +73,7 @@ public class StudentRegistrationActivity extends AppCompatActivity {
         if(passwordInput.isEmpty()){//check if their input is empty
             password.setError("Password is required");
             valid=false;
-        }else if(passwordInput.length()<6){//check if the password length is enoguh
+        }else if(passwordInput.length()<6){//check if the password length is enough
             password.setError("Please enter a password 6 or more characters");
             valid=false;
         }
@@ -89,7 +89,7 @@ public class StudentRegistrationActivity extends AppCompatActivity {
             valid=false;
         }
 
-        if(valid==true){//check if all fields have been filled in with appropriate infomratio
+        if(valid){//check if all fields have been filled in with appropriate information
 
             // If all inputs are valid and filled, then store all
             // the information within the users tree of the database
@@ -113,9 +113,5 @@ public class StudentRegistrationActivity extends AppCompatActivity {
             // Send the user to the welcome page
             startActivity(intent);
         }
-
-
-
     }
-
 }
