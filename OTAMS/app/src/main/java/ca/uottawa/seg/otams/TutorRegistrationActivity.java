@@ -83,14 +83,14 @@ public class TutorRegistrationActivity extends AppCompatActivity {
         if(passwordInput.isEmpty()){//check if their input is empty
             password.setError("Password is required");
             valid=false;
-        }else if(passwordInput.length()<6){//check if the password length is enough
+        }else if(valid && passwordInput.length()<6){//check if the password length is enough
             password.setError("Please enter a password 6 or more characters");
             valid=false;
         }
         if(numberInput.isEmpty()) {//check if their input is empty
             number.setError("Phone number is required");
             valid = false;
-        }else if(numberInput.matches("\\d{9}")) { //check if the number matches 10 digits
+        }else if(valid && numberInput.matches("\\d{9}")) { //check if the number matches 10 digits
             number.setError("Phone number must be 10 digits");
             valid = false;
         }
