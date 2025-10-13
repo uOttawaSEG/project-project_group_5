@@ -115,7 +115,7 @@ public class TutorRegistrationActivity extends AppCompatActivity {
             // Pass the user's role to the next page so it can be displayed there
             intent.putExtra("role", "Tutor");
 
-            // Send the user to the welcome page
+            // Send the user to the welcome pag
             startActivity(intent);
         }
     }
