@@ -137,7 +137,10 @@ public class TutorRegistrationActivity extends AppCompatActivity {
             reference = rootNode.getReference("users");
 
             // Create an object with the entered information
-            UserRegistrationInfoDatabase tutorRegistration = new UserRegistrationInfoDatabase(firstNameInput, lastNameInput, emailInput, passwordInput, numberInput,"", highestDegreeInput, coursesOfferedInput, "Tutor");
+            // UserRegistrationInfoDatabase tutorRegistration = new UserRegistrationInfoDatabase(firstNameInput, lastNameInput, emailInput, passwordInput, numberInput,"", highestDegreeInput, coursesOfferedInput, "Tutor");
+
+            // Create an object with the entered information
+            Tutor tutorRegistration = new Tutor(firstNameInput, lastNameInput, emailInput, passwordInput, numberInput, highestDegreeInput, coursesOfferedInput);
 
             // Create a new user entry for the newly registered tutor and assign their phone number as their key (since phone numbers are unique for each individual)
             reference.child(numberInput).setValue(tutorRegistration);

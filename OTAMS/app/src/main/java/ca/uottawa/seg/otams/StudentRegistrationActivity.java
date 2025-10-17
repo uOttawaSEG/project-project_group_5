@@ -131,7 +131,10 @@ public class StudentRegistrationActivity extends AppCompatActivity {
             reference = rootNode.getReference("users");
 
             // Create an object with the entered information
-            UserRegistrationInfoDatabase studentRegistration = new UserRegistrationInfoDatabase(firstNameInput, lastNameInput, emailInput, passwordInput, numberInput, programInput, "", "", "Student");
+            // UserRegistrationInfoDatabase studentRegistration = new UserRegistrationInfoDatabase(firstNameInput, lastNameInput, emailInput, passwordInput, numberInput, programInput, "", "", "Student");
+
+            // Create an object with the entered information
+            Student studentRegistration = new Student(firstNameInput, lastNameInput, emailInput, passwordInput, numberInput, programInput);
 
             // Create a new user entry for the newly registered student and assign their phone number as their key (since phone numbers are unique for each individual)
             reference.child(numberInput).setValue(studentRegistration);

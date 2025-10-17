@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                             // password.setErrorEnabled(false);
 
                             // Then fetch the user's role from the database
-                            String roleFromDatabase = userSnapshot.child("typeOfUser").getValue(String.class);
+                            String roleFromDatabase = userSnapshot.child("role").getValue(String.class);
 
                             // Set the next page as the welcome page
                             Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);

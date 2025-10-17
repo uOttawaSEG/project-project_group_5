@@ -19,6 +19,8 @@ public class UserRegistrationInfoDatabase {
 
     String typeOfUser; // Determines whether the user is a student or tutor
 
+    String requestStatus; // Determines the status of the user's registration request (pending, rejected, approved)
+
     // Empty constructor to avoid errors in Firebase
     public UserRegistrationInfoDatabase() {}
 
