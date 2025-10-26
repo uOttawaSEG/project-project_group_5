@@ -7,13 +7,13 @@
     android:background="@drawable/default_background"
     android:orientation="vertical"
     android:padding="24dp"
-    tools:context=".WelcomePageActivity">
+    tools:context=".RegistrationPendingPageActivity">
 
     <TextView
-        android:id="@+id/welcomeTitleText"
+        android:id="@+id/pendingStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/welcome"
+        android:text="@string/registration_pending_status"
         android:textSize="30sp"
         android:textStyle="bold"
         android:textColor="@color/white"
@@ -24,29 +24,28 @@
         android:gravity="center"/>
 
     <TextView
-        android:id="@+id/welcomeText"
+        android:id="@+id/pendingInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/logged_in_as"
-        android:textSize="30sp"
-        android:textStyle="bold"
+        android:text="@string/registration_pending"
+        android:textSize="25sp"
         android:textColor="@color/white"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="0dp"
         android:paddingBottom="16dp"
         android:paddingTop="16dp"
         android:gravity="center"/>
 
     <TextView
-        android:id="@+id/welcomeRoleText"
+        android:id="@+id/pendingUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/role"
+        android:text="@string/registration_pending_update"
         android:textSize="30sp"
         android:textStyle="bold"
         android:textColor="@color/indigo"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="48dp"
         android:paddingBottom="16dp"
         android:paddingTop="16dp"
         android:gravity="center"/>
@@ -55,7 +54,7 @@
         android:id="@+id/button_log_off"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="157dp"
+        android:layout_marginTop="93dp"
         android:layout_gravity="center_horizontal"
         android:padding="10dp"
         android:text="@string/log_off"
@@ -63,6 +62,4 @@
         android:textStyle="bold"
         android:onClick="onClickLogOff"/>
 
-
 </LinearLayout>
-
