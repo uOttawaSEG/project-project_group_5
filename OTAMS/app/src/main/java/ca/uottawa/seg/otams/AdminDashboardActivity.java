@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -83,7 +84,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 new Student("a", "b", "c", "e", "f", "g"),
                 new Tutor("g", "h", "i", "j", "k", "l", "m")
         );
-        return userList;
+        return new ArrayList<>(userList);
     }
 
     private void populateRecyclerView(List<User> usersList) {
