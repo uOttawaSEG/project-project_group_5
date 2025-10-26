@@ -108,15 +108,20 @@ public class MainActivity extends AppCompatActivity {
 
                             // Then fetch the user's role from the database
                             String roleFromDatabase = userSnapshot.child("role").getValue(String.class);
+                            if (Administrator.role.equals(roleFromDatabase)) {
+                                Intent intent = new Intent(MainActivity.this, AdminDashboardActivity.class);
+                                startActivity(intent);
 
-                            // Set the next page as the welcome page
-                            Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
+                            } else {
+                                // Set the next page as the welcome page
+                                Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
 
-                            // Pass the user's role to the next page so it can be displayed there
-                            intent.putExtra("role", roleFromDatabase);
+                                // Pass the user's role to the next page so it can be displayed there
+                                intent.putExtra("role", roleFromDatabase);
 
-                            // Send the user to the welcome page
-                            startActivity(intent);
+                                // Send the user to the welcome page
+                                startActivity(intent);
+                            }
                         }
                         else {
                             // Tell the user if the password did not match

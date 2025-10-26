@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/default_background"
+    android:padding="24dp"
+    android:id="@+id/back_button"
+    tools:context=".AdminDashboardActivity">
+
+    <!-- Screen Title -->
+    <TextView
+        android:id="@+id/adminDashboardTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Administrator Dashboard"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:paddingBottom="10dp" />
+
+    <!-- Tab Layout for Pending and Rejected -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/admin_tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/transparent"
+        app:tabIndicatorColor="@color/white"
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextColor="@android:color/darker_gray"
+        app:tabIndicatorHeight="4dp"
+        app:tabRippleColor="@android:color/transparent">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/pending_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pending_requests" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/rejected_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rejected_requests" />
+    </com.google.android.material.tabs.TabLayout>
+
+    <!-- RecyclerView that will change depending on selected tab -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/request_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="30dp"
+        android:scrollbars="vertical" />
+</LinearLayout>

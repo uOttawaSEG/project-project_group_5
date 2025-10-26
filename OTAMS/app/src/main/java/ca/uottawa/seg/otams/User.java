@@ -10,7 +10,7 @@ public abstract class User {
     private String email;
     private String password;
     private String phoneNumber;
-    private String requestStatus; // Determines the status of the user's registration request (pending, rejected, approved)
+    private RegistrationStatus requestStatus; // Determines the status of the user's registration request (pending, rejected, approved)
 
     // Empty constructor to avoid errors in Firebase
     public User() {}
@@ -25,7 +25,7 @@ public abstract class User {
         this.password = password;
         this.phoneNumber = phoneNumber;
 
-        requestStatus = "pending"; // Request always starts as pending when created
+        requestStatus = RegistrationStatus.PENDING; // Request always starts as pending when created
     }
 
     // Getter and setter methods for each variable
@@ -73,11 +73,11 @@ public abstract class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getRequestStatus() {
+    public RegistrationStatus getRequestStatus() {
         return requestStatus;
     }
 
-    public void setRequestStatus(String requestStatus) {
+    public void setRequestStatus(RegistrationStatus requestStatus) {
         this.requestStatus = requestStatus;
     }
 }

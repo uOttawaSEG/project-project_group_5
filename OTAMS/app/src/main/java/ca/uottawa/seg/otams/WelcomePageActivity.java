@@ -25,7 +25,7 @@ public class WelcomePageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_welcome_page);
 
         // Hook
-        role = (TextView) findViewById(R.id.welcomeRoleText);
+        role = (TextView) findViewById(R.id.welcome_role_text);
 
         // Stores the role of the user that logged in that was passed from the previous activity
         Intent intent = getIntent();

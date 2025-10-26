@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/default_background"
+    android:padding="24dp"
+    tools:context=".AdminRequestDetailsActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- Screen Title -->
+        <TextView
+            android:id="@+id/requestDetailsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Registration Request Details"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:paddingBottom="16dp" />
+
+        <!-- Divider Line (optional subtle accent) -->
+        <View
+            android:layout_width="400dp"
+            android:layout_height="3dp"
+            android:background="@color/white"
+            android:layout_marginBottom="24dp" />
+
+        <!-- User Info Section -->
+        <TextView
+            android:id="@+id/detailFirstName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="First Name: "
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:id="@+id/detailLastName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Last Name: "
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:id="@+id/detailEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email: "
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:id="@+id/detailRole"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Role: "
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:id="@+id/detailPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone: "
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:id="@+id/detailProgramOrDegree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Program/Degree: "
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:id="@+id/detailCoursesOffered"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Courses Offered: "
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:layout_marginTop="12dp" />
+
+        <!-- Approve/Reject Buttons Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="20dp">
+
+            <!-- Approve Button -->
+            <Button
+                android:id="@+id/approveButton"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:text="Approve"
+                android:textColor="#673AB7"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:padding="10dp" />
+
+            <Space
+                android:layout_width="40dp"
+                android:layout_height="wrap_content" />
+
+            <!-- Reject Button -->
+            <Button
+                android:id="@+id/rejectButton"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:text="Reject"
+                android:textColor="#673AB7"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:padding="10dp" />
+        </LinearLayout>
+
+        <!-- Back Button -->
+        <Button
+            android:id="@+id/backToDashboardBtn"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/white"
+            android:text="Back to Dashboard"
+            android:textColor="#673AB7"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp" />
+
+    </LinearLayout>
+</ScrollView>

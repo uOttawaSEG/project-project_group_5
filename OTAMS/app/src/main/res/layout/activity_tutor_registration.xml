@@ -10,7 +10,7 @@
     tools:context=".TutorRegistrationActivity">
 
     <TextView
-        android:id="@+id/tutorTitleText"
+        android:id="@+id/tutor_title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tutor_registration_form"

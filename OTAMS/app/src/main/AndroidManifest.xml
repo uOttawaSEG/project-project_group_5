@@ -20,6 +20,8 @@
         <activity
             android:name=".WelcomePageActivity"
             android:exported="false" />
+        <activity android:name=".AdminDashboardActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true" >

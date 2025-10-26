@@ -23,6 +23,9 @@
     <string name="logged_in_as">You are logged in as</string>
     <string name="role">[role]</string>
     <string name="log_off">Log Off</string>
+    <string name="right_arrow">⮕</string>
+    <string name="pending_requests">Pending Requests</string>
+    <string name="rejected_requests">Rejected Requests</string>
 
     <string name="registration_rejected_status">Status: registration approval REJECTED</string>
     <string name="registration_rejected">The administrator has rejected your registration request</string>
