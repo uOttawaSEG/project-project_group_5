@@ -36,7 +36,6 @@ public class AdminDashboardActivity extends AppCompatActivity {
         });
         recycleView = findViewById(R.id.request_recycler_view);
         final TabLayout tb = findViewById(R.id.admin_tab_layout);
-        Objects.requireNonNull(tb.getTabAt(0)).select();
         tb.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -54,7 +53,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 onTabSelected(tab);
             }
         });
-        populateRecyclerView(filterUserDataBy(getRegistrationStatus()));
+        populateRecyclerView(filterUserDataBy(getRegistrationStatus(tb)));
     }
 
 
@@ -69,8 +68,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         return RegistrationStatus.APPROVED;
 
     }
-    private RegistrationStatus getRegistrationStatus() {
-        TabLayout tb = findViewById(R.id.admin_tab_layout);
+    private RegistrationStatus getRegistrationStatus(TabLayout tb) {
         TabLayout.Tab selectedTab = tb.getTabAt(tb.getSelectedTabPosition());
         if (selectedTab == null) {
             selectedTab = tb.getTabAt(0);
