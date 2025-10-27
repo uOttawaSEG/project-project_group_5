@@ -30,7 +30,7 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         TextView lastName = (TextView) findViewById(R.id.detailLastName);
         TextView email = (TextView) findViewById(R.id.detailEmail);
         TextView role = (TextView) findViewById(R.id.detailRole);
-        TextView phoneNumber = (TextView) findViewById(R.id.detailPhone);
+        TextView phoneNumber = (TextView) findViewById(R.id.detailPhoneNumber);
         TextView programOrDegree = (TextView) findViewById(R.id.detailProgramOrDegree);
         TextView coursesOffered = (TextView) findViewById(R.id.detailCoursesOffered);
 
@@ -55,15 +55,15 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
             String requestCoursesOffered = intent.getStringExtra("coursesOffered");
 
             programOrDegree.setText("Highest Degree: " + requestDegree);
-            coursesOffered.setText("Courses Offered" + requestCoursesOffered);
+            coursesOffered.setText("Courses Offered: " + requestCoursesOffered);
         }
 
         // Changes the placeholder text to the info for the specified request
         firstName.setText("First Name: " + requestFirstName);
-        lastName.setText("Last Name" + requestLastName);
+        lastName.setText("Last Name: " + requestLastName);
         email.setText("Email: " + requestEmail);
         role.setText("Role: " + requestRole);
-        phoneNumber.setText("Phone Number: " + requestPhoneNumber);
+        phoneNumber.setText(requestPhoneNumber);
     }
 
     public void onClickApprove(View view) {
@@ -72,6 +72,8 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         // Check if the administrator approved the request
         if (pressID == R.id.approveButton) {
             setRequestStatus(RegistrationStatus.APPROVED); // Set the status of the request to approved if they did
+
+            finish(); // Remove the current activity from the activity stack (go back to the previous activity)
         }
     }
 
@@ -81,6 +83,8 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         // Check if the administrator rejected the request
         if (pressID == R.id.rejectButton) {
             setRequestStatus(RegistrationStatus.REJECTED); // Set the status of the request to rejected if they did
+
+            finish(); // Remove the current activity from the activity stack (go back to the previous activity)
         }
     }
 
@@ -89,11 +93,15 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
 
         // Check if the administrator is trying to return back to their dashboard
         if (pressID == R.id.backToDashboardBtn) {
+            /*
             // Set the next page as the dashboard
             Intent intent = new Intent(AdminRequestDetailsActivity.this, AdminDashboardActivity.class);
 
             // Send the administrator back to the dashboard
             startActivity(intent);
+            */
+
+            finish(); // Remove the current activity from the activity stack (go back to the previous activity)
         }
     }
 
@@ -102,7 +110,9 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
 
         // Determine the id (phone number) of the user entry the request belonged to
-        String userId = ((TextView) findViewById(R.id.detailPhone)).toString();
+        TextView userIdTextView = findViewById(R.id.detailPhoneNumber);
+        String userId = userIdTextView.getText().toString();
+        // String userId = ((TextView) findViewById(R.id.detailPhone)).toString();
 
         // Find the user in the database that had its request status changed (use the phone number since that is the id for every entry in the database)
         reference.child(userId).child("requestStatus").setValue(requestStatus.toString());
