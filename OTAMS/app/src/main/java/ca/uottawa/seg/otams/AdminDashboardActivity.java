@@ -48,7 +48,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 RegistrationStatus tempRs = getRegistrationStatus(tab);
-                ula.updateData(filterUserDataBy(tempRs));
+                // ula.updateData(filterUserDataBy(tempRs));
+                filterUserDataBy(tempRs); // Changed filterUserDataBy no longer returns the list
             }
 
             @Override
@@ -61,7 +62,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 onTabSelected(tab);
             }
         });
-        populateRecyclerView(filterUserDataBy(getRegistrationStatus(tb)));
+        // populateRecyclerView(filterUserDataBy(getRegistrationStatus(tb)));
+        filterUserDataBy(getRegistrationStatus(tb)); // Changed filterUserDataBy no longer returns the list
     }
 
 
@@ -85,7 +87,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         return getRegistrationStatus(selectedTab);
     }
 
-    private List<User> filterUserDataBy(RegistrationStatus registrationStatus) {
+    private void filterUserDataBy(RegistrationStatus registrationStatus) {
         /*
         List<User> userList = List.of(
                 new Student("a", "b", "c", "e", "f", "g"),
@@ -130,8 +132,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
                                 // Create a student entry with the necessary information from the database
                                 Student student = new Student(firstNameFromDatabase, lastNameFromDatabase, emailFromDatabase, "", phoneNumberFromDatabase, programFromDatabase);
                                 userList.add(student);
-                            }
-                            else if (roleFromDatabase.equals("Tutor")) {
+                            } else if (roleFromDatabase.equals("Tutor")) {
                                 String highestDegreeFromDatabase = userSnapshot.child("highestDegree").getValue(String.class);
                                 String coursesOfferedFromDatabase = userSnapshot.child("coursesOffered").getValue(String.class);
 
@@ -139,23 +140,23 @@ public class AdminDashboardActivity extends AppCompatActivity {
                                 Tutor tutor = new Tutor(firstNameFromDatabase, lastNameFromDatabase, emailFromDatabase, "", phoneNumberFromDatabase, highestDegreeFromDatabase, coursesOfferedFromDatabase);
                                 userList.add(tutor);
                             }
-
-
                         }
+                    }
                 }
+
+                populateRecyclerView(userList);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-                return new ArrayList<>(userList);
-
         });
+    }
 
-        }
-
-
+    // Callback interface
+    public interface OnUsersFetchedListener {
+        void onFetched(List<User> users); // Allows list to be returned after all the necessary data has been fetched from the database
     }
 
     private void populateRecyclerView(List<User> usersList) {
