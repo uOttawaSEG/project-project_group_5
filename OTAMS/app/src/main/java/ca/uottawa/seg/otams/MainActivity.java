@@ -108,7 +108,9 @@ public class MainActivity extends AppCompatActivity {
 
                             // Then fetch the user's role from the database
                             String roleFromDatabase = userSnapshot.child("role").getValue(String.class);
+
                             if (Administrator.role.equals(roleFromDatabase)) {
+                                // If the user is an administrator then send them the the admin dashboard
                                 Intent intent = new Intent(MainActivity.this, AdminDashboardActivity.class);
                                 startActivity(intent);
 

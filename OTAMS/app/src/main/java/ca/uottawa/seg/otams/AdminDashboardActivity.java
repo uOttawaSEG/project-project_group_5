@@ -1,10 +1,12 @@
 package ca.uottawa.seg.otams;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -14,6 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,11 +86,76 @@ public class AdminDashboardActivity extends AppCompatActivity {
     }
 
     private List<User> filterUserDataBy(RegistrationStatus registrationStatus) {
+        /*
         List<User> userList = List.of(
                 new Student("a", "b", "c", "e", "f", "g"),
                 new Tutor("g", "h", "i", "j", "k", "l", "m")
         );
         return new ArrayList<>(userList);
+        */
+
+        // Grab all users info from database
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+
+        // Store all users listed in the database with the desired registration status
+        Query searchForUsers = reference.orderByChild("requestStatus").equalTo(registrationStatus.toString());
+
+        searchForUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<User> userList = new ArrayList<>(); // List containing the user's data as individual entries
+
+                // If a user exists in the database with the specified registration status
+                if(snapshot.exists()) {
+
+                    // Iterate through every user in the database with the specified registration status and add it to to request list in the admin dashboard
+                    for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+
+                        // Then fetch the request status of any user with the desired registration status
+                        String requestStatusFromDatabase = userSnapshot.child("requestStatus").getValue(String.class);
+
+                        // If the registration status matches the one in that user's entry
+                        if (requestStatusFromDatabase.equals(registrationStatus.toString())) {
+                            // Then fetch the all of that user's info from the database
+                            String roleFromDatabase = userSnapshot.child("role").getValue(String.class);
+                            String firstNameFromDatabase = userSnapshot.child("firstName").getValue(String.class);
+                            String lastNameFromDatabase = userSnapshot.child("lastName").getValue(String.class);
+                            String emailFromDatabase = userSnapshot.child("email").getValue(String.class);
+                            String phoneNumberFromDatabase = userSnapshot.child("phoneNumber").getValue(String.class);
+
+                            // Fetch additional information depending on whether the user's request is from a student or tutor
+                            if (roleFromDatabase.equals("Student")) {
+                                String programFromDatabase = userSnapshot.child("program").getValue(String.class);
+
+                                // Create a student entry with the necessary information from the database
+                                Student student = new Student(firstNameFromDatabase, lastNameFromDatabase, emailFromDatabase, "", phoneNumberFromDatabase, programFromDatabase);
+                                userList.add(student);
+                            }
+                            else if (roleFromDatabase.equals("Tutor")) {
+                                String highestDegreeFromDatabase = userSnapshot.child("highestDegree").getValue(String.class);
+                                String coursesOfferedFromDatabase = userSnapshot.child("coursesOffered").getValue(String.class);
+
+                                // Create a student entry with the necessary information from the database
+                                Tutor tutor = new Tutor(firstNameFromDatabase, lastNameFromDatabase, emailFromDatabase, "", phoneNumberFromDatabase, highestDegreeFromDatabase, coursesOfferedFromDatabase);
+                                userList.add(tutor);
+                            }
+
+
+                        }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+                return new ArrayList<>(userList);
+
+        });
+
+        }
+
+
     }
 
     private void populateRecyclerView(List<User> usersList) {
