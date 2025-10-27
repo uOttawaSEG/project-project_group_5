@@ -54,15 +54,15 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
             String requestDegree = intent.getStringExtra("highestDegree");
             String requestCoursesOffered = intent.getStringExtra("coursesOffered");
 
-            programOrDegree.setText("Highest Degree: " + requestDegree);
-            coursesOffered.setText("Courses Offered: " + requestCoursesOffered);
+            programOrDegree.setText("Highest degree: " + requestDegree);
+            coursesOffered.setText("Courses offered: " + requestCoursesOffered);
         }
 
         // Changes the placeholder text to the info for the specified request
-        firstName.setText("First Name: " + requestFirstName);
-        lastName.setText("Last Name: " + requestLastName);
-        email.setText("Email: " + requestEmail);
-        role.setText("Role: " + requestRole);
+        firstName.setText(requestFirstName);
+        lastName.setText(requestLastName);
+        email.setText(requestEmail);
+        role.setText(requestRole);
         phoneNumber.setText(requestPhoneNumber);
     }
 
