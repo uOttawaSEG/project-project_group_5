@@ -102,7 +102,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
         // Store all users listed in the database with the desired registration status
         Query searchForUsers = reference.orderByChild("requestStatus").equalTo(registrationStatus.toString());
 
-        searchForUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+        // searchForUsers.addListenerForSingleValueEvent(new ValueEventListener()
+
+        // Checks for changes in real time
+        searchForUsers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<User> userList = new ArrayList<>(); // List containing the user's data as individual entries
@@ -154,16 +157,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
         });
     }
 
-    // Callback interface
-    public interface OnUsersFetchedListener {
-        void onFetched(List<User> users); // Allows list to be returned after all the necessary data has been fetched from the database
-    }
-
     private void populateRecyclerView(List<User> usersList) {
         RecyclerView rv = this.recycleView;
         rv.setLayoutManager(new LinearLayoutManager(this));
         ula = new UserListAdapter(usersList);
         rv.setAdapter(ula);
     }
-
 }

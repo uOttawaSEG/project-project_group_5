@@ -11,6 +11,6 @@ public enum RegistrationStatus
     @NonNull
     @Override
     public String toString() {
-        return this.name().toLowerCase(); // Converts enum value to a string
+        return this.name().toUpperCase(); // Converts enum value to a string
     }
 }

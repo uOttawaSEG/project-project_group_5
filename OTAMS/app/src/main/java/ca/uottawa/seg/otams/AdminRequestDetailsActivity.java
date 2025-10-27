@@ -13,6 +13,4 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_request_details);
 
     }
-
-
 }
