@@ -35,6 +35,8 @@
     <string name="registration_pending_status">Status: registration approval PENDING</string>
     <string name="registration_pending">The administrator has not yet processed your registration request</string>
     <string name="registration_pending_update">Check the status of your request later once the administrator has processed the request</string>
+    <string name="administrator_dashboard">Administrator Dashboard</string>
+    <string name="registration_request_details">Registration Request Details</string>
 
 
 </resources>

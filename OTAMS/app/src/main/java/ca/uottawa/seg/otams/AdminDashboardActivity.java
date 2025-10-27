@@ -176,4 +176,16 @@ public class AdminDashboardActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
+    public void onClickLogOff(View view) {
+        int pressID = view.getId();
+
+        // Check if the user is trying to log out
+        if (pressID == R.id.admin_log_off) {
+            // Set the next page to the login page
+            Intent intent = new Intent(AdminDashboardActivity.this, MainActivity.class);
+
+            // Send the user to the login page
+            startActivity(intent);
+        }
+    }
 }

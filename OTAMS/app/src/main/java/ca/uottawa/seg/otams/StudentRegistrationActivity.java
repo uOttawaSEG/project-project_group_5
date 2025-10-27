@@ -151,4 +151,12 @@ public class StudentRegistrationActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
+
+    public void onClickStudentBackButton(View view) {
+        Intent intent = new Intent(StudentRegistrationActivity.this, MainActivity.class);
+
+        // Send the user to the main page
+        startActivity(intent);
+
+    }
 }

@@ -18,7 +18,7 @@
             android:id="@+id/requestDetailsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Registration Request Details"
+            android:text="@string/registration_request_details"
             android:textColor="@color/white"
             android:textSize="25sp"
             android:textStyle="bold"
