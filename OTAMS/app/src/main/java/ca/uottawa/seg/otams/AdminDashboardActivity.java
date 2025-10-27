@@ -163,4 +163,17 @@ public class AdminDashboardActivity extends AppCompatActivity {
         ula = new UserListAdapter(usersList);
         rv.setAdapter(ula);
     }
+
+    public void onClickViewRequestDetails(View view) {
+        int pressID=view.getId();
+
+        // Check if the user is trying to view a request's details
+        if (pressID == R.id.arrow_text) {
+            // If they are, then send the viewer to the page with the respective request's details
+            Intent intent = new Intent(AdminDashboardActivity.this, AdminRequestDetailsActivity.class);
+
+            // Send the user to the welcome page
+            startActivity(intent);
+        }
+    }
 }

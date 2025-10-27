@@ -22,6 +22,8 @@
             android:exported="false" />
         <activity android:name=".AdminDashboardActivity"
             android:exported="false" />
+        <activity android:name=".AdminRequestDetailsActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true" >
