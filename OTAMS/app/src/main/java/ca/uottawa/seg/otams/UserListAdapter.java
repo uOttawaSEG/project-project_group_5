@@ -34,18 +34,18 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListView> {
         holder.getName().setText(firstLastName);
         holder.getRole().setText(u.getRole());
 
-        // Check if the administrator has clicked on the arrow beside an entry and would like to see more details about the requester
+        // Check if the administrator has clicked on an arrow corresponding to a request and would like to see more details about said request
         holder.getArrow().setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), AdminRequestDetailsActivity.class);
+            Intent intent = new Intent(v.getContext(), AdminRequestDetailsActivity.class); // Set the next page
 
-            // Pass the user's info (excluding the password) to the next page so it can be displayed there
+            // Pass the details of the user who made the request (excluding their password) to the next page so it can be displayed there
             intent.putExtra("role", u.getRole());
             intent.putExtra("firstName", u.getFirstName());
             intent.putExtra("lastName", u.getLastName());
             intent.putExtra("email", u.getEmail());
             intent.putExtra("phoneNumber", u.getPhoneNumber());
 
-            // Collect extra details depending on whether the request is from a student or tutor
+            // Collect extra details depending on whether the request is from a user who wishes to be a student or tutor
             if (u instanceof Student) {
                 Student s = (Student) u;
 
@@ -58,8 +58,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListView> {
                 intent.putExtra("coursesOffered", t.getCoursesOffered());
             }
 
-
-            // Send the administrator to the details page
+            // Send the administrator to the detailed request page associated with the arrow the administrator clicked
             v.getContext().startActivity(intent);
         });
     }

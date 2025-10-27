@@ -25,7 +25,7 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_details);
 
-        // Text field that need to be populated with request info
+        // Text fields that need to be populated with the specified request's info
         TextView firstName = (TextView) findViewById(R.id.detailFirstName);
         TextView lastName = (TextView) findViewById(R.id.detailLastName);
         TextView email = (TextView) findViewById(R.id.detailEmail);
@@ -34,7 +34,7 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         TextView programOrDegree = (TextView) findViewById(R.id.detailProgramOrDegree);
         TextView coursesOffered = (TextView) findViewById(R.id.detailCoursesOffered);
 
-        // Stores the info about the user that was passed from the previous activity
+        // Stores the info about the request that was passed from the previous activity
         Intent intent = getIntent();
 
         String requestFirstName = intent.getStringExtra("firstName");
@@ -43,7 +43,7 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         String requestRole = intent.getStringExtra("role");
         String requestPhoneNumber = intent.getStringExtra("phoneNumber");
 
-        // Different field are populated depending on whether the request is from a student or tutor
+        // Different fields are populated depending on whether the request is from a student or tutor
         if (requestRole.equals("Student")) {
             String requestProgram = intent.getStringExtra("program");
 
@@ -73,7 +73,7 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         if (pressID == R.id.approveButton) {
             setRequestStatus(RegistrationStatus.APPROVED); // Set the status of the request to approved if they did
 
-            finish(); // Remove the current activity from the activity stack (go back to the previous activity)
+            finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
         }
     }
 
@@ -84,7 +84,7 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         if (pressID == R.id.rejectButton) {
             setRequestStatus(RegistrationStatus.REJECTED); // Set the status of the request to rejected if they did
 
-            finish(); // Remove the current activity from the activity stack (go back to the previous activity)
+            finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
         }
     }
 
@@ -101,20 +101,20 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
             startActivity(intent);
             */
 
-            finish(); // Remove the current activity from the activity stack (go back to the previous activity)
+            finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
         }
     }
 
     public void setRequestStatus(RegistrationStatus requestStatus) {
-        // Grab all users info from database
+        // Grab all users' info from the database
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
 
-        // Determine the id (phone number) of the user entry the request belonged to
+        // Determine the id (phone number) of the user entry the request was from
         TextView userIdTextView = findViewById(R.id.detailPhoneNumber);
         String userId = userIdTextView.getText().toString();
         // String userId = ((TextView) findViewById(R.id.detailPhone)).toString();
 
-        // Find the user in the database that had its request status changed (use the phone number since that is the id for every entry in the database)
+        // Find the user in the database that had its request status changed (use the phone number since that is the id for every entry in the database) and update its status accordingly
         reference.child(userId).child("requestStatus").setValue(requestStatus.toString());
     }
 }

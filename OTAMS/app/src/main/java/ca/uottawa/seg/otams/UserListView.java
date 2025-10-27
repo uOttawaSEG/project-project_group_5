@@ -29,6 +29,6 @@ public class UserListView extends RecyclerView.ViewHolder {
     }
 
     public TextView getArrow() {
-        return arrow;
-    } // Returns the arrow belonging to the specific request
+        return arrow; // Returns the arrow belonging to the specific request
+    }
 }

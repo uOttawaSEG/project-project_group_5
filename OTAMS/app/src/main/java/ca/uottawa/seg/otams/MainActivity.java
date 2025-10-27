@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // Grab all users info from database
+        // Grab all users' info from the database
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
 
         // Store all users listed in the database with the same first name (username) was entered

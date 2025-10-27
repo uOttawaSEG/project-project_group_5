@@ -49,7 +49,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 RegistrationStatus tempRs = getRegistrationStatus(tab);
                 // ula.updateData(filterUserDataBy(tempRs));
-                filterUserDataBy(tempRs); // Changed filterUserDataBy no longer returns the list
+                filterUserDataBy(tempRs); // Changed because filterUserDataBy no longer returns the list
             }
 
             @Override
@@ -63,7 +63,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
             }
         });
         // populateRecyclerView(filterUserDataBy(getRegistrationStatus(tb)));
-        filterUserDataBy(getRegistrationStatus(tb)); // Changed filterUserDataBy no longer returns the list
+        filterUserDataBy(getRegistrationStatus(tb)); // Changed because filterUserDataBy no longer returns the list
     }
 
 
@@ -96,58 +96,58 @@ public class AdminDashboardActivity extends AppCompatActivity {
         return new ArrayList<>(userList);
         */
 
-        // Grab all users info from database
+        // Grab all users' info from the database
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
 
-        // Store all users listed in the database with the desired registration status
+        // Store all users listed in the database with the specified registration status
         Query searchForUsers = reference.orderByChild("requestStatus").equalTo(registrationStatus.toString());
 
         // searchForUsers.addListenerForSingleValueEvent(new ValueEventListener()
 
-        // Checks for changes in real time
+        // Checks for changes to the database in real time
         searchForUsers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<User> userList = new ArrayList<>(); // List containing the user's data as individual entries
+                List<User> userList = new ArrayList<>(); // List containing the details of every user who attempted to register (i.e. with request status of pending or rejected)
 
                 // If a user exists in the database with the specified registration status
                 if(snapshot.exists()) {
 
-                    // Iterate through every user in the database with the specified registration status and add it to to request list in the admin dashboard
+                    // Iterate through every user in the database with the specified registration status and adds it to the corresponding request inbox in the admin dashboard
                     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
 
-                        // Then fetch the request status of any user with the desired registration status
+                        // Then fetch the request status of the user
                         String requestStatusFromDatabase = userSnapshot.child("requestStatus").getValue(String.class);
 
-                        // If the registration status matches the one in that user's entry
+                        // If the expected registration status matches the request status of the user
                         if (requestStatusFromDatabase.equals(registrationStatus.toString())) {
-                            // Then fetch the all of that user's info from the database
+                            // Then fetch all of the relevant details of that user's request from the database
                             String roleFromDatabase = userSnapshot.child("role").getValue(String.class);
                             String firstNameFromDatabase = userSnapshot.child("firstName").getValue(String.class);
                             String lastNameFromDatabase = userSnapshot.child("lastName").getValue(String.class);
                             String emailFromDatabase = userSnapshot.child("email").getValue(String.class);
                             String phoneNumberFromDatabase = userSnapshot.child("phoneNumber").getValue(String.class);
 
-                            // Fetch additional information depending on whether the user's request is from a student or tutor
+                            // Fetch additional information depending on whether the request is to become a student or tutor
                             if (roleFromDatabase.equals("Student")) {
                                 String programFromDatabase = userSnapshot.child("program").getValue(String.class);
 
                                 // Create a student entry with the necessary information from the database
                                 Student student = new Student(firstNameFromDatabase, lastNameFromDatabase, emailFromDatabase, "", phoneNumberFromDatabase, programFromDatabase);
-                                userList.add(student);
+                                userList.add(student); // Add the entry to the request list
                             } else if (roleFromDatabase.equals("Tutor")) {
                                 String highestDegreeFromDatabase = userSnapshot.child("highestDegree").getValue(String.class);
                                 String coursesOfferedFromDatabase = userSnapshot.child("coursesOffered").getValue(String.class);
 
-                                // Create a student entry with the necessary information from the database
+                                // Create a tutor entry with the necessary information from the database
                                 Tutor tutor = new Tutor(firstNameFromDatabase, lastNameFromDatabase, emailFromDatabase, "", phoneNumberFromDatabase, highestDegreeFromDatabase, coursesOfferedFromDatabase);
-                                userList.add(tutor);
+                                userList.add(tutor); // Add the entry to the request list
                             }
                         }
                     }
                 }
 
-                populateRecyclerView(userList);
+                populateRecyclerView(userList); // Update the requests listed in the dashboard
             }
 
             @Override
