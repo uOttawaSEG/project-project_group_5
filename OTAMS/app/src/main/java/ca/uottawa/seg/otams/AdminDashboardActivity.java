@@ -147,7 +147,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
                     }
                 }
 
-                populateRecyclerView(userList); // Update the requests listed in the dashboard
+                populateRecyclerView(userList); // Update the requests listed in the administrator's dashboard
             }
 
             @Override
