@@ -121,6 +121,21 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
                         // If the expected registration status matches the request status of the user
                         if (requestStatusFromDatabase.equals(registrationStatus.toString())) {
+                            // Then fetch the role the user wishes to register as
+                            String roleFromDatabase = userSnapshot.child("role").getValue(String.class);
+
+                            if (roleFromDatabase.equals("Student")) {
+                                // If the request is to become a student then fill in the request details with the student's info
+                                Student student = userSnapshot.getValue(Student.class);
+                                userList.add(student); // Add the entry to the request list
+                            }
+                            else if (roleFromDatabase.equals("Tutor")) {
+                                // If the request is to become a tutor then fill in the request details with the tutor's info
+                                Tutor tutor = userSnapshot.getValue(Tutor.class);
+                                userList.add(tutor); // Add the entry to the request list
+                            }
+                        }
+                            /*
                             // Then fetch all of the relevant details of that user's request from the database
                             String roleFromDatabase = userSnapshot.child("role").getValue(String.class);
                             String firstNameFromDatabase = userSnapshot.child("firstName").getValue(String.class);
@@ -144,6 +159,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
                                 userList.add(tutor); // Add the entry to the request list
                             }
                         }
+                        */
                     }
                 }
 
