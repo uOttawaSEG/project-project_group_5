@@ -134,7 +134,9 @@ public class TutorRegistrationActivity extends AppCompatActivity {
             // If all inputs are valid and filled, then store all
             // the information within the users tree of the database
             rootNode = FirebaseDatabase.getInstance();
-            reference = rootNode.getReference("users");
+            // reference = rootNode.getReference("users");
+            reference = rootNode.getReference("usersS");
+            //**
 
             // Create an object with the entered information
             // UserRegistrationInfoDatabase tutorRegistration = new UserRegistrationInfoDatabase(firstNameInput, lastNameInput, emailInput, passwordInput, numberInput,"", highestDegreeInput, coursesOfferedInput, "Tutor");
@@ -143,13 +145,15 @@ public class TutorRegistrationActivity extends AppCompatActivity {
             Tutor tutorRegistration = new Tutor(firstNameInput, lastNameInput, emailInput, passwordInput, numberInput, highestDegreeInput, coursesOfferedInput);
 
             // Create a new user entry for the newly registered tutor and assign their phone number as their key (since phone numbers are unique for each individual)
-            reference.child(numberInput).setValue(tutorRegistration);
+            // reference.child(numberInput).setValue(tutorRegistration);
 
-            // Set the next page as the welcome page
+            // Create a new user entry for the newly registered tutor and assign their email as their key (since emails are unique for each individual and setting it as the key as opposed to the phone number simplifies the login function)
+            reference.child(emailInput).setValue(tutorRegistration);
+
+            // Set the next page as the pending page (since they just registered their request could not have been accepted yet)
             Intent intent = new Intent(TutorRegistrationActivity.this, RegistrationPendingPageActivity.class);
 
-            // Pass the user's role to the next page so it can be displayed there
-            // Send the user to the welcome page
+            // Send the user to the pending page
             startActivity(intent);
         }
     }
