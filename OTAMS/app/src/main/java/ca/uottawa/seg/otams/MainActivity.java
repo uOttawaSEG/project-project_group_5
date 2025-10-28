@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                             String roleFromDatabase = userSnapshot.child("role").getValue(String.class);
 
                             // Send the user to a different page upon successfully logging in depending on what type of user (role) they are
-                            if (Administrator.role.equals(roleFromDatabase)) {
+                            if ("Administrator".equals(roleFromDatabase)) {
                                 // If the user is an administrator then send them to a unique welcome page
                                 Intent intent = new Intent(MainActivity.this, WelcomeAdminPageActivity.class);
                                 // Intent intent = new Intent(MainActivity.this, AdminDashboardActivity.class);

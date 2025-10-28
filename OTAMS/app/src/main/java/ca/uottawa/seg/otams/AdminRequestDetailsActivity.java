@@ -47,13 +47,13 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         String requestPhoneNumber = intent.getStringExtra("phoneNumber");
 
         // Different fields are populated depending on whether the request is from a student or tutor
-        if (Student.role.equals(requestRole)) {
+        if ("Student".equals(requestRole)) {
             String requestProgram = intent.getStringExtra("program");
 
             programOrDegree.setText("Program: " + requestProgram);
             coursesOffered.setText(""); // Set courses offered field to blank since a student does not fill this field out during registration
         }
-        else if (Tutor.role.equals(requestRole)) {
+        else if ("Tutor".equals(requestRole)) {
             String requestDegree = intent.getStringExtra("highestDegree");
             String requestCoursesOffered = intent.getStringExtra("coursesOffered");
 
