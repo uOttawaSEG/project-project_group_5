@@ -2,9 +2,19 @@ package ca.uottawa.seg.otams;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
-public class WelcomeAdminPageActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class WelcomeAdminPageActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_admin_welcome);
+    }
     public void onClickDashboard(View view) {
         int pressID=view.getId();
 
