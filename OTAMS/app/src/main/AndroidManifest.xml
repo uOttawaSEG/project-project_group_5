@@ -25,6 +25,10 @@
             android:exported="false" />
         <activity android:name=".AdminDashboardActivity"
             android:exported="false" />
+        <activity android:name=".RegistrationPendingPageActivity"
+            android:exported="false" />
+        <activity android:name=".RegistrationRejectedPageActivity"
+            android:exported="false" />
         <activity android:name=".AdminRequestDetailsActivity"
             android:exported="false" />
         <activity
@@ -36,10 +40,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegistrationPendingPageActivity"
-            android:exported="false" />
-        <activity android:name=".RegistrationRejectedPageActivity"
-            android:exported="false" />
+
 
 
     </application>

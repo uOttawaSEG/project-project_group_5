@@ -115,31 +115,89 @@ public class MainActivity extends AppCompatActivity {
                                 // Intent intent = new Intent(MainActivity.this, AdminDashboardActivity.class);
                                 startActivity(intent);
 
-                            } else {
+                            } else if (Student.role.equals(roleFromDatabase)) {
                                 //Stores user status
-                                User user = userSnapshot.getValue(User.class);
-                                String statusFromDB = user.getRequestStatus().toString();
+                                // User user = userSnapshot.getValue(User.class);
+                                String statusFromDB =  userSnapshot.child("requestStatus").getValue(String.class);
                                 //Automatically send to welcome page
-                                Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
+                                // Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
+
+                                // Set the next page as the welcome page
 
                                 //Sends users to appropriate status page
                                 if (statusFromDB.equals("PENDING")) {
-                                    // Set the next page as the pending page
-                                    intent = new Intent(MainActivity.this, RegistrationPendingPageActivity.class);
 
+                                    // Set the next page as the welcome page
+                                    Intent intent = new Intent(MainActivity.this, RegistrationPendingPageActivity.class);
+
+                                    // Pass the user's role to the next page so it can be displayed there
+                                    intent.putExtra("role", roleFromDatabase);
+
+                                    // Send the user to the welcome page
+                                    startActivity(intent);
                                 } else if (statusFromDB.equals("REJECTED")) {
                                     // Set the next page as the rejected page
-                                    intent = new Intent(MainActivity.this, RegistrationRejectedPageActivity.class);
+                                    Intent intent = new Intent(MainActivity.this, RegistrationRejectedPageActivity.class);
+                                    // Pass the user's role to the next page so it can be displayed there
+                                    intent.putExtra("role", roleFromDatabase);
+
+                                    // Send the user to the appropriate page
+                                    startActivity(intent);
                                 }
                                 else if (statusFromDB.equals("APPROVED")) {
                                     // Set the next page as the rejected page
-                                    intent = new Intent(MainActivity.this, WelcomePageActivity.class);
-                                }
-                                // Pass the user's role to the next page so it can be displayed there
-                                intent.putExtra("role", roleFromDatabase);
+                                    Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
 
-                                // Send the user to the appropriate page
-                                startActivity(intent);
+                                    // Pass the user's role to the next page so it can be displayed there
+                                    intent.putExtra("role", roleFromDatabase);
+
+                                    // Send the user to the appropriate page
+                                    startActivity(intent);
+                                }
+
+
+
+
+                            }
+                            else if (Tutor.role.equals(roleFromDatabase)) {
+                                //Stores user status
+                                // User user = userSnapshot.getValue(User.class);
+                                String statusFromDB =  userSnapshot.child("requestStatus").getValue(String.class);
+                                //Automatically send to welcome page
+                                // Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
+
+                                // Set the next page as the welcome page
+
+                                //Sends users to appropriate status page
+                                if (statusFromDB.equals("PENDING")) {
+
+                                    // Set the next page as the welcome page
+                                    Intent intent = new Intent(MainActivity.this, RegistrationPendingPageActivity.class);
+
+                                    // Pass the user's role to the next page so it can be displayed there
+                                    intent.putExtra("role", roleFromDatabase);
+
+                                    // Send the user to the welcome page
+                                    startActivity(intent);
+                                } else if (statusFromDB.equals("REJECTED")) {
+                                    // Set the next page as the rejected page
+                                    Intent intent = new Intent(MainActivity.this, RegistrationRejectedPageActivity.class);
+                                    // Pass the user's role to the next page so it can be displayed there
+                                    intent.putExtra("role", roleFromDatabase);
+
+                                    // Send the user to the appropriate page
+                                    startActivity(intent);
+                                }
+                                else if (statusFromDB.equals("APPROVED")) {
+                                    // Set the next page as the rejected page
+                                    Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
+
+                                    // Pass the user's role to the next page so it can be displayed there
+                                    intent.putExtra("role", roleFromDatabase);
+
+                                    // Send the user to the appropriate page
+                                    startActivity(intent);
+                                }
                             }
                         }
                         else {
