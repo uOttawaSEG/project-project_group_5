@@ -141,12 +141,10 @@ public class StudentRegistrationActivity extends AppCompatActivity {
 
             // setContentView(R.layout.activity_welcome_page);//redirect to welcome page
 
-            // Set the next page as the welcome page
+            // Set the next page to the pending page
             Intent intent = new Intent(StudentRegistrationActivity.this, RegistrationPendingPageActivity.class);
 
             // Pass the user's role to the next page so it can be displayed there
-            intent.putExtra("role", "Student");
-
             // Send the user to the welcome page
             startActivity(intent);
         }
