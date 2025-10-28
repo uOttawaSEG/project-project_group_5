@@ -4,11 +4,14 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="yz9YgFM1KgQpYRr3abF9-1" value="&lt;i&gt;User&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="340" y="240" width="120" height="30" as="geometry" />
+        <mxCell id="qgf5gjJ2WeGeCrYgSPa0-1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="yz9YgFM1KgQpYRr3abF9-1" target="yz9YgFM1KgQpYRr3abF9-2">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="yz9YgFM1KgQpYRr3abF9-2" value="&lt;div&gt;+ firstName: String&lt;/div&gt;&lt;div&gt;+ lastName: String&lt;/div&gt;&lt;div&gt;+ email: String&lt;/div&gt;&lt;div&gt;+ passowrd: String&lt;/div&gt;&lt;div&gt;+ role: String&lt;/div&gt;&lt;div&gt;+ number: int&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
-          <mxGeometry x="340" y="270" width="120" height="100" as="geometry" />
+        <mxCell id="yz9YgFM1KgQpYRr3abF9-1" value="&lt;i&gt;User&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="340" y="200" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="yz9YgFM1KgQpYRr3abF9-2" value="&lt;div&gt;-&amp;nbsp; firstName: String&lt;/div&gt;&lt;div&gt;- lastName: String&lt;/div&gt;&lt;div&gt;- email: String&lt;/div&gt;&lt;div&gt;- passowrd: String&lt;/div&gt;&lt;div&gt;- role: String&lt;/div&gt;&lt;div&gt;- number: int&lt;/div&gt;&lt;div&gt;- requestStatus: RegistrationStatus&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
+          <mxGeometry x="340" y="230" width="150" height="140" as="geometry" />
         </mxCell>
         <mxCell id="yz9YgFM1KgQpYRr3abF9-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" parent="1" source="yz9YgFM1KgQpYRr3abF9-3" target="yz9YgFM1KgQpYRr3abF9-2" edge="1">
           <mxGeometry relative="1" as="geometry" />
