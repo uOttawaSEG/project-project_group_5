@@ -33,7 +33,7 @@
     <string name="registration_rejected_status">Status: registration approval REJECTED</string>
     <string name="registration_rejected">The administrator has rejected your registration request</string>
     <string name="registration_rejected_contact">Contact the administrator if you wish to resolve the matter</string>
-    <string name="registration_number">Contact number: 123–456–7890</string>
+    <string name="registration_number">Contact number: 012–345–6789</string>
 
     <string name="registration_pending_status">Status: registration approval PENDING</string>
     <string name="registration_pending">The administrator has not yet processed your registration request</string>
