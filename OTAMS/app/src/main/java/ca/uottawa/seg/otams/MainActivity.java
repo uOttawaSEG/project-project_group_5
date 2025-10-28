@@ -118,15 +118,16 @@ public class MainActivity extends AppCompatActivity {
 
                             } else {
                                 //Stores user status
-                                String statusFromDB = userSnapshot.child("status").getValue(String.class);
+                                User user = userSnapshot.getValue(User.class);
+                                RegistrationStatus statusFromDB = user.getRequestStatus();
                                 //Automatically send to welcome page
                                 Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
 
                                 //Sends users to appropriate status page
-                                if (statusFromDB.equals("pending")) {
+                                if (statusFromDB == RegistrationStatus.PENDING) {
                                     // Set the next page as the pending page
                                     intent = new Intent(MainActivity.this, RegistrationPendingPageActivity.class);
-                                } else if (statusFromDB.equals("rejected")) {
+                                } else if (statusFromDB == RegistrationStatus.REJECTED) {
                                     // Set the next page as the rejected page
                                     intent = new Intent(MainActivity.this, RegistrationRejectedPageActivity.class);
                                 }
