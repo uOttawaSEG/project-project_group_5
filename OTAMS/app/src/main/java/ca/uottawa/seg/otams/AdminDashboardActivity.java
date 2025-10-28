@@ -1,6 +1,5 @@
 package ca.uottawa.seg.otams;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -14,7 +13,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,7 +23,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
@@ -142,13 +139,13 @@ public class AdminDashboardActivity extends AppCompatActivity {
                             String phoneNumberFromDatabase = userSnapshot.child("phoneNumber").getValue(String.class);
 
                             // Fetch additional information depending on whether the request is to become a student or tutor
-                            if (roleFromDatabase.equals("Student")) {
+                            if ("Student".equals(roleFromDatabase)) {
                                 String programFromDatabase = userSnapshot.child("program").getValue(String.class);
 
                                 // Create a student entry with the necessary information from the database
                                 Student student = new Student(firstNameFromDatabase, lastNameFromDatabase, emailFromDatabase, "", phoneNumberFromDatabase, programFromDatabase);
                                 userList.add(student); // Add the entry to the request list
-                            } else if (roleFromDatabase.equals("Tutor")) {
+                            } else if ("Tutor".equals(roleFromDatabase)) {
                                 String highestDegreeFromDatabase = userSnapshot.child("highestDegree").getValue(String.class);
                                 String coursesOfferedFromDatabase = userSnapshot.child("coursesOffered").getValue(String.class);
 
