@@ -119,17 +119,22 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 //Stores user status
                                 User user = userSnapshot.getValue(User.class);
-                                RegistrationStatus statusFromDB = user.getRequestStatus();
+                                String statusFromDB = user.getRequestStatus().toString();
                                 //Automatically send to welcome page
                                 Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
 
                                 //Sends users to appropriate status page
-                                if (statusFromDB == RegistrationStatus.PENDING) {
+                                if (statusFromDB.equals("PENDING")) {
                                     // Set the next page as the pending page
                                     intent = new Intent(MainActivity.this, RegistrationPendingPageActivity.class);
-                                } else if (statusFromDB == RegistrationStatus.REJECTED) {
+
+                                } else if (statusFromDB.equals("REJECTED")) {
                                     // Set the next page as the rejected page
                                     intent = new Intent(MainActivity.this, RegistrationRejectedPageActivity.class);
+                                }
+                                else if (statusFromDB.equals("APPROVED")) {
+                                    // Set the next page as the rejected page
+                                    intent = new Intent(MainActivity.this, WelcomePageActivity.class);
                                 }
                                 // Pass the user's role to the next page so it can be displayed there
                                 intent.putExtra("role", roleFromDatabase);
