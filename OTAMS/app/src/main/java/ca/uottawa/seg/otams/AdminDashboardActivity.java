@@ -102,10 +102,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
         // Store all users listed in the database with the specified registration status
         Query searchForUsers = reference.orderByChild("requestStatus").equalTo(registrationStatus.toString());
 
-        // searchForUsers.addListenerForSingleValueEvent(new ValueEventListener()
-
-        // Checks for changes to the database in real time
-        searchForUsers.addValueEventListener(new ValueEventListener() {
+        // Checks for changes to the database whenever returning to the dashboard
+        searchForUsers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<User> userList = new ArrayList<>(); // List containing the details of every user who attempted to register (i.e. with request status of pending or rejected)
@@ -174,10 +172,16 @@ public class AdminDashboardActivity extends AppCompatActivity {
     }
 
     private void populateRecyclerView(List<User> usersList) {
-        RecyclerView rv = this.recycleView;
-        rv.setLayoutManager(new LinearLayoutManager(this));
-        ula = new UserListAdapter(usersList);
-        rv.setAdapter(ula);
+        if (ula == null) {
+            // If the inbox is being populated for the first time then create and adapter for it
+            RecyclerView rv = this.recycleView;
+            rv.setLayoutManager(new LinearLayoutManager(this));
+            ula = new UserListAdapter(usersList);
+            rv.setAdapter(ula);
+        } else {
+            // If the adapter already exists then just update it instead of creating a new one
+            ula.updateData(usersList);
+        }
     }
 
     public void onClickViewRequestDetails(View view) {
@@ -203,5 +207,17 @@ public class AdminDashboardActivity extends AppCompatActivity {
             // Send the user to the login page
             startActivity(intent);
         }
+    }
+
+    // Refresh the RecyclerView (request inbox) whenever the administrator returns back to the dashboard
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Determines which tab (Pending Requests or Rejected Requests) the administrator is currently on in the dashboard
+        TabLayout tb = findViewById(R.id.admin_tab_layout);
+
+        // Refreshes the request inbox for the selected tab
+        filterUserDataBy(getRegistrationStatus(tb));
     }
 }

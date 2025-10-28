@@ -111,8 +111,9 @@ public class MainActivity extends AppCompatActivity {
                             String roleFromDatabase = userSnapshot.child("role").getValue(String.class);
 
                             if (Administrator.role.equals(roleFromDatabase)) {
-                                // If the user is an administrator then send them the the admin dashboard
-                                Intent intent = new Intent(MainActivity.this, AdminDashboardActivity.class);
+                                // If the user is an administrator then send them to a unique welcome page
+                                Intent intent = new Intent(MainActivity.this, WelcomeAdminPageActivity.class);
+                                // Intent intent = new Intent(MainActivity.this, AdminDashboardActivity.class);
                                 startActivity(intent);
 
                             } else {

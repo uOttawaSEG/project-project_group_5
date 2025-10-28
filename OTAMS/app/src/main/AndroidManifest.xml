@@ -18,6 +18,9 @@
             android:name=".TutorRegistrationActivity"
             android:exported="false" />
         <activity
+            android:name=".WelcomeAdminPageActivity"
+            android:exported="false" />
+        <activity
             android:name=".WelcomePageActivity"
             android:exported="false" />
         <activity android:name=".AdminDashboardActivity"
