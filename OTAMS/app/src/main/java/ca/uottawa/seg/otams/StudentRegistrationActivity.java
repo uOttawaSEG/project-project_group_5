@@ -128,9 +128,7 @@ public class StudentRegistrationActivity extends AppCompatActivity {
             // If all inputs are valid and filled, then store all
             // the information within the users tree of the database
             rootNode = FirebaseDatabase.getInstance();
-            // reference = rootNode.getReference("users");
-            reference = rootNode.getReference("usersS");
-            //**
+            reference = rootNode.getReference("users");
 
             // Create an object with the entered information
             // UserRegistrationInfoDatabase studentRegistration = new UserRegistrationInfoDatabase(firstNameInput, lastNameInput, emailInput, passwordInput, numberInput, programInput, "", "", "Student");
@@ -139,10 +137,7 @@ public class StudentRegistrationActivity extends AppCompatActivity {
             Student studentRegistration = new Student(firstNameInput, lastNameInput, emailInput, passwordInput, numberInput, programInput);
 
             // Create a new user entry for the newly registered student and assign their phone number as their key (since phone numbers are unique for each individual)
-            // reference.child(numberInput).setValue(studentRegistration);
-
-            // Create a new user entry for the newly registered student and assign their email as their key (since emails are unique for each individual and setting it as the key as opposed to the phone number simplifies the login function)
-            reference.child(emailInput).setValue(studentRegistration);
+            reference.child(numberInput).setValue(studentRegistration);
 
             // setContentView(R.layout.activity_welcome_page);
 

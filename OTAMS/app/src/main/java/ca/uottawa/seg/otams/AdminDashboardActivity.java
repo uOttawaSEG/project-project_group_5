@@ -94,9 +94,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         */
 
         // Grab all users' info from the database
-        // DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("usersS");
-        //**
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
 
         // Store all users listed in the database with the specified registration status
         Query searchForUsers = reference.orderByChild("requestStatus").equalTo(registrationStatus.toString());

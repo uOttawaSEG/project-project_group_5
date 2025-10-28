@@ -44,14 +44,14 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         String requestRole = intent.getStringExtra("role");
         String requestPhoneNumber = intent.getStringExtra("phoneNumber");
         // Different fields are populated depending on whether the request is from a student or tutor
-        if ("Student".equals(requestRole)) {
+        if (Student.role.equals(requestRole)) {
             String requestProgram = intent.getStringExtra("program");
             role.setText("Student");
 
             programOrDegree.setText("Program: " + requestProgram);
             coursesOffered.setText(""); // Set courses offered field to blank since a student does not fill this field out during registration
         }
-        else if ("Tutor".equals(requestRole)) {
+        else if (Tutor.role.equals(requestRole)) {
             String requestDegree = intent.getStringExtra("highestDegree");
             String requestCoursesOffered = intent.getStringExtra("coursesOffered");
             role.setText("Tutor");
@@ -140,19 +140,13 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
 
     public void setRequestStatus(RegistrationStatus requestStatus) {
         // Grab all users' info from the database
-        // DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("usersS");
-        //**
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
 
         // Determine the id (phone number) of the user entry the request was from
-        // TextView userIdTextView = findViewById(R.id.detailPhoneNumber);
-        // String userId = ((TextView) findViewById(R.id.detailPhone)).toString();
-
-        // Determine the id (email) of the user entry the request was from
-        TextView userIdTextView = findViewById(R.id.detailEmail);
+        TextView userIdTextView = findViewById(R.id.detailPhoneNumber);
         String userId = userIdTextView.getText().toString();
 
-        // Find the user in the database that had its request status changed (use the email since that is the id for every entry in the database) and update its status accordingly
+        // Find the user in the database that had its request status changed (use the phone number since that is the id for every entry in the database) and update its status accordingly
         reference.child(userId).child("requestStatus").setValue(requestStatus.toString());
     }
 }
