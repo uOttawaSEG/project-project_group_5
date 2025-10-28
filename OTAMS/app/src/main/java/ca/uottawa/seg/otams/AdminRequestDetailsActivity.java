@@ -43,10 +43,10 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         String requestEmail = intent.getStringExtra("email");
         String requestRole = intent.getStringExtra("role");
         String requestPhoneNumber = intent.getStringExtra("phoneNumber");
-
         // Different fields are populated depending on whether the request is from a student or tutor
         if ("Student".equals(requestRole)) {
             String requestProgram = intent.getStringExtra("program");
+            role.setText("Student");
 
             programOrDegree.setText("Program: " + requestProgram);
             coursesOffered.setText(""); // Set courses offered field to blank since a student does not fill this field out during registration
@@ -54,6 +54,7 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         else if ("Tutor".equals(requestRole)) {
             String requestDegree = intent.getStringExtra("highestDegree");
             String requestCoursesOffered = intent.getStringExtra("coursesOffered");
+            role.setText("Tutor");
 
             programOrDegree.setText("Highest degree: " + requestDegree);
             coursesOffered.setText("Courses offered: " + requestCoursesOffered);
@@ -63,7 +64,6 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         firstName.setText(requestFirstName);
         lastName.setText(requestLastName);
         email.setText(requestEmail);
-        role.setText(requestRole);
         phoneNumber.setText(requestPhoneNumber);
     }
 
