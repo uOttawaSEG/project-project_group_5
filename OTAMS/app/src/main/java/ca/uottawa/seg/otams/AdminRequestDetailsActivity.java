@@ -1,24 +1,25 @@
 package ca.uottawa.seg.otams;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
+import ca.uottawa.seg.otams.email.EmailTask;
 
 public class AdminRequestDetailsActivity extends AppCompatActivity {
+
+    private TextView firstName;
+    private TextView lastName;
+    private TextView email;
+    private TextView role;
+    private TextView phoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,13 +27,13 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_request_details);
 
         // Text fields that need to be populated with the specified request's info
-        TextView firstName = (TextView) findViewById(R.id.detailFirstName);
-        TextView lastName = (TextView) findViewById(R.id.detailLastName);
-        TextView email = (TextView) findViewById(R.id.detailEmail);
-        TextView role = (TextView) findViewById(R.id.detailRole);
-        TextView phoneNumber = (TextView) findViewById(R.id.detailPhoneNumber);
-        TextView programOrDegree = (TextView) findViewById(R.id.detailProgramOrDegree);
-        TextView coursesOffered = (TextView) findViewById(R.id.detailCoursesOffered);
+        firstName = findViewById(R.id.detailFirstName);
+        lastName = findViewById(R.id.detailLastName);
+        email = findViewById(R.id.detailEmail);
+        role = findViewById(R.id.detailRole);
+        phoneNumber = findViewById(R.id.detailPhoneNumber);
+        TextView programOrDegree = findViewById(R.id.detailProgramOrDegree);
+        TextView coursesOffered = findViewById(R.id.detailCoursesOffered);
 
         // Stores the info about the request that was passed from the previous activity
         Intent intent = getIntent();
@@ -44,13 +45,13 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         String requestPhoneNumber = intent.getStringExtra("phoneNumber");
 
         // Different fields are populated depending on whether the request is from a student or tutor
-        if (requestRole.equals("Student")) {
+        if ("Student".equals(requestRole)) {
             String requestProgram = intent.getStringExtra("program");
 
             programOrDegree.setText("Program: " + requestProgram);
             coursesOffered.setText(""); // Set courses offered field to blank since a student does not fill this field out during registration
         }
-        else if (requestRole.equals("Tutor")) {
+        else if ("Tutor".equals(requestRole)) {
             String requestDegree = intent.getStringExtra("highestDegree");
             String requestCoursesOffered = intent.getStringExtra("coursesOffered");
 
@@ -66,14 +67,46 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         phoneNumber.setText(requestPhoneNumber);
     }
 
+    private void sendEmail(RegistrationStatus rs) {
+        EmailTask.Builder builder = EmailTask.builder();
+        if (rs == RegistrationStatus.APPROVED) {
+            builder.setBody("Your registration request has been approved");
+            builder.setSubject("APPROVED!");
+        }
+        if (rs == RegistrationStatus.REJECTED) {
+            builder.setBody("Your registration request has been rejected");
+            builder.setSubject("REJECTED!");
+        }
+        builder.setTo(email.getText().toString());
+        builder.setCallback(new EmailTask.Callback() {
+            @Override
+            public void onSuccess() {
+                runOnUiThread(() -> {
+                    Toast.makeText(AdminRequestDetailsActivity.this,
+                            "Email sent successfully!", Toast.LENGTH_LONG).show();
+                });
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                runOnUiThread(() -> {
+                    Toast.makeText(AdminRequestDetailsActivity.this,
+                            "Failed to send email: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                });
+            }
+        });
+        builder.build().send();
+    }
+
     public void onClickApprove(View view) {
         int pressID=view.getId();
-
         // Check if the administrator approved the request
         if (pressID == R.id.approveButton) {
             setRequestStatus(RegistrationStatus.APPROVED); // Set the status of the request to approved if they did
-
-            finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
+            sendEmail(RegistrationStatus.APPROVED);
+            // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
+            finish();
         }
     }
 
@@ -83,7 +116,7 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         // Check if the administrator rejected the request
         if (pressID == R.id.rejectButton) {
             setRequestStatus(RegistrationStatus.REJECTED); // Set the status of the request to rejected if they did
-
+            sendEmail(RegistrationStatus.REJECTED);
             finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
         }
     }

@@ -33,17 +33,24 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    packaging {
+        resources {
+            excludes += setOf("META-INF/NOTICE.md", "META-INF/LICENSE.md")
+        }
+    }
 }
 
 dependencies {
     // Importing the Firebase BoM
-    implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.android.mail)
+    implementation(libs.android.activation)
 
     // TODO: Add the dependencies for Firebase products you want to use
     // implementation("com.google.firebase:firebase-analytics")
     // Dependencies for realtime database
     implementation(libs.firebase.database)
-    implementation("com.google.firebase:firebase-database:22.0.1")
+    implementation(libs.firebase.database)
 
     implementation(libs.appcompat)
     implementation(libs.material)

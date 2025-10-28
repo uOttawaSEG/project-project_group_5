@@ -10,7 +10,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import android.view.View;
 import android.content.Intent;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.firebase.database.DataSnapshot;
