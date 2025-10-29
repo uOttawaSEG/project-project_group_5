@@ -16,7 +16,7 @@ jobs:
       
       - restore_cache:
           keys:
-            - gradle-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+            - gradle-{{ checksum "build.gradle.kts" }}-{{ checksum "app/build.gradle.kts" }}
             - gradle-
       
       - run:
@@ -30,7 +30,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: gradle-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+          key: gradle-{{ checksum "build.gradle.kts" }}-{{ checksum "app/build.gradle.kts" }}
 
       - run:
           name: Generate APK
