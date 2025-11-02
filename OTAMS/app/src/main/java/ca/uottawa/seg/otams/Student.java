@@ -1,9 +1,6 @@
 package ca.uottawa.seg.otams;
 
 public class Student extends User {
-    //Class variables
-    public static String role = "Student";
-
     // Instance variable
     public String program;
 

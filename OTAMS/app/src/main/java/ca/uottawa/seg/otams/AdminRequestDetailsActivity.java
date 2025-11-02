@@ -20,6 +20,8 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
     private TextView email;
     private TextView role;
     private TextView phoneNumber;
+    private TextView programOrDegree;
+    private TextView coursesOffered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +34,8 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         email = findViewById(R.id.detailEmail);
         role = findViewById(R.id.detailRole);
         phoneNumber = findViewById(R.id.detailPhoneNumber);
-        TextView programOrDegree = findViewById(R.id.detailProgramOrDegree);
-        TextView coursesOffered = findViewById(R.id.detailCoursesOffered);
+        programOrDegree = findViewById(R.id.detailProgramOrDegree);
+        coursesOffered = findViewById(R.id.detailCoursesOffered);
 
         // Stores the info about the request that was passed from the previous activity
         Intent intent = getIntent();
@@ -43,10 +45,10 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         String requestEmail = intent.getStringExtra("email");
         String requestRole = intent.getStringExtra("role");
         String requestPhoneNumber = intent.getStringExtra("phoneNumber");
+
         // Different fields are populated depending on whether the request is from a student or tutor
         if ("Student".equals(requestRole)) {
             String requestProgram = intent.getStringExtra("program");
-            role.setText("Student");
 
             programOrDegree.setText("Program: " + requestProgram);
             coursesOffered.setText(""); // Set courses offered field to blank since a student does not fill this field out during registration
@@ -54,7 +56,6 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         else if ("Tutor".equals(requestRole)) {
             String requestDegree = intent.getStringExtra("highestDegree");
             String requestCoursesOffered = intent.getStringExtra("coursesOffered");
-            role.setText("Tutor");
 
             programOrDegree.setText("Highest degree: " + requestDegree);
             coursesOffered.setText("Courses offered: " + requestCoursesOffered);
@@ -64,6 +65,7 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         firstName.setText(requestFirstName);
         lastName.setText(requestLastName);
         email.setText(requestEmail);
+        role.setText(requestRole);
         phoneNumber.setText(requestPhoneNumber);
     }
 
@@ -145,7 +147,6 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         // Determine the id (phone number) of the user entry the request was from
         TextView userIdTextView = findViewById(R.id.detailPhoneNumber);
         String userId = userIdTextView.getText().toString();
-        // String userId = ((TextView) findViewById(R.id.detailPhone)).toString();
 
         // Find the user in the database that had its request status changed (use the phone number since that is the id for every entry in the database) and update its status accordingly
         reference.child(userId).child("requestStatus").setValue(requestStatus.toString());

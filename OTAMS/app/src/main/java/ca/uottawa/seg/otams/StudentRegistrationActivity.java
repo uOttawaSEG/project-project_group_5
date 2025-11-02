@@ -139,13 +139,12 @@ public class StudentRegistrationActivity extends AppCompatActivity {
             // Create a new user entry for the newly registered student and assign their phone number as their key (since phone numbers are unique for each individual)
             reference.child(numberInput).setValue(studentRegistration);
 
-            // setContentView(R.layout.activity_welcome_page);//redirect to welcome page
+            // setContentView(R.layout.activity_welcome_page);
 
-            // Set the next page to the pending page
+            // Set the next page as the pending page (since they just registered their request could not have been accepted yet)
             Intent intent = new Intent(StudentRegistrationActivity.this, RegistrationPendingPageActivity.class);
 
-            // Pass the user's role to the next page so it can be displayed there
-            // Send the user to the welcome page
+            // Send the user to the pending page
             startActivity(intent);
         }
     }

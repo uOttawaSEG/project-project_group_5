@@ -1,10 +1,8 @@
 package ca.uottawa.seg.otams;
 
 public abstract class User {
-    //Class variables
+    // Instance variables
     private String role; // Determines whether the user is a student or tutor
-
-    //Instance variables
     private String firstName;
     private String lastName;
     private String email;

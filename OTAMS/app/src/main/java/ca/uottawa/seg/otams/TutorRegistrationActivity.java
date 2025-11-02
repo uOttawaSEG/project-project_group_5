@@ -145,11 +145,10 @@ public class TutorRegistrationActivity extends AppCompatActivity {
             // Create a new user entry for the newly registered tutor and assign their phone number as their key (since phone numbers are unique for each individual)
             reference.child(numberInput).setValue(tutorRegistration);
 
-            // Set the next page as the welcome page
+            // Set the next page as the pending page (since they just registered their request could not have been accepted yet)
             Intent intent = new Intent(TutorRegistrationActivity.this, RegistrationPendingPageActivity.class);
 
-            // Pass the user's role to the next page so it can be displayed there
-            // Send the user to the welcome page
+            // Send the user to the pending page
             startActivity(intent);
         }
     }
