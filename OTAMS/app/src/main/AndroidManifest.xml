@@ -31,6 +31,13 @@
             android:exported="false" />
         <activity android:name=".AdminRequestDetailsActivity"
             android:exported="false" />
+
+        <activity android:name=".TutorDashboardActivity"
+            android:exported="false" />
+        <activity android:name=".WelcomeTutorPageActivity"
+            android:exported="false" />
+        <activity android:name=".ManageAvailibilityActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true" >

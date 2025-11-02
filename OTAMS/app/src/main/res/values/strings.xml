@@ -42,4 +42,17 @@
     <string name="registration_request_details">Registration Request Details</string>
 
 
+    <string name="tutor_dashboard_button">Dashboard</string>
+    <string name="tutor_log_off">Log Off</string>
+
+
+    <string name="logged_in_tutor">Tutor</string>
+    <string name="tutor_dashboard">Tutor Dashboard</string>
+    <string name="upcoming_requests">Upcoming Requests</string>
+    <string name="past_sessions">Past Sessions</string>
+
+    <string name="manage_availibility">Manage Availibility</string>
+
+
+
 </resources>
