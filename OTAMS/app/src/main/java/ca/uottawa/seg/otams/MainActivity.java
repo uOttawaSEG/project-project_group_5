@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 else if (statusFromDB.equals("APPROVED")) {
                                     // Set the next page as the rejected page
-                                    Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
+                                    Intent intent = new Intent(MainActivity.this, WelcomeTutorPageActivity.class);
 
                                     // Pass the user's role to the next page so it can be displayed there
                                     intent.putExtra("role", roleFromDatabase);
