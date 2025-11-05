@@ -3,6 +3,7 @@ package ca.uottawa.seg.otams;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CalendarView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,11 +11,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import android.widget.CalendarView;
+
 
 public class ManageAvailibilityActivity extends AppCompatActivity {
     //private RegistrationStatus rs = null;
     private RecyclerView recycleView;
     private UserListAdapter ula;
+
+    CalendarView calendarView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +32,16 @@ public class ManageAvailibilityActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        calendarView=findViewById(R.id.calendarView);
+        calendarView.setDate(System.currentTimeMillis());//sets date to current time
+        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+                String date=dayOfMonth+"/"+(month+1)+"/"+year;
+            }
         });
     }
 
