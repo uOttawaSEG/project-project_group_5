@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-public class WelcomeTutorPageActivity extends Activity{
+import androidx.appcompat.app.AppCompatActivity;
+
+public class WelcomeTutorPageActivity extends AppCompatActivity {
 
 
     @Override
