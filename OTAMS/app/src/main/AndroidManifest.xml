@@ -36,7 +36,7 @@
             android:exported="false" />
         <activity android:name=".WelcomeTutorPageActivity"
             android:exported="false" />
-        <activity android:name=".ManageAvailibilityActivity"
+        <activity android:name=".ManageAvailabilityActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

@@ -67,14 +67,14 @@
         android:scrollbars="vertical" />
 
     <Button
-        android:id="@+id/button_manage_availibility"
+        android:id="@+id/button_manage_availability"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="93dp"
-        android:onClick="onClickManageAvailibility"
+        android:onClick="onClickManageAvailability"
         android:padding="10dp"
-        android:text="@string/manage_availibility"
+        android:text="@string/manage_availability"
         android:textSize="20sp"
         android:textStyle="bold" />
 
