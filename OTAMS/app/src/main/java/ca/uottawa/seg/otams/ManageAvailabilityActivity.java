@@ -223,6 +223,8 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
         if (startTime == null || endTime == null) {
             c.onFailure(null);
         }
+
+        //TODO: please add Firebase code here
     }
 
     public void onClickLogOff(View view) {
