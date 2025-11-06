@@ -189,7 +189,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
         );
         tsocl.setAdapters();
         tsocl.addListeners();
-        Button setAvailabilityButton = findViewById(R.id.button_set_availability);
+        Button setAvailabilityButton = findViewById(R.id.manage_set_availability);
 
 
         setAvailabilityButton.setOnClickListener(new View.OnClickListener() {
