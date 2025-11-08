@@ -43,13 +43,13 @@
             android:id="@+id/pending_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/pending_requests" />
+            android:text="@string/pending_session_requests" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/upcoming_requests_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/upcoming_requests" />
+            android:text="@string/upcoming_sessions" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/past_sessions_tab"

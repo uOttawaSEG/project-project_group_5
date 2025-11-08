@@ -87,7 +87,6 @@
                     android:gravity="center_vertical"
                     android:layout_marginBottom="24dp">
 
-
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -145,6 +144,18 @@
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:layout_marginTop="8dp"
+                    android:padding="12dp"
+                    android:background="@drawable/rounded_button_purple" />
+
+                <Button
+                    android:id="@+id/back"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#673AB7"
+                    android:text="@string/back"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:layout_marginTop="18dp"
                     android:padding="12dp"
                     android:background="@drawable/rounded_button_purple" />
             </LinearLayout>
