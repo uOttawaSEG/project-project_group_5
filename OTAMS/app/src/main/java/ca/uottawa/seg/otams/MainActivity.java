@@ -239,10 +239,6 @@ public class MainActivity extends AppCompatActivity {
                                     // Send the user to the appropriate page
                                     startActivity(intent);
                                 }
-
-
-
-
                             }
                             else if ("Tutor".equals(roleFromDatabase)) {
                                 //Stores user status
@@ -277,8 +273,15 @@ public class MainActivity extends AppCompatActivity {
                                     // Set the next page as the rejected page
                                     Intent intent = new Intent(MainActivity.this, WelcomeTutorPageActivity.class);
 
+                                    // No longer needed since tutor's now have a unique welcome page
                                     // Pass the user's role to the next page so it can be displayed there
-                                    intent.putExtra("role", roleFromDatabase);
+                                    // intent.putExtra("role", roleFromDatabase);
+
+                                    // Fetch the phone number from the database of the user trying to login
+                                    String phoneNumberFromDatabase =  userSnapshot.child("phoneNumber").getValue(String.class);
+
+                                    // Pass the user's phone number to the next page so that they can quickly be found in the database when on future pages (since the phone number is the key)
+                                    intent.putExtra("phoneNumber", phoneNumberFromDatabase);
 
                                     // Send the user to the appropriate page
                                     startActivity(intent);

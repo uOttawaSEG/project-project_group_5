@@ -34,6 +34,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
 
     private CalendarView calendarView;
     private AtomicBoolean isUpdating = new AtomicBoolean(false);
+    String tutorPhoneNumber; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
 
     private static Calendar getMidnightCalendar() {
         Calendar calendar = Calendar.getInstance();
@@ -170,6 +171,10 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_manage_availability);
 
+        // Stores the phone number of the tutor that was passed from the previous activity (used when creating a session object)
+        Intent intent = getIntent();
+        tutorPhoneNumber = intent.getStringExtra("phoneNumber");
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.back_button), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -225,6 +230,13 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
         }
 
         //TODO: please add Firebase code here
+
+
+        /*
+        // Pass the tutor's phone number to the next page so that the tutor can quickly be identified and found in the database (since the phone number is the key)
+            intent.putExtra("phoneNumber", tutorPhoneNumber);
+         */
+
     }
 
     public void onClickLogOff(View view) {

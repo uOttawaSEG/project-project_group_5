@@ -10,11 +10,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class WelcomeTutorPageActivity extends AppCompatActivity {
 
+    String tutorPhoneNumber; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutor_welcome);
+
+        // Stores the phone number of the tutor that logged in that was passed from the previous activity
+        Intent intent = getIntent();
+        tutorPhoneNumber = intent.getStringExtra("phoneNumber");
     }
     public void onClickDashboard(View view) {
         int pressID=view.getId();
@@ -24,7 +29,10 @@ public class WelcomeTutorPageActivity extends AppCompatActivity {
             // Set the next page to the admin dashboard page
             Intent intent = new Intent(WelcomeTutorPageActivity.this, TutorDashboardActivity.class);
 
-            // Send the user to the admin dashboard page
+            // Pass the tutor's phone number to the next page so that the tutor can quickly be identified and found in the database (since the phone number is the key)
+            intent.putExtra("phoneNumber", tutorPhoneNumber);
+
+            // Send the user to the tutor dashboard page
             startActivity(intent);
         }
     }
