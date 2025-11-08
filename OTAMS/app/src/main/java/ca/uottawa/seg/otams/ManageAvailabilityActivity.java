@@ -17,6 +17,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -229,8 +235,35 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
             c.onFailure(null);
         }
 
-        //TODO: please add Firebase code here
+        // Find the tutor with the given phone number in the database (should be the tutor currently logged in)
+        DatabaseReference tutor = FirebaseDatabase.getInstance().getReference("users").child(tutorPhoneNumber);
 
+        tutor.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Store the full name of the tutor obtained from the database
+                    String tutorFullName = snapshot.child("firstName").getValue(String.class) + " " + snapshot.child("lastName").getValue(String.class);
+
+                    // Create a session based off of the timeslot the tutor is trying open
+                    DatabaseReference databaseSessions = FirebaseDatabase.getInstance().getReference("sessions");
+
+                    String id = databaseSessions.push().getKey();
+
+                    Session session = new Session(id, startTime, endTime, tutorFullName, tutorPhoneNumber, null, null);
+
+                    // Save the session as an entry in the database
+                    databaseSessions.child(id).setValue(session);
+
+                    // Alerts the user that the timeslot was successfully created
+                    c.onSuccess();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
 
         /*
         // Pass the tutor's phone number to the next page so that the tutor can quickly be identified and found in the database (since the phone number is the key)
