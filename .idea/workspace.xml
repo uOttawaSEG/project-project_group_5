@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="381cba06-6472-4de3-855c-5518194c277c" name="Changes" comment="Added welcome page (still needs to be connected to rest of the project since I'm encountering an error)" />
+    <list default="true" id="381cba06-6472-4de3-855c-5518194c277c" name="Changes" comment="Added welcome page (still needs to be connected to rest of the project since I'm encountering an error)">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,12 +24,12 @@
     &quot;assignee&quot;: &quot;MaryamL12&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/uOttawaSEG/project-project_group_5.git",
-    "accountId": "622ee0ea-e4f9-4ca8-90ec-589164f9aec3"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/uOttawaSEG/project-project_group_5.git&quot;,
+    &quot;accountId&quot;: &quot;622ee0ea-e4f9-4ca8-90ec-589164f9aec3&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -53,6 +55,15 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\marly\project-project_group_5\OTAMS\app\src\main\res\layout" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="test" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="MainActivity.java" />
+      <module name="project-project_group_5" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
