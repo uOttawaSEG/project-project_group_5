@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
@@ -235,41 +236,114 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
             c.onFailure(null);
         }
 
-        // Find the tutor with the given phone number in the database (should be the tutor currently logged in)
-        DatabaseReference tutor = FirebaseDatabase.getInstance().getReference("users").child(tutorPhoneNumber);
-
-        tutor.addListenerForSingleValueEvent(new ValueEventListener() {
+        // Check for overlap first
+        checkForOverlap(startTime, endTime, new Callback() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    // Store the full name of the tutor obtained from the database
-                    String tutorFullName = snapshot.child("firstName").getValue(String.class) + " " + snapshot.child("lastName").getValue(String.class);
+            public void onSuccess() {
+                // No overlap, safe to proceed
 
-                    // Create a session based off of the timeslot the tutor is trying open
-                    DatabaseReference databaseSessions = FirebaseDatabase.getInstance().getReference("sessions");
+                // Find the tutor with the given phone number in the database (should be the tutor currently logged in)
+                DatabaseReference tutor = FirebaseDatabase.getInstance().getReference("users").child(tutorPhoneNumber);
 
-                    String id = databaseSessions.push().getKey();
 
-                    Session session = new Session(id, startTime, endTime, tutorFullName, tutorPhoneNumber, null, null);
+                tutor.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            // Store the full name of the tutor obtained from the database
+                            String tutorFullName = snapshot.child("firstName").getValue(String.class) + " " + snapshot.child("lastName").getValue(String.class);
 
-                    // Save the session as an entry in the database
-                    databaseSessions.child(id).setValue(session);
+                            // Create a session based off of the timeslot the tutor is trying open
+                            DatabaseReference databaseSessions = FirebaseDatabase.getInstance().getReference("sessions");
 
-                    // Alerts the user that the timeslot was successfully created
-                    c.onSuccess();
-                }
-            }
+                            String id = databaseSessions.push().getKey();
 
+                            Session session = new Session(id, startTime, endTime, tutorFullName, tutorPhoneNumber, null, null);
+
+                            // Save the session as an entry in the database
+                            databaseSessions.child(id).setValue(session);
+
+                            // Alerts the user that the timeslot was successfully created
+                            c.onSuccess();
+
+                        }
+                    }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+
+            // Overlap detected — don’t add slot
+                c.onFailure(new Exception("Timeslot overlaps with an existing one."));
+
 
         /*
         // Pass the tutor's phone number to the next page so that the tutor can quickly be identified and found in the database (since the phone number is the key)
             intent.putExtra("phoneNumber", tutorPhoneNumber);
          */
 
+    }
+
+    private void checkForOverlap(Date startTime, Date endTime, Callback c) {
+        // Find the tutor with the given phone number in the database (should be the tutor currently logged in)
+
+
+
+        DatabaseReference sessions = FirebaseDatabase.getInstance().getReference("sessions");
+
+        Query searchForTutorSessions = sessions.orderByChild("tutorPhoneNumber").equalTo(tutorPhoneNumber);
+
+        searchForTutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if (snapshot.exists()) {
+                    // Iterate through every timeslot in the database that the tutor has already created
+                    for (DataSnapshot sessionSnapshot : snapshot.getChildren()) {
+
+                        Session currentExistingSession = sessionSnapshot.getValue(Session.class);
+
+                        if (currentExistingSession != null) {
+                            // Then fetch the time of any timeslot the tutor previously created
+                            Date tutorSessionStartTime = currentExistingSession.getStartTime();
+                            Date tutorSessionEndTime = currentExistingSession.getEndTime();
+
+
+                        // Then fetch the time of any timeslot the tutor previously created
+                        // Calendar tutorSessionStartTime = sessionSnapshot.child("startTime").getValue(Calendar.class);
+                        // Calendar tutorSessionEndTime = sessionSnapshot.child("endTime").getValue(Calendar.class);
+
+                        /*
+                        if (tutorSessionStartTime == null || tutorSessionEndTime == null) {
+                            break;
+                        }
+                        */
+
+                        //if (startTime.before(tutorSessionEndTime.getTime()) && endTime.after(tutorSessionStartTime.getTime())) {
+                        if (startTime.before(tutorSessionEndTime) && endTime.after(tutorSessionStartTime)) {
+
+                            c.onFailure(new Exception("Timeslot overlaps with an existing one."));
+                            break;
+
+                            /*
+                            4 - 5
+                            10 - 11
+                            6 - 9
+                            7 - 8 start time is after or equal to start time; end time is before or equal to end time
+                            5 - 8 start time is before; end time after
+                            8 - 10 start time is after; end time is after
+                            start time before end time; end time after start time
+                             */
+                        }
+                        }
+                    }
+                }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
     }
 
     public void onClickLogOff(View view) {
