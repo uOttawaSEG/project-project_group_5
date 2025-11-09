@@ -11,6 +11,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.tabs.TabLayout;
+
 public class TutorDashboardActivity extends AppCompatActivity{
 
     //private RegistrationStatus rs = null;
@@ -65,6 +67,18 @@ public class TutorDashboardActivity extends AppCompatActivity{
             // Send the user to the login page
             startActivity(intent);
         }
+    }
+
+    // Refresh the RecyclerView (request inbox) whenever the tutor returns back to their dashboard
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Determines which tab (Pending Session Requests, Upcoming Sessions or Past Sessions) the tutor is currently on in the dashboard
+        // Add code here
+
+        // Refreshes the request inbox for the selected tab
+        // Add code in here
     }
 
 }
