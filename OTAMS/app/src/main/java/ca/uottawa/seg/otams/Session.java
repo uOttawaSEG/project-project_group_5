@@ -6,6 +6,7 @@ public class Session {
 
     // Instance variable
     private String id;
+    private String date;
     private Date startTime;
     private Date endTime;
     private String tutorName;
@@ -14,8 +15,9 @@ public class Session {
     private String studentPhoneNumber;
     public Session() {}
 
-    public Session(String id, Date startTime, Date endTime, String tutorName, String tutorPhoneNumber, String studentName, String studentPhoneNumber) {
+    public Session(String id, String date, Date startTime, Date endTime, String tutorName, String tutorPhoneNumber, String studentName, String studentPhoneNumber) {
         this.id = id;
+        this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.tutorName = tutorName;
@@ -27,6 +29,14 @@ public class Session {
     // Getter and setter methods for variables
     public String getId() {
         return id;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public Date getStartTime() {

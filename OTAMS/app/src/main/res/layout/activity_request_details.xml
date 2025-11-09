@@ -208,7 +208,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:backgroundTint="@color/white"
-            android:text="Back to Dashboard"
+            android:text="@string/back_to_dashboard"
             android:textColor="#673AB7"
             android:textStyle="bold"
             android:textSize="20sp"
