@@ -103,22 +103,33 @@
             android:orientation="horizontal"
             android:layout_marginTop="18dp">
 
-            <TextView
-                android:id="@+id/detailRoleText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Role: "
-                android:textColor="@color/white"
-                android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/detailRole"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="role"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/detailPhoneNumberText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone number: "
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/detailPhoneNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="#"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/detailProgramOrDegree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="Program/Degree: "
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -126,40 +137,8 @@
             android:orientation="horizontal"
             android:layout_marginTop="18dp">
 
-            <TextView
-                android:id="@+id/detailPhoneNumberText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Phone number: "
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/detailPhoneNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="#"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/detailProgramOrDegree"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Program/Degree: "
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:layout_marginTop="18dp" />
-
-        <TextView
-            android:id="@+id/detailCoursesOffered"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Courses offered: "
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:layout_marginTop="18dp" />
 
         <!-- Approve/Reject Buttons Section -->
         <LinearLayout
