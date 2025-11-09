@@ -272,16 +272,12 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
 
     }
 
-    public void onClickLogOff(View view) {
-        int pressID=view.getId();
+    public void onClickBack(View view) {
+        // Set the next page to the login page
+        Intent intent = new Intent(ManageAvailabilityActivity.this, TutorDashboardActivity.class);
 
-        // Check if the user is trying to log out
-        if (pressID == R.id.button_log_off) {
-            // Set the next page to the login page
-            Intent intent = new Intent(ManageAvailabilityActivity.this, MainActivity.class);
+        // Send the user to the login page
+        startActivity(intent);
 
-            // Send the user to the login page
-            startActivity(intent);
-        }
     }
 }
