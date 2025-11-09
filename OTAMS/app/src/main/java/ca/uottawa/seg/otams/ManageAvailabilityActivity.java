@@ -234,6 +234,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
     private void addSlotInDatabase(Calendar date, Date startTime, Date endTime, Callback c) {
         if (startTime == null || endTime == null) {
             c.onFailure(null);
+            return;
         }
 
         // Check for overlap first
@@ -268,13 +269,22 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
 
                         }
                     }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+            }
+
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onFailure(Exception e) {
+                // Step 3: Overlap found — don’t add slot
+                // Overlap detected — don’t add slot
+                c.onFailure(new Exception("Timeslot overlaps with an existing one."));
+
             }
         });
 
-            // Overlap detected — don’t add slot
-                c.onFailure(new Exception("Timeslot overlaps with an existing one."));
 
 
         /*
@@ -309,41 +319,46 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                             Date tutorSessionEndTime = currentExistingSession.getEndTime();
 
 
-                        // Then fetch the time of any timeslot the tutor previously created
-                        // Calendar tutorSessionStartTime = sessionSnapshot.child("startTime").getValue(Calendar.class);
-                        // Calendar tutorSessionEndTime = sessionSnapshot.child("endTime").getValue(Calendar.class);
-
-                        /*
-                        if (tutorSessionStartTime == null || tutorSessionEndTime == null) {
-                            break;
-                        }
-                        */
-
-                        //if (startTime.before(tutorSessionEndTime.getTime()) && endTime.after(tutorSessionStartTime.getTime())) {
-                        if (startTime.before(tutorSessionEndTime) && endTime.after(tutorSessionStartTime)) {
-
-                            c.onFailure(new Exception("Timeslot overlaps with an existing one."));
-                            break;
+                            // Then fetch the time of any timeslot the tutor previously created
+                            // Calendar tutorSessionStartTime = sessionSnapshot.child("startTime").getValue(Calendar.class);
+                            // Calendar tutorSessionEndTime = sessionSnapshot.child("endTime").getValue(Calendar.class);
 
                             /*
-                            4 - 5
-                            10 - 11
-                            6 - 9
-                            7 - 8 start time is after or equal to start time; end time is before or equal to end time
-                            5 - 8 start time is before; end time after
-                            8 - 10 start time is after; end time is after
-                            start time before end time; end time after start time
-                             */
-                        }
+                            if (tutorSessionStartTime == null || tutorSessionEndTime == null) {
+                                break;
+                            }
+                            */
+
+                            //if (startTime.before(tutorSessionEndTime.getTime()) && endTime.after(tutorSessionStartTime.getTime())) {
+                            if (startTime.before(tutorSessionEndTime) && endTime.after(tutorSessionStartTime)) {
+
+                                c.onFailure(new Exception("Timeslot overlaps with an existing one."));
+                                return; // important: stop checking once overlap is found
+
+                                /*
+                                4 - 5
+                                10 - 11
+                                6 - 9
+                                7 - 8 start time is after or equal to start time; end time is before or equal to end time
+                                5 - 8 start time is before; end time after
+                                8 - 10 start time is after; end time is after
+                                start time before end time; end time after start time
+                                 */
+                            }
                         }
                     }
+
                 }
+
+                // No overlap found
+                c.onSuccess();
+            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-    }
+
     }
 
     public void onClickLogOff(View view) {
