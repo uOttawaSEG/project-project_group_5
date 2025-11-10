@@ -11,17 +11,25 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.tabs.TabLayout;
+
 public class TutorDashboardActivity extends AppCompatActivity{
 
     //private RegistrationStatus rs = null;
     private RecyclerView recycleView;
     private UserListAdapter ula;
+    String tutorPhoneNumber; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
         setContentView(R.layout.activity_tutor_dashboard);
+
+        // Stores the phone number of the tutor that was passed from the previous activity
+        Intent intent = getIntent();
+        tutorPhoneNumber = intent.getStringExtra("phoneNumber");
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.back_button), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -34,26 +42,49 @@ public class TutorDashboardActivity extends AppCompatActivity{
 
         int pressID=view.getId();
 
-        // Check if the user is trying to access the admin dashboard
+        // Check if the user is trying to access the manage availability page
         if (pressID == R.id.button_manage_availability) {
-            // Set the next page to the admin dashboard page
+            // Set the next page to the manage availability page
             Intent intent = new Intent(TutorDashboardActivity.this, ManageAvailabilityActivity.class);
 
-            // Send the user to the admin dashboard page
+            // Pass the tutor's phone number to the next page so that the tutor can quickly be identified and found in the database (since the phone number is the key)
+            intent.putExtra("phoneNumber", tutorPhoneNumber);
+
+            // Send the user to the manage availability page (i.e. the one with the calender)
             startActivity(intent);
         }
 
     }
 
     public void onClickLogOff(View view) {
+        // Set the next page to the login page
+        Intent intent = new Intent(TutorDashboardActivity.this, MainActivity.class);
+
+        // Send the user to the login page
+        startActivity(intent);
+    }
+
+    // Refresh the RecyclerView (request inbox) whenever the tutor returns back to their dashboard
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Determines which tab (Pending Session Requests, Upcoming Sessions or Past Sessions) the tutor is currently on in the dashboard
+        // Add code here
+
+        // Refreshes the request inbox for the selected tab
+        // Add code in here
+    }
+
+    public void onClickViewRequestDetails(View view) {
         int pressID=view.getId();
 
-        // Check if the user is trying to log out
-        if (pressID == R.id.button_log_off) {
-            // Set the next page to the login page
-            Intent intent = new Intent(TutorDashboardActivity.this, MainActivity.class);
+        // Check if the user is trying to view a request's details
+        if (pressID == R.id.arrow_text) {
+            // If they are, then send the viewer to the page with the respective request's details
+            Intent intent = new Intent(TutorDashboardActivity.this, SessionDetailsActivity.class);
 
-            // Send the user to the login page
+            // Send the user to the welcome page
             startActivity(intent);
         }
     }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="detailProgram" type="id">Program</item>
+    <item name="detailStartEndTime" type="id">detailStartEndTime</item>
+    <item name="detailStartEndTime" type="id">detailStartEndTime</item>
+    <item name="cancelButton" type="id">cancelButton</item>
+    <item name="detailStartEndTime" type="id">detailStartEndTime</item>
+    <item name="detailSpaceBetweenTime" type="id">detailSpaceBetweenTime</item>
+</resources>

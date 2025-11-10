@@ -206,7 +206,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         }
     }
 
-    // Refresh the RecyclerView (request inbox) whenever the administrator returns back to the dashboard
+    // Refresh the RecyclerView (request inbox) whenever the administrator returns back to their dashboard
     @Override
     protected void onResume() {
         super.onResume();

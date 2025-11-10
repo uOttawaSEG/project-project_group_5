@@ -17,6 +17,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,6 +41,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
 
     private CalendarView calendarView;
     private AtomicBoolean isUpdating = new AtomicBoolean(false);
+    String tutorPhoneNumber; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
 
     private static Calendar getMidnightCalendar() {
         Calendar calendar = Calendar.getInstance();
@@ -170,6 +178,10 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_manage_availability);
 
+        // Stores the phone number of the tutor that was passed from the previous activity (used when creating a session object)
+        Intent intent = getIntent();
+        tutorPhoneNumber = intent.getStringExtra("phoneNumber");
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.back_button), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -207,9 +219,9 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Exception e) {
                         if (e != null) {
-                            Toast.makeText(ManageAvailabilityActivity.this, "Failed to add slots: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(ManageAvailabilityActivity.this, "Failed to add slot: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         } else {
-                            Toast.makeText(ManageAvailabilityActivity.this, "Failed to add slots", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ManageAvailabilityActivity.this, "Failed to add slot.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -219,22 +231,107 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
 
     }
 
-    private void addSlotInDatabase(Calendar date, Date startTime, Date endTime, Callback c) {
+    private void addSlotInDatabase(Calendar dateFromCalendar, Date startTime, Date endTime, Callback c) {
         if (startTime == null || endTime == null) {
             c.onFailure(null);
+            return;
         }
+
+        // Determine the date that the tutor is attempting to create the timeslot on
+        String sessionDate = dateFromCalendar.get(Calendar.DAY_OF_MONTH) + "/" + dateFromCalendar.get(Calendar.MONTH) + "/" + dateFromCalendar.get(Calendar.YEAR);
+
+        // Check if the timeslot overlaps with any of the tutor's previously created ones
+        checkForOverlap(sessionDate, startTime, endTime, new Callback() {
+            @Override
+            public void onSuccess() {
+
+                // If it does not, then find the tutor attempting to create a timeslot inside the database
+                DatabaseReference tutor = FirebaseDatabase.getInstance().getReference("users").child(tutorPhoneNumber);
+
+                tutor.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            // If the tutor exists within the database, saves their full name (the one stored in the database)
+                            String tutorFullName = snapshot.child("firstName").getValue(String.class) + " " + snapshot.child("lastName").getValue(String.class);
+
+                            // Create a session to represent the timeslot the tutor is trying create
+                            DatabaseReference databaseSessions = FirebaseDatabase.getInstance().getReference("sessions");
+
+                            // Give it a unique ID that will represent its key in the database
+                            String id = databaseSessions.push().getKey();
+
+                            Session session = new Session(id, sessionDate, startTime, endTime, tutorFullName, tutorPhoneNumber, null, null);
+
+                            // Save the session as an entry in the database
+                            databaseSessions.child(id).setValue(session);
+
+                            // Alert the tutor that the timeslot was successfully created
+                            c.onSuccess();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                // Alert the tutor if the timeslot overlaps with one of their previously created ones
+                c.onFailure(new Exception("Timeslot overlaps with an existing one."));
+            }
+        });
     }
 
-    public void onClickLogOff(View view) {
+    private void checkForOverlap(String date, Date startTime, Date endTime, Callback c) {
+
+        DatabaseReference sessions = FirebaseDatabase.getInstance().getReference("sessions");
+
+        // Find all sessions that the tutor currently attempting to create a timeslot has already created
+        Query searchForTutorSessions = sessions.orderByChild("tutorPhoneNumber").equalTo(tutorPhoneNumber);
+
+        searchForTutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Iterate through every timeslot in the database that the tutor has already created
+                    for (DataSnapshot sessionSnapshot : snapshot.getChildren()) {
+
+                        Session tutorSession = sessionSnapshot.getValue(Session.class);
+
+                        // Then fetch the time and date of the timeslot the tutor previously created
+                        Date tutorSessionStartTime = tutorSession.getStartTime();
+                        Date tutorSessionEndTime = tutorSession.getEndTime();
+                        String tutorSessionDate = tutorSession.getDate();
+
+                        // if (startTime.before(tutorSessionEndTime.getTime()) && endTime.after(tutorSessionStartTime.getTime())) {
+                        if (date.equals(tutorSessionDate) && startTime.before(tutorSessionEndTime) && endTime.after(tutorSessionStartTime)) {
+                            // If the timeslot the tutor is trying to create overlaps with a timeslot they have already created then alert the user and do not create the timeslot
+                            c.onFailure(new Exception("Timeslot overlaps with an existing one."));
+                            return; // Do not check any further for overlapping timeslots once one has been found
+                        }
+                    }
+
+                }
+                // If no overlapping timeslots were found then alert the tutor that their timeslot was successfully created
+                c.onSuccess();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+    }
+
+    public void onClickBackToDashboard(View view) {
         int pressID=view.getId();
 
-        // Check if the user is trying to log out
-        if (pressID == R.id.button_log_off) {
-            // Set the next page to the login page
-            Intent intent = new Intent(ManageAvailabilityActivity.this, MainActivity.class);
-
-            // Send the user to the login page
-            startActivity(intent);
+        // Check if the tutor is trying to return back to their dashboard
+        if (pressID == R.id.backToDashboardBtn) {
+            finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
         }
     }
 }
