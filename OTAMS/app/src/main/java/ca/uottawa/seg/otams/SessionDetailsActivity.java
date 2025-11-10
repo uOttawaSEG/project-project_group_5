@@ -1,5 +1,6 @@
 package ca.uottawa.seg.otams;
 
+
 import static android.content.Intent.getIntent;
 
 import static androidx.core.content.ContextCompat.startActivity;
@@ -67,11 +68,19 @@ public class SessionDetailsActivity extends AppCompatActivity {
         int pressID=view.getId();
         // Check if the administrator approved the request
         if (pressID == R.id.approveButton) {
-            setSessionStatus("APPROVED")
+            setSessionStatus("APPROVED");
             // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
             finish();
         }
     }
+
+    private void setSessionStatus(String updatedStatus) {
+        Intent intent = getIntent();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("sessions");
+        ref.child(intent.getStringExtra("id")).child("id").setValue(updatedStatus);
+    }
+
+
     public void onClickBackToDashboard(View view) {
         int pressID=view.getId();
 
