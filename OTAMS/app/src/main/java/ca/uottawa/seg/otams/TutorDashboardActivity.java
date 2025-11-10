@@ -42,9 +42,9 @@ public class TutorDashboardActivity extends AppCompatActivity{
 
         int pressID=view.getId();
 
-        // Check if the user is trying to access the admin dashboard
+        // Check if the user is trying to access the manage availability page
         if (pressID == R.id.button_manage_availability) {
-            // Set the next page to the admin dashboard page
+            // Set the next page to the manage availability page
             Intent intent = new Intent(TutorDashboardActivity.this, ManageAvailabilityActivity.class);
 
             // Pass the tutor's phone number to the next page so that the tutor can quickly be identified and found in the database (since the phone number is the key)
@@ -74,6 +74,19 @@ public class TutorDashboardActivity extends AppCompatActivity{
 
         // Refreshes the request inbox for the selected tab
         // Add code in here
+    }
+
+    public void onClickViewRequestDetails(View view) {
+        int pressID=view.getId();
+
+        // Check if the user is trying to view a request's details
+        if (pressID == R.id.arrow_text) {
+            // If they are, then send the viewer to the page with the respective request's details
+            Intent intent = new Intent(TutorDashboardActivity.this, SessionDetailsActivity.class);
+
+            // Send the user to the welcome page
+            startActivity(intent);
+        }
     }
 
 }

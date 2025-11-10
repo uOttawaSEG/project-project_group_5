@@ -13,7 +13,8 @@ public class Session {
     private String tutorPhoneNumber;
     private String studentName;
     private String studentPhoneNumber;
-    public Session() {}
+    private String sessionStatus;
+    private Session() {}
 
     public Session(String id, String date, Date startTime, Date endTime, String tutorName, String tutorPhoneNumber, String studentName, String studentPhoneNumber) {
         this.id = id;
@@ -24,6 +25,7 @@ public class Session {
         this.tutorPhoneNumber = tutorPhoneNumber;
         this.studentName = studentName;
         this.studentPhoneNumber = studentPhoneNumber;
+        this.sessionStatus = "PENDING";
     }
 
     // Getter and setter methods for variables
@@ -86,4 +88,7 @@ public class Session {
     public void setStudentPhoneNumber(String studentPhoneNumber) {
         this.studentPhoneNumber = studentPhoneNumber;
     }
+
+    public String getSessionStatus(){ return sessionStatus; }
+    public void setSessionStatus(String status){ this.sessionStatus = status; }
 }
