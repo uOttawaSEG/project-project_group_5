@@ -4,5 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="indigo">#4B0082</color>
     <color name="colorAccent">#582BA8</color>
+    <color name="indigo_light">#CAC9DF</color>
 
 </resources>

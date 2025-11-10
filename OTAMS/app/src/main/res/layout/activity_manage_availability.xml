@@ -19,7 +19,7 @@
             android:id="@+id/manage_availabilityTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="0dp"
             android:text="@string/manage_availability"
             android:textColor="@color/white"
             android:textSize="28sp"
@@ -36,23 +36,23 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:gravity="center_horizontal">
+                android:padding="16dp">
 
                 <CalendarView
                     android:id="@+id/calendar_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="300dp"
                     android:layout_gravity="center"
+                    android:background="#FFFFFF"
                     android:dateTextAppearance="?android:attr/textAppearanceMedium"
-                    android:weekNumberColor="#B0B0B0"
-                    android:weekDayTextAppearance="?android:attr/textAppearanceMedium"
-                    android:weekSeparatorLineColor="#E0E0E0"
                     android:focusedMonthDateColor="@color/indigo"
                     android:unfocusedMonthDateColor="#808080"
-                    android:background="#FFFFFF" />
+                    android:weekDayTextAppearance="?android:attr/textAppearanceMedium"
+                    android:weekNumberColor="#B0B0B0"
+                    android:weekSeparatorLineColor="#E0E0E0" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -68,13 +68,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="15dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="10dp"
                     android:text="@string/select_time_range"
                     android:textColor="#333333"
                     android:textSize="20sp"
@@ -85,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="24dp">
+                    android:layout_marginBottom="15dp">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -135,17 +135,28 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <Switch
+                    android:id="@+id/approvalSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tutor_approval_automate"
+                    android:textColor="@color/indigo"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="15dp"
+                    android:thumbTint="@color/indigo_light"
+                    android:trackTint="@color/black"/>
+
                 <Button
                     android:id="@+id/manage_set_availability"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/rounded_button_purple"
                     android:backgroundTint="#673AB7"
+                    android:padding="10dp"
                     android:text="@string/add_availabilty"
                     android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:layout_marginTop="8dp"
-                    android:padding="12dp"
-                    android:background="@drawable/rounded_button_purple" />
+                    android:textSize="16sp" />
 
                 <Button
                     android:id="@+id/backToDashboardBtn"
@@ -155,8 +166,8 @@
                     android:text="@string/back_to_dashboard"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
-                    android:layout_marginTop="18dp"
-                    android:padding="12dp"
+                    android:layout_marginTop="12dp"
+                    android:padding="10dp"
                     android:background="@drawable/rounded_button_purple"
                     android:onClick="onClickBackToDashboard" />
             </LinearLayout>
