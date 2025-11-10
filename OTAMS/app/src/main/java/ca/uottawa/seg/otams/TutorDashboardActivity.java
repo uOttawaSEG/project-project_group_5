@@ -11,6 +11,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.tabs.TabLayout;
+
 public class TutorDashboardActivity extends AppCompatActivity{
 
     //private RegistrationStatus rs = null;
@@ -62,17 +64,16 @@ public class TutorDashboardActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
-    public void onClickViewRequestDetails(View view) {
-        int pressID=view.getId();
+    // Refresh the RecyclerView (request inbox) whenever the tutor returns back to their dashboard
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-        // Check if the user is trying to view a request's details
-        if (pressID == R.id.arrow_text) {
-            // If they are, then send the viewer to the page with the respective request's details
-            Intent intent = new Intent(TutorDashboardActivity.this, TutorRequestDetailsActivity.class);
+        // Determines which tab (Pending Session Requests, Upcoming Sessions or Past Sessions) the tutor is currently on in the dashboard
+        // Add code here
 
-            // Send the user to the welcome page
-            startActivity(intent);
-        }
+        // Refreshes the request inbox for the selected tab
+        // Add code in here
     }
 
 }

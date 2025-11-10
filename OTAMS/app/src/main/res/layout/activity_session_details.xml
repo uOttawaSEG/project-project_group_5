@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/default_background"
     android:padding="24dp"
-    tools:context=".TutorRequestDetailsActivity">
+    tools:context=".AdminRequestDetailsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,10 +15,10 @@
 
         <!-- Screen Title -->
         <TextView
-            android:id="@+id/requestDetailsTitle"
+            android:id="@+id/sessionDetailsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Session details"
+            android:text="@string/student_information"
             android:textColor="@color/white"
             android:textSize="25sp"
             android:textStyle="bold"
@@ -103,84 +103,44 @@
             android:orientation="horizontal"
             android:layout_marginTop="18dp">
 
-            <TextView
-                android:id="@+id/detailPhoneNumberText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Phone number: "
-                android:textColor="@color/white"
-                android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/detailPhoneNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="#"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/detailPhoneNumberText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone number: "
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/detailPhoneNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="#"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/detailProgramOrDegree"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
             android:text="Program/Degree: "
             android:textColor="@color/white"
-            android:textSize="20sp"
-            android:layout_marginTop="18dp" />
-
-        <TextView
-            android:id="@+id/detailCoursesOffered"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Course: "
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:layout_marginTop="18dp" />
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="12dp">
+            android:layout_marginTop="18dp">
 
-            <TextView
-                android:id="@+id/detailStartEndTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Start/endTime: "
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/detailStart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="start time "
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/detailSpaceBetweenTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" "
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/detailEnd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="end time"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
         </LinearLayout>
 
 
-
-
-        <!-- Approve/Reject/Cancel Buttons Section -->
+        <!-- Approve/Reject Buttons Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -192,7 +152,7 @@
             <!-- Approve Button -->
             <Button
                 android:id="@+id/approveButton"
-                android:layout_width="100dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
                 android:text="Approve"
@@ -209,7 +169,7 @@
             <!-- Reject Button -->
             <Button
                 android:id="@+id/rejectButton"
-                android:layout_width="100dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
                 android:text="Reject"
@@ -218,20 +178,6 @@
                 android:textSize="18sp"
                 android:padding="10dp"
                 android:onClick="onClickReject" />
-
-
-            <!-- Cancel Button -->
-            <Button
-                android:id="@+id/cancelButton"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                android:text="Cancel"
-                android:textColor="#673AB7"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:padding="10dp"
-                android:onClick="onClickCancel" />
         </LinearLayout>
 
         <!-- Back Button -->
@@ -241,14 +187,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:backgroundTint="@color/white"
-            android:text="Back to Dashboard"
+            android:text="@string/back_to_dashboard"
             android:textColor="#673AB7"
             android:textStyle="bold"
             android:textSize="20sp"
             android:padding="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
-            android:onClick="onClickBackToTutorDashboard" />
+            android:onClick="onClickBackToDashboard" />
 
     </LinearLayout>
 </ScrollView>
