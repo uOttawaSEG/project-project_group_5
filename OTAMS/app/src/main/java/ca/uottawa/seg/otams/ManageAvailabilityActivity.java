@@ -228,7 +228,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Exception e) {
                         if (e != null) {
-                            Toast.makeText(ManageAvailabilityActivity.this, "Failed to add slots: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(ManageAvailabilityActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(ManageAvailabilityActivity.this, "Failed to add slots.", Toast.LENGTH_SHORT).show();
                         }
@@ -347,7 +347,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                             c.onSuccess("Timeslot created successfully!");
                         }
                         else if (sessionSlotsCreated == splitTimeslots.size()) {
-                            c.onSuccess("Timeslots created successfully!");                       }
+                            c.onSuccess("All timeslots created successfully!");                       }
                         else if (sessionSlotsCreated > 0) {
                             c.onFailure(new Exception("WARNING: Some timeslots could not be created because they overlap with existing ones."));
                         }
