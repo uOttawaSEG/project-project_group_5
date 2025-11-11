@@ -9,7 +9,7 @@ Password: adminPass
 
 ---------------------------------------------------------------------
 
-Credentials to sign in as Administrator in Deliverable 1 and 2:
+Credentials to sign in as Administrator in Deliverables 1 and 2:
 
 Username: admin
 
