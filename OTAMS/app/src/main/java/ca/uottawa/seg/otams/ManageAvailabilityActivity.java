@@ -350,7 +350,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
 
                                     }
                                 }
-                            }
+                            });
                         }
 
                         @Override
@@ -358,7 +358,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
 
                         }
                     }
-                }
+                });
             }
         }
     }
