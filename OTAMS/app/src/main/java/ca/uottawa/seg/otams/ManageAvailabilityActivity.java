@@ -261,7 +261,9 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                             // Give it a unique ID that will represent its key in the database
                             String id = databaseSessions.push().getKey();
 
-                            Session session = new Session(id, sessionDate, startTime, endTime, tutorFullName, tutorPhoneNumber, null, null);
+                            // Session session = new Session(id, sessionDate, startTime, endTime, tutorFullName, tutorPhoneNumber, null, null, null);
+
+                            Session session = new Session(id, sessionDate, startTime, endTime, tutorFullName, tutorPhoneNumber, "Lyselle Ordelle", "6666666666", "PENDING");
 
                             // Save the session as an entry in the database
                             databaseSessions.child(id).setValue(session);
