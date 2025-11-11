@@ -303,7 +303,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                             if (!overlaps) {
                                 String id = sessionsDb.push().getKey();
                                 Session session = new Session(id, sessionDate, chunkStart, chunkEnd,
-                                        tutorFullName, tutorPhoneNumber, null, null,
+                                        tutorFullName, tutorPhoneNumber, "Lyselle Ordelle", "6666666666",
                                         automatic ? "APPROVED" : "PENDING");
                                 sessionsDb.child(id).setValue(session);
                                 createdCount++;
