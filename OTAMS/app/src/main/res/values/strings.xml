@@ -61,5 +61,6 @@
     <string name="student_information"> Student Information</string>
 
     <string name="tutor_approval_automate">Automate Approval</string>
+    <string name="availibility_slots">Availibility Slots</string>
 
 </resources>
