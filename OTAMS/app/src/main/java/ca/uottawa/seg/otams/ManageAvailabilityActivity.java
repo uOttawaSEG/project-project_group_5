@@ -275,6 +275,37 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
 
                 searchForTutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.exists()) {
+                            DatabaseReference databaseSessions = FirebaseDatabase.getInstance().getReference("sessions");
+
+                            // Keeps track of the number of session slots created
+                            int sessionSlotsCreated = 0;
+
+                            // Iterate through the smaller 30 minute increment timeslots
+                            for (Date[] createdTimeslot : splitTimeslots) {
+                                // Determine the start and end time of the 30 minute timeslot
+                                Date startSplitTimeslot = createdTimeslot[0];
+                                Date endSplitTimeslot = createdTimeslot[1];
+
+                                // Give it a unique ID that will represent its key in the database
+                                String id = databaseSessions.push().getKey();
+
+                                Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, null, null, null);
+                                    /*if (automatic) {
+                                        newSession.setSessionStatus("APPROVED");
+                                    } else {
+                                        newSession.setSessionStatus("PENDING");
+                                    }*/
+
+                                // Save the session as an entry in the database
+                                databaseSessions.child(id).setValue(newSession);
+
+                                sessionSlotsCreated++;
+                            }
+
+                            c.onFailure(new Exception("SNAPSHOT DOES NOT EXIST"));
+                        }
+
                         // Create a list containing all the sessions the tutor has previously created that may overlap with the
                         // session they are currently trying to create
                         List<Session> overlapSessions = new ArrayList<>();
@@ -294,6 +325,8 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                                 overlapSessions.add(tutorSessionInfo);
                             }
                         }
+
+                        DatabaseReference databaseSessions = FirebaseDatabase.getInstance().getReference("sessions");
 
                         // Keeps track of the number of session slots created
                         int sessionSlotsCreated = 0;
@@ -316,7 +349,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                                     // If no overlap exists then add the 30 minute timeslot to the database
 
                                     // Give it a unique ID that will represent its key in the database
-                                    String id = sessions.push().getKey();
+                                    String id = databaseSessions.push().getKey();
 
                                     Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, null, null, null);
                                     /*if (automatic) {
@@ -326,18 +359,20 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                                     }*/
 
                                     // Save the session as an entry in the database
-                                    sessions.child(id).setValue(newSession);
+                                    databaseSessions.child(id).setValue(newSession);
 
                                     sessionSlotsCreated++;
                                 }
                             }
                         }
 
-                        if (sessionSlotsCreated == 0) {
-                            c.onSuccess();
-                        } else if (sessionSlotsCreated < overlapSessions.size()) {
+                        if (sessionSlotsCreated == overlapSessions.size()) {
                             c.onFailure(new Exception("Some timeslots could not be created because they overlap with existing ones."));
-                        } else {
+                        }
+                        else if (sessionSlotsCreated > 0) {
+                            c.onSuccess();
+                        }
+                        else {
                             c.onFailure(new Exception("All timeslots overlap with existing ones."));
                         }
                     }
