@@ -16,7 +16,7 @@ public class Session {
     private String sessionStatus;
     private Session() {}
 
-    public Session(String id, String date, Date startTime, Date endTime, String tutorName, String tutorPhoneNumber, String studentName, String studentPhoneNumber) {
+    public Session(String id, String date, Date startTime, Date endTime, String tutorName, String tutorPhoneNumber, String studentName, String studentPhoneNumber, String registrationStatus) {
         this.id = id;
         this.date = date;
         this.startTime = startTime;
