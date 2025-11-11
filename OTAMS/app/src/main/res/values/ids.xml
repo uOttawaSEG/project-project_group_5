@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="detailProgram" type="id">Program</item>
-    <item name="detailStartEndTime" type="id">detailStartEndTime</item>
-    <item name="cancelButton" type="id">cancelButton</item>
-    <item name="detailSpaceBetweenTime" type="id">detailSpaceBetweenTime</item>
+    <item name="detailProgram" type="id"/>
+    <item name="detailStartEndTime" type="id"/>
+    <item name="cancelButton" type="id"/>
+    <item name="detailSpaceBetweenTime" type="id"/>
 </resources>

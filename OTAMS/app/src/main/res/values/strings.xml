@@ -51,13 +51,12 @@
     <string name="pending_session_requests">Pending Session Requests</string>
     <string name="upcoming_sessions">Upcoming Sessions</string>
     <string name="past_sessions">Past Sessions</string>
-
     <string name="manage_availability">Manage Availability</string>
     <string name="create_edit_slots">Create/Edit Slots</string>
     <string name="slots">Slots</string>
-    <string name="add_availabilty">Add Availabilty</string>
     <string name="select_time_range">Select Time Range</string>
     <string name="back_to_dashboard">Back to Dashboard</string>
+    <string name="add_availabilty">Add Availabilty</string>
 
     <string name="student_information"> Student Information</string>
 
