@@ -77,7 +77,7 @@ public class SessionDetailsActivity extends AppCompatActivity {
     private void setSessionStatus(String updatedStatus) {
         Intent intent = getIntent();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("sessions");
-        ref.child(intent.getStringExtra("id")).child("status").setValue(updatedStatus);
+        ref.child(intent.getStringExtra("id")).child("sessionStatus").setValue(updatedStatus);
     }
 
 
