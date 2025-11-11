@@ -257,141 +257,128 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
         tutor.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
+                if (!snapshot.exists()) {
+                    c.onFailure(new Exception("Tutor not found in database."));
+                    return;
+                }
 
-                    // If the tutor exists within the database, saves their full name (the one stored in the database)
-                    String tutorFullName = snapshot.child("firstName").getValue(String.class) + " " + snapshot.child("lastName").getValue(String.class);
+                // If the tutor exists within the database, saves their full name (the one stored in the database)
+                String tutorFullName = snapshot.child("firstName").getValue(String.class) + " " + snapshot.child("lastName").getValue(String.class);
 
-                    // Split the timeslot into multiple smaller 30 minute timeslots
-                    List<Date[]> splitTimeslots = splitIntoHalfHourChunks(startTime, endTime);
+                // Split the timeslot into multiple smaller 30 minute timeslots
+                List<Date[]> splitTimeslots = splitIntoHalfHourChunks(startTime, endTime);
 
-                    DatabaseReference sessions = FirebaseDatabase.getInstance().getReference("sessions");
+                DatabaseReference sessions = FirebaseDatabase.getInstance().getReference("sessions");
 
-                    // Find all sessions that the tutor currently attempting to create a timeslot has already created
-                    Query searchForTutorSessions = sessions.orderByChild("tutorPhoneNumber").equalTo(tutorPhoneNumber)
+                // Find all sessions that the tutor currently attempting to create a timeslot has already created
+                Query searchForTutorSessions = sessions.orderByChild("tutorPhoneNumber").equalTo(tutorPhoneNumber);
 
-                    searchForTutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists()) {
+                searchForTutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        // Create a list containing all the sessions the tutor has previously created that may overlap with the
+                        // session they are currently trying to create
+                        List<Session> overlapSessions = new ArrayList<>();
 
-                                        // Create a list containing all the sessions the tutor has previously created that may overlap with the
-                                        // session they are currently trying to create
-                                        List<Session> overlapSessions = new ArrayList<>();
+                        // Iterate through every timeslot in the database that the tutor has already created
+                        for (DataSnapshot sessionSnapshot : snapshot.getChildren()) {
 
-                                        // Iterate through every timeslot in the database that the tutor has already created
-                                        for (DataSnapshot sessionSnapshot : snapshot.getChildren()) {
+                            // Fetch all information about the session
+                            Session tutorSessionInfo = sessionSnapshot.getValue(Session.class);
 
-                                            // Fetch all information about the session
-                                            Session tutorSessionInfo = sessionSnapshot.getValue(Session.class);
+                            // Then fetch the date of the timeslot
+                            String tutorSessionDate = tutorSessionInfo.getDate();
 
-                                            // Then fetch the date of the timeslot
-                                            String tutorSessionDate = tutorSessionInfo.getDate();
+                            // If the previously created session found in the database is on the same day as the one the tutor
+                            // is currently trying to create then add it to the list to be further investigated for overlap
+                            if (sessionDate.equals(tutorSessionDate)) {
+                                overlapSessions.add(tutorSessionInfo);
+                            }
+                        }
 
-                                            // If the previously created session found in the database is on the same day as the one the tutor
-                                            // is currently trying to create then add it to the list to be further investigated for overlap
-                                            if (sessionDate.equals(tutorSessionDate)) {
-                                                overlapSessions.add(tutorSessionInfo);
-                                            }
-                                        }
+                        // Keeps track of the number of session slots created
+                        int sessionSlotsCreated = 0;
 
-                                        // Keeps track of the number of session slots created
-                                        int sessionSlotsCreated = 0;
+                        // Iterate through the smaller 30 minute increment timeslots
+                        for (Date[] createdTimeslot : splitTimeslots) {
+                            // Determine the start and end time of the 30 minute timeslot
+                            Date startSplitTimeslot = createdTimeslot[0];
+                            Date endSplitTimeslot = createdTimeslot[1];
 
-                                        // Iterate through the smaller 30 minute increment timeslots
-                                        for (Date[] createdTimeslot : splitTimeslots) {
-                                            // Determine the start and end time of the 30 minute timeslot
-                                            Date startSplitTimeslot = createdTimeslot[0];
-                                            Date endSplitTimeslot = createdTimeslot[1];
+                            for (Session s : overlapSessions) {
+                                // Then fetch the start and end time of the timeslot the tutor previously created that may overlap with the ones currently being created
+                                Date tutorSessionStartTime = s.getStartTime();
+                                Date tutorSessionEndTime = s.getEndTime();
 
-                                            for (Session s : overlapSessions) {
-                                                // Then fetch the start and end time of the timeslot the tutor previously created that may overlap with the ones currently being created
-                                                Date tutorSessionStartTime = s.getStartTime();
-                                                Date tutorSessionEndTime = s.getEndTime();
+                                // Check if there's overlap
+                                if (startSplitTimeslot.before(tutorSessionEndTime) && endSplitTimeslot.after(tutorSessionStartTime)) {
+                                    break;
+                                } else {
+                                    // If no overlap exists then add the 30 minute timeslot to the database
 
-                                                // Check if there's overlap
-                                                if (startSplitTimeslot.before(tutorSessionEndTime) && endSplitTimeslot.after(tutorSessionStartTime)) {
-                                                    break;
-                                                } else {
-                                                    // If no overlap exists then add the 30 minute timeslot to the database
+                                    // Give it a unique ID that will represent its key in the database
+                                    String id = sessions.push().getKey();
 
-                                                    // Give it a unique ID that will represent its key in the database
-                                                    String id = sessions.push().getKey();
+                                    Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, null, null, null);
+                                    /*if (automatic) {
+                                        newSession.setSessionStatus("APPROVED");
+                                    } else {
+                                        newSession.setSessionStatus("PENDING");
+                                    }*/
 
-                                                    Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, null, null, null);
-                                                    if (automatic) {
-                                                        newSession.setSessionStatus("APPROVED");
-                                                    } else {
-                                                        newSession.setSessionStatus("PENDING");
-                                                    }
+                                    // Save the session as an entry in the database
+                                    sessions.child(id).setValue(newSession);
 
-                                                    // Save the session as an entry in the database
-                                                    sessions.child(id).setValue(newSession);
-
-                                                    sessionSlotsCreated++;
-
-
-                                                    //**
-                                                }
-                                            }
-
-
-                                            if (sessionSlotsCreated == 0) {
-                                                c.onSuccess();
-                                            } else if (sessionSlotsCreated < overlapSessions.size()) {
-                                                c.onFailure(new Exception("Some timeslots could not be created because they overlap with existing ones."));
-                                            } else {
-                                                c.onFailure(new Exception("All timeslots overlap with existing ones."));
-                                            }
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                    }
+                                    sessionSlotsCreated++;
                                 }
-                            });
+                            }
                         }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
+                        if (sessionSlotsCreated == 0) {
+                            c.onSuccess();
+                        } else if (sessionSlotsCreated < overlapSessions.size()) {
+                            c.onFailure(new Exception("Some timeslots could not be created because they overlap with existing ones."));
+                        } else {
+                            c.onFailure(new Exception("All timeslots overlap with existing ones."));
                         }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
                     }
                 });
             }
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
+    private List<Date[]> splitIntoHalfHourChunks(Date startTime, Date endTime) {
+        List<Date[]> slots = new ArrayList<>();
 
+        Calendar start = Calendar.getInstance();
+        start.setTime(startTime);
+        Calendar end = Calendar.getInstance();
+        end.setTime(endTime);
 
-            private List<Date[]> splitIntoHalfHourChunks(Date startTime, Date endTime) {
-                List<Date[]> slots = new ArrayList<>();
-
-                Calendar start = Calendar.getInstance();
-                start.setTime(startTime);
-                Calendar end = Calendar.getInstance();
-                end.setTime(endTime);
-
-                while (start.before(end)) {
-                    Calendar next = (Calendar) start.clone();
-                    next.add(Calendar.MINUTE, 30);
-                    if (next.after(end)) {
-                        next.setTime(endTime); // trim if not a full 30 mins
-                    }
-                    slots.add(new Date[]{start.getTime(), next.getTime()});
-                    start = next;
-                }
-
-                return slots;
+        while (start.before(end)) {
+            Calendar next = (Calendar) start.clone();
+            next.add(Calendar.MINUTE, 30);
+            if (next.after(end)) {
+                next.setTime(endTime); // trim if not a full 30 mins
             }
-
-            public void onClickBackToDashboard(View view) {
-                int pressID = view.getId();
-
-                // Check if the tutor is trying to return back to their dashboard
-                if (pressID == R.id.backToDashboardBtn) {
-                    finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
-                }
-            }
+            slots.add(new Date[]{start.getTime(), next.getTime()});
+            start = next;
         }
+
+        return slots;
+    }
+
+    public void onClickBackToDashboard(View view) {
+        int pressID = view.getId();
+
+        // Check if the tutor is trying to return back to their dashboard
+        if (pressID == R.id.backToDashboardBtn) {
+            finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
+        }
+    }
+}
