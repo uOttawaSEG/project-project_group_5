@@ -25,7 +25,7 @@ public class Session {
         this.tutorPhoneNumber = tutorPhoneNumber;
         this.studentName = studentName;
         this.studentPhoneNumber = studentPhoneNumber;
-        this.sessionStatus = "PENDING";
+        this.sessionStatus = registrationStatus;
     }
 
     // Getter and setter methods for variables

@@ -7,6 +7,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -36,12 +37,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import android.widget.Switch;
+
+
 
 public class ManageAvailabilityActivity extends AppCompatActivity {
 
     private CalendarView calendarView;
     private AtomicBoolean isUpdating = new AtomicBoolean(false);
     String tutorPhoneNumber; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
+
+    private boolean automatic = false;
 
     private static Calendar getMidnightCalendar() {
         Calendar calendar = Calendar.getInstance();
@@ -228,6 +234,15 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
             }
         });
 
+        Switch approvalSwitch = findViewById(R.id.approvalSwitch);
+        approvalSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                automatic = isChecked;
+            }
+        });
+
+
 
     }
 
@@ -261,9 +276,10 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                             // Give it a unique ID that will represent its key in the database
                             String id = databaseSessions.push().getKey();
 
-                            // Session session = new Session(id, sessionDate, startTime, endTime, tutorFullName, tutorPhoneNumber, null, null, null);
-
-                            Session session = new Session(id, sessionDate, startTime, endTime, tutorFullName, tutorPhoneNumber, "Lyselle Ordelle", "6666666666", "PENDING");
+                            Session session = new Session(id, sessionDate, startTime, endTime, tutorFullName, tutorPhoneNumber, null, null, "PENDING");
+                            if (automatic) {
+                                session.setSessionStatus("APPROVED");
+                            }
 
                             // Save the session as an entry in the database
                             databaseSessions.child(id).setValue(session);

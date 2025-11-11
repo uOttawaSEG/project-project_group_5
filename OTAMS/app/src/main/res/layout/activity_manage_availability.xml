@@ -142,9 +142,7 @@
                     android:text="@string/tutor_approval_automate"
                     android:textColor="@color/indigo"
                     android:textSize="20sp"
-                    android:layout_marginBottom="15dp"
-                    android:thumbTint="@color/indigo_light"
-                    android:trackTint="@color/black"/>
+                    android:layout_marginBottom="15dp" />
 
                 <Button
                     android:id="@+id/manage_set_availability"
