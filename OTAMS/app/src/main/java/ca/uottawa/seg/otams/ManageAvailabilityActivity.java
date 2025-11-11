@@ -260,30 +260,90 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    c.onFailure(new Exception("Tutor not found in database."));
+                    c.onFailure(new Exception("ERROR fetching tutor data. Please try again later."));
                     return;
                 }
 
-                String tutorFullName = snapshot.child("firstName").getValue(String.class) + " " +
-                        snapshot.child("lastName").getValue(String.class);
+                // If the tutor exists within the database, saves their full name (the one stored in the database)
+                String tutorFullName = snapshot.child("firstName").getValue(String.class) + " " + snapshot.child("lastName").getValue(String.class);
 
-                // Split into 30-min chunks
-                List<Date[]> chunks = splitIntoHalfHourChunks(startTime, endTime);
+                // Split the timeslot into multiple smaller 30 minute timeslots
+                List<Date[]> slotChunks = splitIntoHalfHourChunks(startTime, endTime);
 
-                // Fetch existing sessions for overlap comparison
-                DatabaseReference sessionsRef = FirebaseDatabase.getInstance().getReference("sessions");
-                Query searchForTutorSessions = sessionsRef.orderByChild("tutorPhoneNumber").equalTo(tutorPhoneNumber);
+                DatabaseReference sessions = FirebaseDatabase.getInstance().getReference("sessions");
+
+                // Find all sessions that the tutor currently attempting to create a timeslot has already created
+                Query searchForTutorSessions = sessions.orderByChild("tutorPhoneNumber").equalTo(tutorPhoneNumber);
 
                 searchForTutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        List<Session> existingSessions = new ArrayList<>();
-                        for (DataSnapshot s : snapshot.getChildren()) {
-                            Session session = s.getValue(Session.class);
-                            if (session != null && sessionDate.equals(session.getDate())) {
-                                existingSessions.add(session);
+
+                        // Create a list containing all the sessions the tutor has previously created
+                        List<Session> databaseSessions = new ArrayList<>();
+
+                        // Iterate through every timeslot in the database that the tutor has already created
+                        for (DataSnapshot sessionSnapshot : snapshot.getChildren()) {
+
+                            // Fetch all information about those sessions
+                            Session tutorSession = sessionSnapshot.getValue(Session.class);
+
+                            // Then fetch the date of those timeslots
+                            String tutorSessionDate = tutorSession.getDate();
+
+                            if (sessionDate.equals(tutorSessionDate)) {
+                                databaseSessions.add(tutorSession);
+                            }
+
+                            int sessionSlotsCreated = 0;
+
+                            for (Date[] createdTimeslot : splitTimeslot) { // Added
+                                Date startSplitTimeslot = createdTimeslot[0]; // Added
+                                Date endSplitTimeslot = createdTimeslot[1]; // Added
+
+                                boolean overlaps = false;
+                                for (Session s : databaseSessions) {
+                                    // Then fetch the time of the timeslot the tutor previously created
+                                    Date tutorSessionStartTime = s.getStartTime();
+                                    Date tutorSessionEndTime = s.getEndTime();
+
+                                    if (startTime.before(tutorSessionEndTime) && endTime.after(tutorSessionStartTime) {
+                                        overlaps = true;
+                                        break;
+                                    }
+                                }
+
+                                if (sessionDate.equals(tutorSessionDate) && startTime.before(tutorSessionEndTime) && endTime.after(tutorSessionStartTime)) {
+                                    // If the timeslot the tutor is trying to create overlaps with a timeslot they have already created then alert the user and do not create the timeslot
+                                    c.onFailure(new Exception("Some slots may not have been created if they overlapped with existing ones."));
+                                    return; // Do not check any further for overlapping timeslots once one has been found
+                                }
+
+                                // Give it a unique ID that will represent its key in the database
+                                String id = databaseSessions.push().getKey();
+
+                                Session session = new Session(id, sessionDate, startTime, endTime, tutorFullName, tutorPhoneNumber, null, null, "PENDING");
+                                if (automatic) {
+                                    session.setSessionStatus("APPROVED");
+                                }
+
+                                // Save the session as an entry in the database
+                                databaseSessions.child(id).setValue(session);
+                            }
+
+
+                            //
+
+
+
+                            // if (startTime.before(tutorSessionEndTime.getTime()) && endTime.after(tutorSessionStartTime.getTime())) {
+                            if (date.equals(tutorSessionDate) && startTime.before(tutorSessionEndTime) && endTime.after(tutorSessionStartTime)) {
+                                // If the timeslot the tutor is trying to create overlaps with a timeslot they have already created then alert the user and do not create the timeslot
+                                c.onFailure(new Exception("Some slots may not have been created if they overlapped with existing ones."));
+                                return; // Do not check any further for overlapping timeslots once one has been found
                             }
                         }
+                        //
 
                         DatabaseReference sessionsDb = FirebaseDatabase.getInstance().getReference("sessions");
                         int createdCount = 0;
