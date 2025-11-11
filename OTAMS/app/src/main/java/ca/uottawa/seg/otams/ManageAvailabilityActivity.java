@@ -71,7 +71,8 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
     }
 
     public interface Callback {
-        void onSuccess();
+        // void onSuccess();
+        void onSuccess(String message);
         void onFailure(Exception e);
     }
 
@@ -218,8 +219,10 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                 Date endTime = tsocl.getEndTime();
                 addSlotInDatabase(c, startTime, endTime, new Callback() {
                     @Override
-                    public void onSuccess() {
-                        Toast.makeText(ManageAvailabilityActivity.this, "Added slots successfully!", Toast.LENGTH_LONG).show();
+                    public void onSuccess(String message) {
+                        // Toast.makeText(ManageAvailabilityActivity.this, "Added slots successfully!", Toast.LENGTH_LONG).show();
+
+                        Toast.makeText(ManageAvailabilityActivity.this, message, Toast.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -275,36 +278,6 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
 
                 searchForTutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (!snapshot.exists()) {
-                            DatabaseReference databaseSessions = FirebaseDatabase.getInstance().getReference("sessions");
-
-                            // Keeps track of the number of session slots created
-                            int sessionSlotsCreated = 0;
-
-                            // Iterate through the smaller 30 minute increment timeslots
-                            for (Date[] createdTimeslot : splitTimeslots) {
-                                // Determine the start and end time of the 30 minute timeslot
-                                Date startSplitTimeslot = createdTimeslot[0];
-                                Date endSplitTimeslot = createdTimeslot[1];
-
-                                // Give it a unique ID that will represent its key in the database
-                                String id = databaseSessions.push().getKey();
-
-                                Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, null, null, null);
-                                    /*if (automatic) {
-                                        newSession.setSessionStatus("APPROVED");
-                                    } else {
-                                        newSession.setSessionStatus("PENDING");
-                                    }*/
-
-                                // Save the session as an entry in the database
-                                databaseSessions.child(id).setValue(newSession);
-
-                                sessionSlotsCreated++;
-                            }
-
-                            c.onFailure(new Exception("SNAPSHOT DOES NOT EXIST"));
-                        }
 
                         // Create a list containing all the sessions the tutor has previously created that may overlap with the
                         // session they are currently trying to create
@@ -337,43 +310,49 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                             Date startSplitTimeslot = createdTimeslot[0];
                             Date endSplitTimeslot = createdTimeslot[1];
 
+                            boolean overlapExists = false;
                             for (Session s : overlapSessions) {
-                                // Then fetch the start and end time of the timeslot the tutor previously created that may overlap with the ones currently being created
+                                // Then fetch the start and end time of the timeslots the tutor has previously created that may overlap with the one currently being created
                                 Date tutorSessionStartTime = s.getStartTime();
                                 Date tutorSessionEndTime = s.getEndTime();
 
                                 // Check if there's overlap
                                 if (startSplitTimeslot.before(tutorSessionEndTime) && endSplitTimeslot.after(tutorSessionStartTime)) {
+                                    overlapExists = true;
                                     break;
-                                } else {
-                                    // If no overlap exists then add the 30 minute timeslot to the database
-
-                                    // Give it a unique ID that will represent its key in the database
-                                    String id = databaseSessions.push().getKey();
-
-                                    Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, null, null, null);
-                                    /*if (automatic) {
-                                        newSession.setSessionStatus("APPROVED");
-                                    } else {
-                                        newSession.setSessionStatus("PENDING");
-                                    }*/
-
-                                    // Save the session as an entry in the database
-                                    databaseSessions.child(id).setValue(newSession);
-
-                                    sessionSlotsCreated++;
                                 }
+                            }
+
+                            // If no overlap exists then add the 30 minute timeslot to the database
+                            if (overlapExists == false) {
+
+                                // Give it a unique ID that will represent its key in the database
+                                String id = databaseSessions.push().getKey();
+
+                                Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, null, null, null);
+                                if (automatic) {
+                                    newSession.setSessionStatus("APPROVED");
+                                } else {
+                                    newSession.setSessionStatus("PENDING");
+                                }
+
+                                // Save the session as an entry in the database
+                                databaseSessions.child(id).setValue(newSession);
+
+                                sessionSlotsCreated++;
                             }
                         }
 
-                        if (sessionSlotsCreated == overlapSessions.size()) {
-                            c.onFailure(new Exception("Some timeslots could not be created because they overlap with existing ones."));
+                        if (sessionSlotsCreated == 1) {
+                            c.onSuccess("Timeslot created successfully!");
                         }
+                        else if (sessionSlotsCreated == splitTimeslots.size()) {
+                            c.onSuccess("Timeslots created successfully!");                       }
                         else if (sessionSlotsCreated > 0) {
-                            c.onSuccess();
+                            c.onFailure(new Exception("WARNING: Some timeslots could not be created because they overlap with existing ones."));
                         }
                         else {
-                            c.onFailure(new Exception("All timeslots overlap with existing ones."));
+                            c.onFailure(new Exception("ERROR: Cannot create overlapping timeslots."));
                         }
                     }
                     @Override
