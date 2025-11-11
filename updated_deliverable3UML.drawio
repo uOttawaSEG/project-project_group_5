@@ -1,0 +1,79 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" version="28.2.9">
+  <diagram name="Page-1" id="NglQO1zlhdBOvmKcS1qd">
+    <mxGraphModel dx="1489" dy="890" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="6uddLS0MIgmLAFDUgQyA-2" target="6uddLS0MIgmLAFDUgQyA-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-2" value="&lt;i&gt;User&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="429" y="200" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-3" value="&lt;div&gt;-&amp;nbsp; firstName: String&lt;/div&gt;&lt;div&gt;- lastName: String&lt;/div&gt;&lt;div&gt;- email: String&lt;/div&gt;&lt;div&gt;- passowrd: String&lt;/div&gt;&lt;div&gt;- role: String&lt;/div&gt;&lt;div&gt;- number: int&lt;/div&gt;&lt;div&gt;- requestStatus: RegistrationStatus&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="429" y="230" width="150" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="6uddLS0MIgmLAFDUgQyA-5" target="6uddLS0MIgmLAFDUgQyA-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-5" value="Student" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="249" y="430" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-6" value="&lt;div align=&quot;left&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- program: String&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="249" y="460" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="6uddLS0MIgmLAFDUgQyA-8" target="6uddLS0MIgmLAFDUgQyA-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-8" value="Tutor" style="rounded=0;whiteSpace=wrap;html=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" vertex="1" parent="1">
+          <mxGeometry x="409" y="480" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-9" value="&lt;div align=&quot;left&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- highestDegree: String&lt;/span&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;-&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;coursesOffered: String&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" vertex="1" parent="1">
+          <mxGeometry x="409" y="510" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="6uddLS0MIgmLAFDUgQyA-11" target="6uddLS0MIgmLAFDUgQyA-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-11" value="Administrator" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="609" y="430" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-12" value="&lt;div align=&quot;left&quot;&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="609" y="460" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-13" value="*" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="309" y="400" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-14" value="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="429" y="370" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-15" value="*" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="459" y="450" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-16" value="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="649" y="400" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-17" value="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="529" y="370" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-18" value="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="459" y="370" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-19" value="typeOf →" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="339" y="360" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-20" value="← typeOf" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="599" y="360" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-21" value="↑&#xa;typeOf" style="text;whiteSpace=wrap;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="449" y="400" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-22" value="Session" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="79" y="200" width="170" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="6uddLS0MIgmLAFDUgQyA-23" value="&lt;div&gt;- id: String&lt;/div&gt;&lt;div&gt;- date: String&lt;/div&gt;&lt;div&gt;- startTime: Date&lt;/div&gt;&lt;div&gt;- endTime: Date&lt;/div&gt;&lt;div&gt;- tutorName: String&lt;/div&gt;&lt;div&gt;- tutorPhoneNumber: String&lt;/div&gt;&lt;div&gt;- studentName: String&lt;/div&gt;&lt;div&gt;- studentPhoneNumber: String&lt;/div&gt;&lt;div&gt;- sessionStatus: String&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="79" y="230" width="170" height="140" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
