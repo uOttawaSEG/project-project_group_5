@@ -6,10 +6,17 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 public class ActivityAvailibilitySlots extends AppCompatActivity {
+    private RecyclerView recycleView;
+    private UserListAdapter ula;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_availibility_slots);
@@ -27,6 +34,19 @@ public class ActivityAvailibilitySlots extends AppCompatActivity {
 
             // Send the user to the login page
             startActivity(intent);
+        }
+    }
+
+    private void populateRecyclerView(List<User> usersList) {
+        if (ula == null) {
+            // If the inbox is being populated for the first time then create and adapter for it
+            RecyclerView rv = this.recycleView;
+            rv.setLayoutManager(new LinearLayoutManager(this));
+            ula = new UserListAdapter(usersList);
+            rv.setAdapter(ula);
+        } else {
+            // If the adapter already exists then just update it instead of creating a new one
+            ula.updateData(usersList);
         }
     }
 }
