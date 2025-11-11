@@ -2,8 +2,8 @@ package ca.uottawa.seg.otams;
 
 public class Tutor extends User {
     // Instance variables
-    public String highestDegree;
-    public String coursesOffered;
+    private String highestDegree;
+    private String coursesOffered;
 
     public Tutor() {}
 
