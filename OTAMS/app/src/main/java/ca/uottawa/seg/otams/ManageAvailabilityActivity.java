@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -44,7 +45,7 @@ import android.widget.Switch;
 public class ManageAvailabilityActivity extends AppCompatActivity {
 
     private CalendarView calendarView;
-    private AtomicBoolean isUpdating = new AtomicBoolean(false);
+    private final AtomicBoolean isUpdating = new AtomicBoolean(false);
     String tutorPhoneNumber; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
 
     private boolean automatic = false;
@@ -59,7 +60,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
     }
 
     private static final List<Date> ALL_TIME_SLOTS;
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
     static {
         List<Date> timeSlots = new ArrayList<>();
         Calendar calendar = getMidnightCalendar();
@@ -237,10 +238,10 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
             }
         });
 
-        Switch approvalSwitch = findViewById(R.id.approvalSwitch);
+        SwitchCompat approvalSwitch = findViewById(R.id.approvalSwitch);
         approvalSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(@NonNull CompoundButton buttonView, boolean isChecked) {
                 automatic = isChecked;
             }
         });

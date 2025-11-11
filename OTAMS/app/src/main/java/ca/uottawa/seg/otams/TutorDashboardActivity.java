@@ -9,15 +9,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
 
-public class TutorDashboardActivity extends AppCompatActivity{
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+public class TutorDashboardActivity extends AppCompatActivity {
 
     //private RegistrationStatus rs = null;
     private RecyclerView recycleView;
-    private UserListAdapter ula;
+    private SessionListAdapter ula;
     String tutorPhoneNumber; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
 
     @Override
@@ -29,31 +37,67 @@ public class TutorDashboardActivity extends AppCompatActivity{
 
         // Stores the phone number of the tutor that was passed from the previous activity
         Intent intent = getIntent();
-        tutorPhoneNumber = intent.getStringExtra("phoneNumber");
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.back_button), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        recycleView = findViewById(R.id.session_request_recycler_view);
+        final TabLayout td = findViewById(R.id.tutor_tab_layout);
+        td.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                String tabString = Objects.requireNonNull(tab.getText()).toString();
+                Calendar c = Calendar.getInstance();
+                List<Session> allSessions = new ArrayList<>();
+                String tutorEmail = getIntent().getStringExtra("email");
+                if (getString(R.string.pending_session_requests).equals(tabString)) {
+                    allSessions = filterSessionBy(tutorEmail, s -> RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.PENDING);
+                }
+                if (getString(R.string.upcoming_sessions).equals(tabString)) {
+                    allSessions = filterSessionBy(tutorEmail, s -> s.getStartTime().after(c.getTime()));
+                }
+                if (getString(R.string.past_sessions).equals(tabString)) {
+                    allSessions = filterSessionBy(tutorEmail, s -> s.getStartTime().before(c.getTime()));
+                }
+                populateRecyclerView(allSessions);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                ula.clearData();
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                onTabSelected(tab);
+            }
+        });
     }
 
-    public void onClickManageAvailability(View view) {
+    private List<Session> filterSessionBy(String tutorEmail, Predicate<Session> filterMechanism) {
+            return getAllSessionsOfTutor(tutorEmail).stream().filter(filterMechanism).collect(Collectors.toList());
+    }
 
-        int pressID=view.getId();
+    private List<Session> getAllSessionsOfTutor(String tutorEmail) {
+        // Get all sessions from Firebase
+        return new ArrayList<>(List.of());
+    }
 
-        // Check if the user is trying to access the manage availability page
-        if (pressID == R.id.button_manage_availability) {
-            // Set the next page to the manage availability page
-            Intent intent = new Intent(TutorDashboardActivity.this, ManageAvailabilityActivity.class);
-
-            // Pass the tutor's phone number to the next page so that the tutor can quickly be identified and found in the database (since the phone number is the key)
-            intent.putExtra("phoneNumber", tutorPhoneNumber);
-
-            // Send the user to the manage availability page (i.e. the one with the calender)
-            startActivity(intent);
+    private void populateRecyclerView(List<Session> sessionsList) {
+        if (ula == null) {
+            // If the inbox is being populated for the first time then create and adapter for it
+            RecyclerView rv = this.recycleView;
+            rv.setLayoutManager(new LinearLayoutManager(this));
+            ula = new SessionListAdapter(sessionsList);
+            rv.setAdapter(ula);
+        } else {
+            // If the adapter already exists then just update it instead of creating a new one
+            ula.updateData(sessionsList);
         }
-
     }
 
     public void onClickLogOff(View view) {
@@ -75,18 +119,4 @@ public class TutorDashboardActivity extends AppCompatActivity{
         // Refreshes the request inbox for the selected tab
         // Add code in here
     }
-
-    public void onClickViewRequestDetails(View view) {
-        int pressID=view.getId();
-
-        // Check if the user is trying to view a request's details
-        if (pressID == R.id.arrow_text) {
-            // If they are, then send the viewer to the page with the respective request's details
-            Intent intent = new Intent(TutorDashboardActivity.this, SessionDetailsActivity.class);
-
-            // Send the user to the welcome page
-            startActivity(intent);
-        }
-    }
-
 }

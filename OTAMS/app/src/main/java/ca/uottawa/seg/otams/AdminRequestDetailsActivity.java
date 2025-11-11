@@ -29,12 +29,12 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_request_details);
 
         // Text fields that need to be populated with the specified request's info
-        firstName = findViewById(R.id.detailFirstName);
+        firstName = findViewById(R.id.detail_name);
         lastName = findViewById(R.id.detailLastName);
-        email = findViewById(R.id.detailEmail);
+        email = findViewById(R.id.detail_email);
         role = findViewById(R.id.detailRole);
-        phoneNumber = findViewById(R.id.detailPhoneNumber);
-        programOrDegree = findViewById(R.id.detailProgramOrDegree);
+        phoneNumber = findViewById(R.id.detail_phone_number);
+        programOrDegree = findViewById(R.id.session_program);
         coursesOffered = findViewById(R.id.detailCoursesOffered);
 
         // Stores the info about the request that was passed from the previous activity
@@ -145,7 +145,7 @@ public class AdminRequestDetailsActivity extends AppCompatActivity {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
 
         // Determine the id (phone number) of the user entry the request was from
-        TextView userIdTextView = findViewById(R.id.detailPhoneNumber);
+        TextView userIdTextView = findViewById(R.id.detail_phone_number);
         String userId = userIdTextView.getText().toString();
 
         // Find the user in the database that had its request status changed (use the phone number since that is the id for every entry in the database) and update its status accordingly

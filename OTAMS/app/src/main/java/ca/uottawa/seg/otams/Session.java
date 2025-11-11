@@ -13,10 +13,10 @@ public class Session {
     private String tutorPhoneNumber;
     private String studentName;
     private String studentPhoneNumber;
-    private String sessionStatus;
+    private RegistrationStatus sessionStatus;
     public Session() {}
 
-    public Session(String id, String date, Date startTime, Date endTime, String tutorName, String tutorPhoneNumber, String studentName, String studentPhoneNumber, String registrationStatus) {
+    public Session(String id, String date, Date startTime, Date endTime, String tutorName, String tutorPhoneNumber, String studentName, String studentPhoneNumber, RegistrationStatus registrationStatus) {
         this.id = id;
         this.date = date;
         this.startTime = startTime;
@@ -89,6 +89,6 @@ public class Session {
         this.studentPhoneNumber = studentPhoneNumber;
     }
 
-    public String getSessionStatus(){ return sessionStatus; }
-    public void setSessionStatus(String status){ this.sessionStatus = status; }
+    public String getSessionStatus(){ return this.sessionStatus.toString(); }
+    public void setSessionStatus(String status){ this.sessionStatus = RegistrationStatus.valueOf(status.toUpperCase()); }
 }

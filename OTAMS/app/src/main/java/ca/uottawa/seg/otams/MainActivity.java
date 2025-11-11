@@ -19,6 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -77,95 +79,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Grab the data for all users in the database
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
-
-         //Store all users listed in the database with the same email (username) as the one that was entered (logically, there should only be one since every user should have a unique email even if it is not the key)
-//        Query searchForUsers = reference.orderByChild("email").equalTo(usernameInput);
-//
-//        searchForUsers.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                // If a user exists in the database with the entered username (email)
-//                if (snapshot.exists()) {
-//                    username.setError(null);
-//                    // username.setErrorEnabled(false);
-//
-//                    // Iterate through every user in the database with a matching username (email) to the one entered
-//                    for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-//
-//                        // Then fetch the password of the user with the entered username
-//                        String passwordFromDatabase = userSnapshot.child("password").getValue(String.class);
-//
-//                        // Then check if the password entered matches the password stored under that entry in the database
-//                        if (passwordFromDatabase.equals(passwordInput)) {
-//                            password.setError(null);
-//                            // password.setErrorEnabled(false);
-//
-//                            // If it does, then fetch that user's role from the database
-//                            String roleFromDatabase = userSnapshot.child("role").getValue(String.class);
-//
-//                            // Send the user to a different page upon successfully logging in depending on what type of user (role) they are
-//                            if ("Administrator".equals(roleFromDatabase)) {
-//                                // If the user is an administrator then send them to a unique welcome page
-//                                Intent intent = new Intent(MainActivity.this, WelcomeAdminPageActivity.class);
-//                                // Intent intent = new Intent(MainActivity.this, AdminDashboardActivity.class);
-//                                startActivity(intent);
-//                            } else {
-//                                // Otherwise, the user must be a student or tutor, so check the status of their registration request (approved, pending or rejected) and send them to the corresponding page
-//                                String requestStatusFromDatabase = userSnapshot.child("requestStatus").getValue(String.class);
-//                                // User user = userSnapshot.getValue(User.class);
-//
-//                                if (requestStatusFromDatabase.equals("PENDING")) {
-//                                    // If their request is still pending (i.e. has not been accepted or rejected by the administrator) set the next page as the pending page
-//                                    Intent intent = new Intent(MainActivity.this, RegistrationPendingPageActivity.class);
-//
-//                                    // Pass the user's role to the next page so it can be displayed there
-//                                    intent.putExtra("role", roleFromDatabase);
-//
-//                                    // Send the user to the pending page
-//                                    startActivity(intent);
-//                                } else if (requestStatusFromDatabase.equals("REJECTED")) {
-//                                    // If their request has been rejected set the next page as the rejected page
-//                                    Intent intent = new Intent(MainActivity.this, RegistrationRejectedPageActivity.class);
-//
-//                                    // Pass the user's role to the next page so it can be displayed there
-//                                    intent.putExtra("role", roleFromDatabase);
-//
-//                                    // Send the user to the rejected page
-//                                    startActivity(intent);
-//                                } else if (requestStatusFromDatabase.equals("APPROVED")) {
-//                                    // If their request has been approved set the next page as the welcome page
-//                                    Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
-//
-//                                    // Pass the user's role to the next page so it can be displayed there
-//                                    intent.putExtra("role", roleFromDatabase);
-//
-//                                    // Send the user to the welcome page
-//                                    startActivity(intent);
-//                                }
-//                            }
-//                        } else {
-//                            // Tell the user if the password did not match
-//                            password.setError("Incorrect password.");
-//                            password.requestFocus();
-//                        }
-//                    }
-//                } else {
-//                    // If a user with that username (email) does not exist in the database then they have not yet registered
-//                    username.setError("No such user exists with that username. Please register before attempting to login.");
-//                    username.requestFocus();
-//                }
-//            }
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-
-        /* Replaced old login check since the id and username has been switched to email as opposed to phone number and first name
-        // Store all users listed in the database with the same first name (username) that was entered
-        Query searchForUsers = reference.orderByChild("firstName").equalTo(usernameInput);
-
-    */
         Query searchForUsers = reference.orderByChild("email").equalTo(usernameInput);
 
         searchForUsers.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -174,12 +87,6 @@ public class MainActivity extends AppCompatActivity {
                 // If a user exists in the database with the entered info
                 if(snapshot.exists()) {
                     username.setError(null);
-                    // username.setErrorEnabled(false);
-
-                    // Iterator<DataSnapshot> iterator = snapshot.getChildren().iterator();
-                    // while (iterator.hasNext()) {
-                    //  DataSnapshot userSnapshot = iterator.next();
-
                     // Iterate through every user in the database with a matching username to the one entered
                     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
 
@@ -200,95 +107,33 @@ public class MainActivity extends AppCompatActivity {
                                 // Intent intent = new Intent(MainActivity.this, AdminDashboardActivity.class);
                                 startActivity(intent);
 
-                            } else if ("Student".equals(roleFromDatabase)) {
-                                //Stores user status
-                                // User user = userSnapshot.getValue(User.class);
-                                String statusFromDB =  userSnapshot.child("requestStatus").getValue(String.class);
-                                //Automatically send to welcome page
-                                // Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
-
-                                // Set the next page as the welcome page
-
-                                //Sends users to appropriate status page
-                                if (statusFromDB.equals("PENDING")) {
-
-                                    // Set the next page as the welcome page
-                                    Intent intent = new Intent(MainActivity.this, RegistrationPendingPageActivity.class);
-
-                                    // Pass the user's role to the next page so it can be displayed there
+                            } else {
+                                String statusFromDB = userSnapshot.child("requestStatus").getValue(String.class);
+                                RegistrationStatus rs = RegistrationStatus.valueOf(Objects.requireNonNull(statusFromDB));
+                                if (rs.getStatusClass() != null) {
+                                    Intent intent = new Intent(MainActivity.this, rs.getStatusClass());
                                     intent.putExtra("role", roleFromDatabase);
-
-                                    // Send the user to the welcome page
                                     startActivity(intent);
-                                } else if (statusFromDB.equals("REJECTED")) {
-                                    // Set the next page as the rejected page
-                                    Intent intent = new Intent(MainActivity.this, RegistrationRejectedPageActivity.class);
-                                    // Pass the user's role to the next page so it can be displayed there
-                                    intent.putExtra("role", roleFromDatabase);
+                                } else {
+                                    if ("Student".equals(roleFromDatabase)) {
+                                        Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
 
-                                    // Send the user to the appropriate page
-                                    startActivity(intent);
-                                }
-                                else if (statusFromDB.equals("APPROVED")) {
-                                    // Set the next page as the rejected page
-                                    Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
+                                        // Pass the user's role to the next page so it can be displayed there
+                                        intent.putExtra("role", roleFromDatabase);
 
-                                    // Pass the user's role to the next page so it can be displayed there
-                                    intent.putExtra("role", roleFromDatabase);
-
-                                    // Send the user to the appropriate page
-                                    startActivity(intent);
+                                        // Send the user to the appropriate page
+                                        startActivity(intent);
+                                    }
+                                    if ("Tutor".equals(roleFromDatabase)) {
+                                        Intent intent = new Intent(MainActivity.this, WelcomeTutorPageActivity.class);
+                                        intent.putExtra("phoneNumber", userSnapshot.child("phoneNumber").getValue(String.class));
+                                        intent.putExtra("email", userSnapshot.child("email").getValue(String.class));
+                                        startActivity(intent);
+                                    }
                                 }
                             }
-                            else if ("Tutor".equals(roleFromDatabase)) {
-                                //Stores user status
-                                // User user = userSnapshot.getValue(User.class);
-                                String statusFromDB =  userSnapshot.child("requestStatus").getValue(String.class);
-                                //Automatically send to welcome page
-                                // Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
 
-                                // Set the next page as the welcome page
-
-                                //Sends users to appropriate status page
-                                if (statusFromDB.equals("PENDING")) {
-
-                                    // Set the next page as the welcome page
-                                    Intent intent = new Intent(MainActivity.this, RegistrationPendingPageActivity.class);
-
-                                    // Pass the user's role to the next page so it can be displayed there
-                                    intent.putExtra("role", roleFromDatabase);
-
-                                    // Send the user to the welcome page
-                                    startActivity(intent);
-                                } else if (statusFromDB.equals("REJECTED")) {
-                                    // Set the next page as the rejected page
-                                    Intent intent = new Intent(MainActivity.this, RegistrationRejectedPageActivity.class);
-                                    // Pass the user's role to the next page so it can be displayed there
-                                    intent.putExtra("role", roleFromDatabase);
-
-                                    // Send the user to the appropriate page
-                                    startActivity(intent);
-                                }
-                                else if (statusFromDB.equals("APPROVED")) {
-                                    // Set the next page as the rejected page
-                                    Intent intent = new Intent(MainActivity.this, WelcomeTutorPageActivity.class);
-
-                                    // No longer needed since tutor's now have a unique welcome page
-                                    // Pass the user's role to the next page so it can be displayed there
-                                    // intent.putExtra("role", roleFromDatabase);
-
-                                    // Fetch the phone number from the database of the user trying to login
-                                    String phoneNumberFromDatabase =  userSnapshot.child("phoneNumber").getValue(String.class);
-
-                                    // Pass the user's phone number to the next page so that they can quickly be found in the database when on future pages (since the phone number is the key)
-                                    intent.putExtra("phoneNumber", phoneNumberFromDatabase);
-
-                                    // Send the user to the appropriate page
-                                    startActivity(intent);
-                                }
-                            }
-                        }
-                        else {
+                        } else {
                             // Tell the user if the password did not match
                             password.setError("Incorrect password.");
                             password.requestFocus();
