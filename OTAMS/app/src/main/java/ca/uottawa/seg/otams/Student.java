@@ -2,7 +2,7 @@ package ca.uottawa.seg.otams;
 
 public class Student extends User {
     // Instance variable
-    public String program;
+    private String program;
 
     public Student() {}
 
