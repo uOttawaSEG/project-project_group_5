@@ -3,7 +3,6 @@ package ca.uottawa.seg.otams;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,7 +18,7 @@ public class ActivityAvailibilitySlots extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_availibility_slots);
+        setContentView(R.layout.activity_availability_slots);
 
 
     }

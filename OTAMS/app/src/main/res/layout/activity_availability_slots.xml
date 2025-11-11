@@ -15,7 +15,7 @@
         android:id="@+id/adminDashboardTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/availibility_slots"
+        android:text="@string/availability_slots"
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"
