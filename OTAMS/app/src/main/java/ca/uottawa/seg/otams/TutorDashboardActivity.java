@@ -58,10 +58,10 @@ public class TutorDashboardActivity extends AppCompatActivity {
                 filter = s -> RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.PENDING;
             }
             if (getString(R.string.upcoming_sessions).equals(tabString)) {
-                filter = s -> s.getStartTime().after(c.getTime());
+                filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
             }
             if (getString(R.string.past_sessions).equals(tabString)) {
-                filter = s -> s.getStartTime().before(c.getTime());
+                filter = s -> s.getStartTime().before(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
             }
             TutorDashboardActivity.this.getAllSessionsOfTutor(tutorPhoneNumber);
         }
@@ -146,6 +146,7 @@ public class TutorDashboardActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void populateRecyclerView(List<Session> sessionsList) {
         if (ula.getSessionList().isEmpty()) {

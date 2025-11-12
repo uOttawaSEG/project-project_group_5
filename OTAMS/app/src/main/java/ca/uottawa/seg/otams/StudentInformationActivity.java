@@ -48,8 +48,12 @@ public class StudentInformationActivity extends AppCompatActivity {
 
         // Check if the administrator rejected the request
         if (pressID == R.id.rejectButton) {
-            setSessionStatus(RegistrationStatus.REJECTED);
-
+            Intent intent=getIntent();
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("sessions");
+            String sessionId = intent.getStringExtra("id");
+            if(sessionId!=null){
+                ref.child(sessionId).removeValue();//remove the session from the database
+            }
             finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
         }
     }
