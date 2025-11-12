@@ -38,7 +38,7 @@
             android:exported="false" />
         <activity android:name=".ManageAvailabilityActivity"
             android:exported="false" />
-        <activity android:name=".SessionDetailsActivity"
+        <activity android:name=".StudentInformationActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

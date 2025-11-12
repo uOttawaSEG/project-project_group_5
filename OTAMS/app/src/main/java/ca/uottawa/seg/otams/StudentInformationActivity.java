@@ -13,7 +13,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
-public class SessionDetailsActivity extends AppCompatActivity {
+public class StudentInformationActivity extends AppCompatActivity {
 
     public static final String EMAIL = "email";
     public static final String PHONE_NUMBER = "phoneNumber";
@@ -27,7 +27,7 @@ public class SessionDetailsActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_session_details);
+        setContentView(R.layout.activity_student_information);
 
         // Text fields that need to be populated with the specified request's info
         name = findViewById(R.id.detail_full_name);
@@ -78,7 +78,7 @@ public class SessionDetailsActivity extends AppCompatActivity {
         // Check if the user is trying to access the admin dashboard
         if (pressID == R.id.button_dashboard) {
             // Set the next page to the admin dashboard page
-            Intent intent = new Intent(SessionDetailsActivity.this, TutorDashboardActivity.class);
+            Intent intent = new Intent(StudentInformationActivity.this, TutorDashboardActivity.class);
 
 
             // Send the user to the tutor dashboard page
