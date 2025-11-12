@@ -19,13 +19,15 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * Tutor dashboard: fixed robust date deserialization + tab/filter handling.
+ */
 public class TutorDashboardActivity extends AppCompatActivity {
 
     private RecyclerView recycleView;
@@ -47,21 +49,26 @@ public class TutorDashboardActivity extends AppCompatActivity {
 
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
+            // Build the filter for the selected tab
             String tabString = Objects.requireNonNull(tab.getText()).toString();
-            Calendar now = Calendar.getInstance();
+            long now = System.currentTimeMillis();
 
             if (getString(R.string.pending_session_requests).equals(tabString)) {
-                filter = s -> RegistrationStatus.PENDING.name().equalsIgnoreCase(s.getSessionStatus());
+                filter = s -> "PENDING".equalsIgnoreCase(s.getSessionStatus());
             } else if (getString(R.string.upcoming_sessions).equals(tabString)) {
-                filter = s -> RegistrationStatus.APPROVED.name().equalsIgnoreCase(s.getSessionStatus())
+                filter = s -> "APPROVED".equalsIgnoreCase(s.getSessionStatus())
                         && s.getStartTime() != null
-                        && s.getStartTime().after(now.getTime());
+                        && s.getStartTime().getTime() <= now;
             } else if (getString(R.string.past_sessions).equals(tabString)) {
-                filter = s -> RegistrationStatus.APPROVED.name().equalsIgnoreCase(s.getSessionStatus())
+                filter = s -> "APPROVED".equalsIgnoreCase(s.getSessionStatus())
                         && s.getStartTime() != null
-                        && s.getStartTime().before(now.getTime());
+                        && s.getStartTime().getTime() > now;
+            } else {
+                // fallback: show nothing (or change to show all)
+                filter = s -> false;
             }
 
+            // Reload sessions using the new filter
             getAllSessionsOfTutor(tutorPhoneNumber);
         }
 
@@ -75,9 +82,17 @@ public class TutorDashboardActivity extends AppCompatActivity {
             onTabSelected(tab);
         }
 
+        /**
+         * Returns the filter. If filter is not set yet, select/initialize the currently selected tab.
+         */
         public Predicate<Session> getFilter() {
             if (filter == null) {
                 TabLayout.Tab selectedTab = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());
+                if (selectedTab == null) {
+                    // select first tab if nothing selected
+                    selectedTab = tabLayout.getTabAt(0);
+                    if (selectedTab != null) selectedTab.select();
+                }
                 if (selectedTab != null) onTabSelected(selectedTab);
             }
             return filter;
@@ -101,9 +116,25 @@ public class TutorDashboardActivity extends AppCompatActivity {
         myTabFilter = new TabFilter(tabLayout, ula);
         tabLayout.addOnTabSelectedListener(myTabFilter);
 
-        getAllSessionsOfTutor(tutorPhoneNumber);
+        // Ensure a tab is selected and initial data is loaded.
+        TabLayout.Tab selected = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());
+        if (selected == null) {
+            TabLayout.Tab first = tabLayout.getTabAt(0);
+            if (first != null) {
+                first.select(); // triggers onTabSelected -> getAllSessionsOfTutor
+            } else {
+                // no tabs (?) just load all with a safe filter
+                getAllSessionsOfTutor(tutorPhoneNumber);
+            }
+        } else {
+            // ensure data loaded for selected tab
+            myTabFilter.onTabSelected(selected);
+        }
     }
 
+    /**
+     * Load all sessions for tutor and convert start/end times robustly.
+     */
     private void getAllSessionsOfTutor(String tutorPhoneNumber) {
         DatabaseReference sessionsRef = FirebaseDatabase.getInstance().getReference("sessions");
         Query tutorSessions = sessionsRef.orderByChild("tutorPhoneNumber").equalTo(tutorPhoneNumber);
@@ -119,22 +150,36 @@ public class TutorDashboardActivity extends AppCompatActivity {
                         Session s = ds.getValue(Session.class);
                         if (s == null) continue;
 
-                        // Force proper deserialization of startTime
-                        DataSnapshot startTimeSnap = ds.child("startTime").child("time");
-                        if (startTimeSnap.exists()) {
-                            Long millis = startTimeSnap.getValue(Long.class);
-                            if (millis != null) s.setStartTime(new Date(millis));
+                        // Robustly read startTime:
+                        // - try nested "time" field (Map form),
+                        // - then try direct numeric value stored at startTime,
+                        // - support Long/Double/Integer.
+                        Long startMillis = null;
+                        DataSnapshot stTimeNode = ds.child("startTime").child("time");
+                        if (stTimeNode.exists()) {
+                            Object val = stTimeNode.getValue();
+                            startMillis = convertNumberToLong(val);
+                        } else {
+                            // maybe startTime stored as plain number
+                            Object val = ds.child("startTime").getValue();
+                            startMillis = convertNumberToLong(val);
                         }
+                        if (startMillis != null) s.setStartTime(new Date(startMillis));
 
-                        // Force proper deserialization of endTime
-                        DataSnapshot endTimeSnap = ds.child("endTime").child("time");
-                        if (endTimeSnap.exists()) {
-                            Long millis = endTimeSnap.getValue(Long.class);
-                            if (millis != null) s.setEndTime(new Date(millis));
+                        // Same for endTime
+                        Long endMillis = null;
+                        DataSnapshot enTimeNode = ds.child("endTime").child("time");
+                        if (enTimeNode.exists()) {
+                            Object val = enTimeNode.getValue();
+                            endMillis = convertNumberToLong(val);
+                        } else {
+                            Object val = ds.child("endTime").getValue();
+                            endMillis = convertNumberToLong(val);
                         }
+                        if (endMillis != null) s.setEndTime(new Date(endMillis));
 
-                        // Remove REJECTED sessions
-                        if (RegistrationStatus.REJECTED.name().equalsIgnoreCase(s.getSessionStatus())) {
+                        // If session is REJECTED, schedule for deletion and skip adding
+                        if ("REJECTED".equalsIgnoreCase(s.getSessionStatus())) {
                             rejectedIds.add(s.getId());
                             continue;
                         }
@@ -142,23 +187,40 @@ public class TutorDashboardActivity extends AppCompatActivity {
                         allSessions.add(s);
                     }
 
-                    // Delete rejected sessions
+                    // Remove rejected sessions from DB
                     for (String id : rejectedIds) {
                         sessionsRef.child(id).removeValue();
                     }
                 }
 
-                // Filter for currently selected tab
+                // Apply current tab’s filter (guaranteed non-null by getFilter())
+                Predicate<Session> filter = myTabFilter.getFilter();
                 List<Session> filtered = allSessions.stream()
-                        .filter(myTabFilter.getFilter())
+                        .filter(filter)
                         .collect(Collectors.toList());
-
                 ula.updateData(filtered);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) { }
         });
+    }
+
+    /**
+     * Helper: convert Firebase numeric types to Long (returns null if not a numeric value).
+     */
+    private Long convertNumberToLong(Object val) {
+        if (val == null) return null;
+        if (val instanceof Long) return (Long) val;
+        if (val instanceof Integer) return ((Integer) val).longValue();
+        if (val instanceof Double) return ((Double) val).longValue();
+        // Firebase sometimes returns a String for numbers — try parse
+        if (val instanceof String) {
+            try {
+                return Long.parseLong((String) val);
+            } catch (NumberFormatException ignored) {}
+        }
+        return null;
     }
 
     public void onClickLogOff(View view) {
@@ -167,7 +229,7 @@ public class TutorDashboardActivity extends AppCompatActivity {
     }
 
     public void onClickManageAvailability(View view) {
-        Intent intent = new Intent(this, ManageAvailabilityActivity.class);
+        Intent intent = new Intent(TutorDashboardActivity.this, ManageAvailabilityActivity.class);
         intent.putExtra("phoneNumber", tutorPhoneNumber);
         startActivity(intent);
     }
@@ -175,6 +237,7 @@ public class TutorDashboardActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // Refresh to pick up any status changes (approve/reject).
         getAllSessionsOfTutor(tutorPhoneNumber);
     }
 }
