@@ -115,7 +115,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
                         String requestStatusFromDatabase = userSnapshot.child("requestStatus").getValue(String.class);
 
                         // If the expected registration status matches the request status of the user
-                        if (requestStatusFromDatabase.equals(registrationStatus.toString())) {
+                        if (registrationStatus.toString().equals(requestStatusFromDatabase)) {
                             // Then fetch the role the user wishes to register as
                             String roleFromDatabase = userSnapshot.child("role").getValue(String.class);
 

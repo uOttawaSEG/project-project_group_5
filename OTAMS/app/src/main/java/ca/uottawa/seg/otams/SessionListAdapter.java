@@ -59,4 +59,8 @@ public class SessionListAdapter extends RecyclerView.Adapter<SessionListView> {
         this.sessionList.clear();
         notifyDataSetChanged();
     }
+
+    public List<Session> getSessionList() {
+        return sessionList;
+    }
 }
