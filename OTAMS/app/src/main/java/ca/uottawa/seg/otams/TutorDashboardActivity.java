@@ -168,6 +168,17 @@ public class TutorDashboardActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void onClickManageAvailability(View view) {
+        // Create an Intent to open the Manage Availability screen
+        Intent intent = new Intent(TutorDashboardActivity.this, ManageAvailabilityActivity.class);
+
+        // Pass along the tutor's phone number
+        intent.putExtra("phoneNumber", tutorPhoneNumber);
+
+        // Launch the activity
+        startActivity(intent);
+    }
+
     // Refresh the RecyclerView (request inbox) whenever the tutor returns back to their dashboard
     @Override
     protected void onResume() {

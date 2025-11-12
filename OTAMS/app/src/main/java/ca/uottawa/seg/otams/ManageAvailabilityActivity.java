@@ -72,7 +72,8 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
     }
 
     public interface Callback {
-        void onSuccess();
+        // void onSuccess();
+        void onSuccess(String message);
         void onFailure(Exception e);
     }
 
@@ -219,16 +220,18 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                 Date endTime = tsocl.getEndTime();
                 addSlotInDatabase(c, startTime, endTime, new Callback() {
                     @Override
-                    public void onSuccess() {
-                        Toast.makeText(ManageAvailabilityActivity.this, "Added slots successfully!", Toast.LENGTH_LONG).show();
+                    public void onSuccess(String message) {
+                        // Toast.makeText(ManageAvailabilityActivity.this, "Added slots successfully!", Toast.LENGTH_LONG).show();
+
+                        Toast.makeText(ManageAvailabilityActivity.this, message, Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFailure(Exception e) {
                         if (e != null) {
-                            Toast.makeText(ManageAvailabilityActivity.this, "Failed to add slots: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(ManageAvailabilityActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         } else {
-                            Toast.makeText(ManageAvailabilityActivity.this, "Failed to add slots.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ManageAvailabilityActivity.this, "Failed to add timeslots.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -310,11 +313,16 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                                 createdCount++;
                             }
                         }
-
-                        if (createdCount > 0) {
-                            c.onSuccess();
-                        } else {
-                            c.onFailure(new Exception("All selected slots overlap existing ones."));
+                        if (createdCount == 1 && chunks.size() == 1) {
+                            c.onSuccess("Timeslot created successfully!");
+                        }
+                        else if (createdCount == chunks.size()) {
+                            c.onSuccess("All timeslots created successfully!");                       }
+                        else if (createdCount > 0) {
+                            c.onFailure(new Exception("WARNING: Some timeslots could not be created because they overlap with existing ones."));
+                        }
+                        else {
+                            c.onFailure(new Exception("ERROR: Cannot create overlapping timeslots."));
                         }
                     }
 
