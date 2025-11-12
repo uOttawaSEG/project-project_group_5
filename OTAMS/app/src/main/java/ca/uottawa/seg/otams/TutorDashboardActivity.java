@@ -105,8 +105,7 @@ public class TutorDashboardActivity extends AppCompatActivity {
             return insets;
         });
 
-        //tutorPhoneNumber = intent.getStringExtra("phoneNumber");
-        tutorPhoneNumber = "9999999999";
+        tutorPhoneNumber = intent.getStringExtra("phoneNumber");
         recycleView = findViewById(R.id.session_request_recycler_view);
         ula = new SessionListAdapter(new ArrayList<>());
         final TabLayout td = findViewById(R.id.tutor_tab_layout);
