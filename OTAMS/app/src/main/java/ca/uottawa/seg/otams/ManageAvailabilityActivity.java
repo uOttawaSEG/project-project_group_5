@@ -252,7 +252,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
 
         // Determine the date that the tutor is attempting to create the timeslot on
         String sessionDate = dateFromCalendar.get(Calendar.DAY_OF_MONTH) + "/" +
-                dateFromCalendar.get(Calendar.MONTH) + "/" +
+                (dateFromCalendar.get(Calendar.MONTH) + 1) + "/" +
                 dateFromCalendar.get(Calendar.YEAR);
 
         // Fetch tutor info and create slots selectively
