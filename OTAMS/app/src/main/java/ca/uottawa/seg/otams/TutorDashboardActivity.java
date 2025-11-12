@@ -19,6 +19,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -39,25 +40,26 @@ public class TutorDashboardActivity extends AppCompatActivity {
         private final SessionListAdapter sessionListAdapter;
 
         public TabFilter(TabLayout tl, SessionListAdapter sessionAdapter) {
-            this.tabLayout = tl;
-            this.sessionListAdapter = sessionAdapter;
+            filter = null;
+            tabLayout = tl;
+            sessionListAdapter = sessionAdapter;
         }
 
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
             String tabString = Objects.requireNonNull(tab.getText()).toString();
-            filter = null;
+            Calendar now = Calendar.getInstance();
 
-            if (tabString.equals(getString(R.string.pending_session_requests))) {
+            if (getString(R.string.pending_session_requests).equals(tabString)) {
                 filter = s -> RegistrationStatus.PENDING.name().equalsIgnoreCase(s.getSessionStatus());
-            } else if (tabString.equals(getString(R.string.upcoming_sessions))) {
+            } else if (getString(R.string.upcoming_sessions).equals(tabString)) {
                 filter = s -> RegistrationStatus.APPROVED.name().equalsIgnoreCase(s.getSessionStatus())
                         && s.getStartTime() != null
-                        && s.getStartTime().after(new Date());
-            } else if (tabString.equals(getString(R.string.past_sessions))) {
+                        && s.getStartTime().after(now.getTime());
+            } else if (getString(R.string.past_sessions).equals(tabString)) {
                 filter = s -> RegistrationStatus.APPROVED.name().equalsIgnoreCase(s.getSessionStatus())
                         && s.getStartTime() != null
-                        && s.getStartTime().before(new Date());
+                        && s.getStartTime().before(now.getTime());
             }
 
             getAllSessionsOfTutor(tutorPhoneNumber);
@@ -117,14 +119,21 @@ public class TutorDashboardActivity extends AppCompatActivity {
                         Session s = ds.getValue(Session.class);
                         if (s == null) continue;
 
-                        // Deserialize startTime and endTime from timestamp
-                        Object startObj = ds.child("startTime").child("time").getValue();
-                        if (startObj instanceof Long) s.setStartTime(new Date((Long) startObj));
+                        // Force proper deserialization of startTime
+                        DataSnapshot startTimeSnap = ds.child("startTime").child("time");
+                        if (startTimeSnap.exists()) {
+                            Long millis = startTimeSnap.getValue(Long.class);
+                            if (millis != null) s.setStartTime(new Date(millis));
+                        }
 
-                        Object endObj = ds.child("endTime").child("time").getValue();
-                        if (endObj instanceof Long) s.setEndTime(new Date((Long) endObj));
+                        // Force proper deserialization of endTime
+                        DataSnapshot endTimeSnap = ds.child("endTime").child("time");
+                        if (endTimeSnap.exists()) {
+                            Long millis = endTimeSnap.getValue(Long.class);
+                            if (millis != null) s.setEndTime(new Date(millis));
+                        }
 
-                        // Delete REJECTED sessions
+                        // Remove REJECTED sessions
                         if (RegistrationStatus.REJECTED.name().equalsIgnoreCase(s.getSessionStatus())) {
                             rejectedIds.add(s.getId());
                             continue;
@@ -133,15 +142,17 @@ public class TutorDashboardActivity extends AppCompatActivity {
                         allSessions.add(s);
                     }
 
-                    // Remove rejected sessions from Firebase
+                    // Delete rejected sessions
                     for (String id : rejectedIds) {
                         sessionsRef.child(id).removeValue();
                     }
                 }
 
+                // Filter for currently selected tab
                 List<Session> filtered = allSessions.stream()
                         .filter(myTabFilter.getFilter())
                         .collect(Collectors.toList());
+
                 ula.updateData(filtered);
             }
 
