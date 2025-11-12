@@ -50,7 +50,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/detailFirstName"
+                android:id="@+id/detail_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="first name "
@@ -89,7 +89,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/detailEmail"
+                android:id="@+id/detail_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="email@gmail.com"
@@ -135,7 +135,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/detailPhoneNumber"
+                android:id="@+id/detail_phone_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="#"
@@ -144,7 +144,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/detailProgramOrDegree"
+            android:id="@+id/session_program"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Program/Degree: "

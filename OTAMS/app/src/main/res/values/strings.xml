@@ -56,11 +56,11 @@
     <string name="slots">Slots</string>
     <string name="select_time_range">Select Time Range</string>
     <string name="back_to_dashboard">Back to Dashboard</string>
-    <string name="add_availabilty">Add Availabilty</string>
+    <string name="add_availability">Add Availability</string>
 
     <string name="student_information"> Student Information</string>
 
     <string name="tutor_approval_automate">Automate Approval</string>
-    <string name="availibility_slots">Availibility Slots</string>
+    <string name="availability_slots">Availability Slots</string>
 
 </resources>

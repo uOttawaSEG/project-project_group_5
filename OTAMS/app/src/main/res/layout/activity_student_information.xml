@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/default_background"
     android:padding="24dp"
-    tools:context=".SessionDetailsActivity">
+    tools:context=".StudentInformationActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,26 +50,9 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/detailFirstName"
+                android:id="@+id/detail_full_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="first name "
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/detailSpaceBetweenName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" "
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/detailLastName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="last name"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -89,12 +72,12 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/detailEmail"
+                android:id="@+id/detail_session_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="email@gmail.com"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -115,29 +98,20 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/detailPhoneNumber"
+            android:id="@+id/session_phone_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="#"
             android:textColor="@color/white"
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/detailProgramOrDegree"
+            android:id="@+id/session_program"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
             android:text="Program/Degree: "
             android:textColor="@color/white"
             android:textSize="20sp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="18dp">
-
-        </LinearLayout>
 
 
         <!-- Approve/Reject Buttons Section -->

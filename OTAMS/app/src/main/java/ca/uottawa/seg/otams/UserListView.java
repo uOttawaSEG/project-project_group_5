@@ -1,7 +1,6 @@
 package ca.uottawa.seg.otams;
 
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,8 +14,8 @@ public class UserListView extends RecyclerView.ViewHolder {
 
     public UserListView(@NonNull View itemView) {
         super(itemView);
-        this.name = itemView.findViewById(R.id.request_name_text);
-        this.role = itemView.findViewById(R.id.request_role_text);
+        this.name = itemView.findViewById(R.id.request_name_text_or_date);
+        this.role = itemView.findViewById(R.id.request_role_text_or_name);
         this.arrow = itemView.findViewById(R.id.arrow_text);
     }
 

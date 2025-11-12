@@ -1,10 +1,6 @@
 package ca.uottawa.seg.otams;
 
 
-import static android.content.Intent.getIntent;
-
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,40 +11,35 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class SessionDetailsActivity extends AppCompatActivity {
+import java.util.Objects;
 
-    private TextView firstName;
-    private TextView lastName;
+public class StudentInformationActivity extends AppCompatActivity {
+
+    public static final String EMAIL = "email";
+    public static final String PHONE_NUMBER = "phoneNumber";
+    public static final String PROGRAM = "program";
+    private TextView name;
     private TextView email;
     private TextView phoneNumber;
     private TextView program;
 
+    static final String STUDENT_NAME = "studentName";
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_session_details);
+        setContentView(R.layout.activity_student_information);
 
         // Text fields that need to be populated with the specified request's info
-        firstName = findViewById(R.id.detailFirstName);
-        lastName = findViewById(R.id.detailLastName);
-        email = findViewById(R.id.detailEmail);
-        phoneNumber = findViewById(R.id.detailPhoneNumber);
-        program = findViewById(R.id.detailProgramOrDegree);
+        name = findViewById(R.id.detail_full_name);
+        email = findViewById(R.id.detail_session_email);
+        phoneNumber = findViewById(R.id.session_phone_number);
+        program = findViewById(R.id.session_program);
 
         // Stores the info about the request that was passed from the previous activity
         Intent intent = getIntent();
-
-        String requestFirstName = intent.getStringExtra("firstName");
-        String requestLastName = intent.getStringExtra("lastName");
-        String requestEmail = intent.getStringExtra("email");
-        String requestPhoneNumber = intent.getStringExtra("phoneNumber");
-        String requestProgram = intent.getStringExtra("program");
-
         // Changes the placeholder text to the info for the specified request
-        firstName.setText(requestFirstName);
-        lastName.setText(requestLastName);
-        email.setText(requestEmail);
-        phoneNumber.setText(requestPhoneNumber);
-        program.setText(requestProgram);
+        name.setText(intent.getStringExtra(STUDENT_NAME));
+        phoneNumber.setText(intent.getStringExtra(PHONE_NUMBER));
     }
 
     //METHOD IS INCOMPLETE
@@ -57,8 +48,12 @@ public class SessionDetailsActivity extends AppCompatActivity {
 
         // Check if the administrator rejected the request
         if (pressID == R.id.rejectButton) {
-            setSessionStatus("REJECTED");
-
+            Intent intent=getIntent();
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("sessions");
+            String sessionId = intent.getStringExtra("id");
+            if(sessionId!=null){
+                ref.child(sessionId).removeValue();//remove the session from the database
+            }
             finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
         }
     }
@@ -68,16 +63,16 @@ public class SessionDetailsActivity extends AppCompatActivity {
         int pressID=view.getId();
         // Check if the administrator approved the request
         if (pressID == R.id.approveButton) {
-            setSessionStatus("APPROVED");
+            setSessionStatus(RegistrationStatus.APPROVED);
             // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
             finish();
         }
     }
 
-    private void setSessionStatus(String updatedStatus) {
+    private void setSessionStatus(RegistrationStatus sessionStatus) {
         Intent intent = getIntent();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("sessions");
-        ref.child(intent.getStringExtra("id")).child("sessionStatus").setValue(updatedStatus);
+        ref.child(Objects.requireNonNull(intent.getStringExtra("id"))).child("sessionStatus").setValue(sessionStatus.toString());
     }
 
 
@@ -87,7 +82,7 @@ public class SessionDetailsActivity extends AppCompatActivity {
         // Check if the user is trying to access the admin dashboard
         if (pressID == R.id.button_dashboard) {
             // Set the next page to the admin dashboard page
-            Intent intent = new Intent(SessionDetailsActivity.this, TutorDashboardActivity.class);
+            Intent intent = new Intent(StudentInformationActivity.this, TutorDashboardActivity.class);
 
 
             // Send the user to the tutor dashboard page
