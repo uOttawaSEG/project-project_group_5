@@ -23,6 +23,8 @@ public class StudentInformationActivity extends AppCompatActivity {
     private TextView phoneNumber;
     private TextView program;
 
+    private String tutorPhoneNumber; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
+    private String tutorEmail;
     static final String STUDENT_NAME = "studentName";
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,9 @@ public class StudentInformationActivity extends AppCompatActivity {
         // Changes the placeholder text to the info for the specified request
         name.setText(intent.getStringExtra(STUDENT_NAME));
         phoneNumber.setText(intent.getStringExtra(PHONE_NUMBER));
+
+        tutorPhoneNumber = intent.getStringExtra("phoneNumber");
+        tutorEmail = intent.getStringExtra("email");
     }
 
     //METHOD IS INCOMPLETE
@@ -48,6 +53,7 @@ public class StudentInformationActivity extends AppCompatActivity {
 
         // Check if the administrator rejected the request
         if (pressID == R.id.rejectButton) {
+            setSessionStatus(RegistrationStatus.REJECTED);
             Intent intent=getIntent();
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("sessions");
             String sessionId = intent.getStringExtra("id");
@@ -69,21 +75,24 @@ public class StudentInformationActivity extends AppCompatActivity {
         }
     }
 
-    private void setSessionStatus(RegistrationStatus sessionStatus) {
+    private void setSessionStatus(RegistrationStatus newStatus) {
         Intent intent = getIntent();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("sessions");
-        ref.child(Objects.requireNonNull(intent.getStringExtra("id"))).child("sessionStatus").setValue(sessionStatus.toString());
+        ref.child(intent.getStringExtra("id")).child("sessionStatus").setValue(newStatus.toString());
     }
 
 
-    public void onClickBackToDashboard(View view) {
+    public void onClickDashboard(View view) {
         int pressID=view.getId();
 
         // Check if the user is trying to access the admin dashboard
-        if (pressID == R.id.button_dashboard) {
+        if (pressID == R.id.backToDashboardBtn) {
             // Set the next page to the admin dashboard page
             Intent intent = new Intent(StudentInformationActivity.this, TutorDashboardActivity.class);
 
+            // Pass the tutor's phone number to the next page so that the tutor can quickly be identified and found in the database (since the phone number is the key)
+            intent.putExtra("phoneNumber", tutorPhoneNumber);
+            intent.putExtra("email", tutorEmail);
 
             // Send the user to the tutor dashboard page
             startActivity(intent);

@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.Date;
+
 
 public class TutorDashboardActivity extends AppCompatActivity {
 
@@ -37,6 +39,7 @@ public class TutorDashboardActivity extends AppCompatActivity {
     String tutorPhoneNumber; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
 
     private TabFilter myTabFilter;
+
     private class TabFilter implements TabLayout.OnTabSelectedListener {
 
         private Predicate<Session> filter;
@@ -54,6 +57,7 @@ public class TutorDashboardActivity extends AppCompatActivity {
         public void onTabSelected(TabLayout.Tab tab) {
             String tabString = Objects.requireNonNull(tab.getText()).toString();
             Calendar c = Calendar.getInstance();
+            //Date c = Calendar.getInstance().getTime();
             if (getString(R.string.pending_session_requests).equals(tabString)) {
                 filter = s -> RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.PENDING;
             }
@@ -174,10 +178,17 @@ public class TutorDashboardActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+
         // Determines which tab (Pending Session Requests, Upcoming Sessions or Past Sessions) the tutor is currently on in the dashboard
         // Add code here
 
         // Refreshes the request inbox for the selected tab
         // Add code in here
+    }
+
+    public void onClickManageAvailability(View view) {
+        Intent intent = new Intent(this, ManageAvailabilityActivity.class);
+        intent.putExtra("phoneNumber", tutorPhoneNumber);
+        startActivity(intent);
     }
 }
