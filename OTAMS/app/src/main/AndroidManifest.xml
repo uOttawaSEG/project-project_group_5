@@ -38,6 +38,8 @@
             android:exported="false" />
         <activity android:name=".ManageAvailabilityActivity"
             android:exported="false" />
+        <activity android:name=".SessionDetailsActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true" >
