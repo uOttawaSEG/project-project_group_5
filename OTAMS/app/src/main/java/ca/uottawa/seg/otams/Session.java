@@ -14,8 +14,12 @@ public class Session {
     private String studentName;
     private String studentPhoneNumber;
     private RegistrationStatus sessionStatus;
-    public Session() {}
+    public Session() {
+    }
 
+    public Session(String id, String date, Date startTime, Date endTime, String tutorName, String tutorPhoneNumber, String studentName, String studentPhoneNumber, String registrationStatus) {
+        this(id, date, startTime, endTime, tutorName, tutorPhoneNumber, studentName, studentPhoneNumber, RegistrationStatus.valueOf(registrationStatus.toUpperCase()));
+    }
     public Session(String id, String date, Date startTime, Date endTime, String tutorName, String tutorPhoneNumber, String studentName, String studentPhoneNumber, RegistrationStatus registrationStatus) {
         this.id = id;
         this.date = date;
