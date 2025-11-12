@@ -24,39 +24,41 @@ public class SessionListAdapter extends RecyclerView.Adapter<SessionListView> {
     @NonNull
     @Override
     public SessionListView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_list_student_tutor_request, parent, false);
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.activity_list_student_tutor_request, parent, false);
         return new SessionListView(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SessionListView holder, int position) {
-        Session s = this.sessionList.get(position);
-        holder.getDateAndTime().setText(MessageFormat.format("{0} {1}-{2}", s.getDate(), sdf.format(s.getStartTime()), sdf.format(s.getEndTime())));
+        Session s = sessionList.get(position);
+        holder.getDateAndTime().setText(
+                MessageFormat.format("{0} {1}-{2}", s.getDate(), sdf.format(s.getStartTime()), sdf.format(s.getEndTime()))
+        );
         holder.getStudentName().setText(s.getStudentName());
-        holder.getArrow().setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), StudentInformationActivity.class); // Set the next page
 
-            // Pass the details of the user who made the request (excluding their password) to the next page so it can be displayed there
+        holder.getArrow().setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), StudentInformationActivity.class);
             intent.putExtra(StudentInformationActivity.STUDENT_NAME, s.getStudentName());
             intent.putExtra(StudentInformationActivity.PHONE_NUMBER, s.getStudentPhoneNumber());
-            // Send the administrator to the detailed request page associated with the arrow the administrator clicked
+            intent.putExtra("id", s.getId()); // Pass session ID
             v.getContext().startActivity(intent);
         });
     }
 
     @Override
     public int getItemCount() {
-        return this.sessionList.size();
+        return sessionList.size();
     }
 
-    public void updateData(List<Session> sessionList) {
-        this.sessionList.clear();
-        this.sessionList.addAll(sessionList);
+    public void updateData(List<Session> sessions) {
+        sessionList.clear();
+        sessionList.addAll(sessions);
         notifyDataSetChanged();
     }
 
     public void clearData() {
-        this.sessionList.clear();
+        sessionList.clear();
         notifyDataSetChanged();
     }
 
