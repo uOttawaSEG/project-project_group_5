@@ -44,31 +44,86 @@ public class TutorDashboardActivity extends AppCompatActivity {
 
         private final SessionListAdapter sessionListAdapter;
 
-        public TabFilter(TabLayout tl, SessionListAdapter sessionAdapter){
+        public TabFilter(TabLayout tl, SessionListAdapter sessionAdapter) {
             filter  = null;
             tabLayout = tl;
             sessionListAdapter = sessionAdapter;
         }
 
+        /*
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
             String tabString = Objects.requireNonNull(tab.getText()).toString();
             Calendar c = Calendar.getInstance();
-            if (getString(R.string.pending_session_requests).equals(tabString)) {
-                filter = s -> RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.PENDING;
+            if (getString(R.string.all_sessions).equals(tabString)) {
+                // filter = s -> RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.PENDING;
+                // filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
+
+                // Shows all sessions except past sessions with a delete button beside each one and the little arrow to see more details. Availibility slots that were never booked but have already passed should also not be displayed
+                // Thus, it would probably be best to filter sessions by time here maybe
             }
             if (getString(R.string.upcoming_sessions).equals(tabString)) {
-                filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
+                // filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
+
+                // Shows sessions that have been approved only
+                // Thus it would probably be best to filter sessions by time and approved
             }
             if (getString(R.string.past_sessions).equals(tabString)) {
-                filter = s -> s.getStartTime().before(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
+                // filter = s -> s.getStartTime().before(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
+
+                // Shows sessions that have already happened (approved and in the past)
+                // Thus it would probably be best to filter sessions by time and approved
             }
+            TutorDashboardActivity.this.getAllSessionsOfTutor(tutorPhoneNumber);
+        }
+
+         */
+
+        @Override
+        public void onTabSelected(TabLayout.Tab tab) {
+            String tabString = Objects.requireNonNull(tab.getText()).toString();
+            Calendar c = Calendar.getInstance();
+            Date now = c.getTime();
+
+            if (getString(R.string.all_sessions).equals(tabString)) {
+                // All sessions that are NOT in the past
+                // (so we exclude any sessions whose startTime < now)
+
+
+                filter = s -> {
+                    Date start = s.getStartTime();
+                    if (start == null) return false;
+                    return start.after(now) // only upcoming or current
+                            && !"REJECTED".equalsIgnoreCase(s.getSessionStatus())
+                            && !"CANCELLED".equalsIgnoreCase(s.getSessionStatus());
+                };
+
+            }
+            else if (getString(R.string.upcoming_sessions).equals(tabString)) {
+                // Approved sessions only, in the future
+                filter = s -> {
+                    Date start = s.getStartTime();
+                    if (start == null) return false;
+                    return start.after(now)
+                            && "APPROVED".equalsIgnoreCase(s.getSessionStatus());
+                };
+            }
+            else if (getString(R.string.past_sessions).equals(tabString)) {
+                // Approved sessions that already happened
+                filter = s -> {
+                    Date start = s.getStartTime();
+                    if (start == null) return false;
+                    return start.before(now)
+                            && "APPROVED".equalsIgnoreCase(s.getSessionStatus());
+                };
+            }
+
             TutorDashboardActivity.this.getAllSessionsOfTutor(tutorPhoneNumber);
         }
 
         @Override
         public void onTabUnselected(TabLayout.Tab tab) {
-            this.sessionListAdapter.clearData();
+            sessionListAdapter.clearData();
         }
 
         @Override
@@ -120,13 +175,12 @@ public class TutorDashboardActivity extends AppCompatActivity {
 
     private void getAllSessionsOfTutor(String tutorPhoneNumber) {
         // Get all sessions from Firebase
-
         DatabaseReference sessionsReference = FirebaseDatabase.getInstance().getReference("sessions");
         Query tutorSessions = sessionsReference.orderByChild("tutorPhoneNumber").equalTo(tutorPhoneNumber);
         tutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                final List<Session> returnList = new ArrayList<>();
+                List<Session> returnList = new ArrayList<>();
                 if (snapshot.exists()) {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String phoneNumber = ds.child("tutorPhoneNumber").getValue(String.class);
@@ -167,6 +221,24 @@ public class TutorDashboardActivity extends AppCompatActivity {
 
         // Send the user to the login page
         startActivity(intent);
+    }
+
+    public void onClickManageAvailability(View view) {
+
+        int pressID=view.getId();
+
+        // Check if the user is trying to access the manage availability page
+        if (pressID == R.id.button_manage_availability) {
+            // Set the next page to the manage availability page
+            Intent intent = new Intent(TutorDashboardActivity.this, ManageAvailabilityActivity.class);
+
+            // Pass the tutor's phone number to the next page so that the tutor can quickly be identified and found in the database (since the phone number is the key)
+            intent.putExtra("phoneNumber", tutorPhoneNumber);
+
+            // Send the user to the manage availability page (i.e. the one with the calender)
+            startActivity(intent);
+        }
+
     }
 
     // Refresh the RecyclerView (request inbox) whenever the tutor returns back to their dashboard

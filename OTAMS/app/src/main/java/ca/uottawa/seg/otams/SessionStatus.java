@@ -10,7 +10,6 @@ public enum SessionStatus {
     COMPLETED;   // The session took place (past sessions)
 
     // CANCELLED,   // Either tutor or student cancelled after approval; probably not needed, will just remove the student info when cancelled and change the status back to open
-
     // DELETED;     // Tutor removed an open slot; probably not needed
 
     @NonNull
@@ -19,3 +18,8 @@ public enum SessionStatus {
         return name().toUpperCase();
     }
 }
+
+// All Sessions - Shows all slots with delete button beside each and arrow to see more info only if it has been booked or is attempting to be booked
+// Pending - Approved, rejected (session must be rejected before deleting)
+// Upcoming Sessions - (Approved) Cancel option
+// Past Session
