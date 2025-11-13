@@ -56,6 +56,8 @@ public class TutorDashboardActivity extends AppCompatActivity {
             Calendar c = Calendar.getInstance();
             Date now = c.getTime();
 
+            // Date now = new Date();
+
             if (getString(R.string.all_sessions).equals(tabString)) {
                 // filter = s -> RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.PENDING;
                 // filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
@@ -67,13 +69,13 @@ public class TutorDashboardActivity extends AppCompatActivity {
                 // filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
 
                 // Shows all sessions that have been booked by a student and approved by the tutor and have yet to happen
-                filter = s -> s.getEndTime().after(now) && s.getSessionStatus().equals("APPROVED");
+                filter = s -> s.getEndTime().after(now) && s.getSessionStatus().equals("OPEN");
             }
             else if (getString(R.string.past_sessions).equals(tabString)) {
                 // filter = s -> s.getStartTime().before(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
 
                 // Shows all sessions that the tutor has already finished
-                filter = s -> s.getEndTime().before(now) && s.getSessionStatus().equals("APPROVED");
+                filter = s -> s.getEndTime().before(now) && s.getSessionStatus().equals("OPEN");
             }
 
             TutorDashboardActivity.this.getAllSessionsOfTutor(tutorPhoneNumber);
@@ -131,6 +133,7 @@ public class TutorDashboardActivity extends AppCompatActivity {
             return sessionList.stream().filter(filterMechanism).collect(Collectors.toList());
     }
 
+    /*
     private void getAllSessionsOfTutor(String tutorPhoneNumber) {
         // Get all sessions from Firebase
         DatabaseReference sessionsReference = FirebaseDatabase.getInstance().getReference("sessions");
@@ -196,6 +199,75 @@ public class TutorDashboardActivity extends AppCompatActivity {
 
             }
         });
+    }
+    */
+
+    private void getAllSessionsOfTutor(String tutorPhoneNumber) {
+        DatabaseReference sessionsReference = FirebaseDatabase.getInstance().getReference("sessions");
+        Query tutorSessions = sessionsReference.orderByChild("tutorPhoneNumber").equalTo(tutorPhoneNumber);
+
+        tutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Session> returnList = new ArrayList<>();
+
+                if (snapshot.exists()) {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        String phoneNumber = ds.child("tutorPhoneNumber").getValue(String.class);
+                        if (!tutorPhoneNumber.equals(phoneNumber)) continue;
+
+                        Session s = ds.getValue(Session.class);
+
+                        // Fetch start and end times from Firebase
+                        if (s != null) {
+                            Date startTime = reconstructDateFromSnapshot(ds.child("startTime"));
+                            Date endTime = reconstructDateFromSnapshot(ds.child("endTime"));
+
+                            s.setStartTime(startTime);
+                            s.setEndTime(endTime);
+
+                            returnList.add(s);
+                        }
+                    }
+                }
+
+                populateRecyclerView(filterSessionBy(returnList, myTabFilter.getFilter()));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error if needed
+            }
+        });
+    }
+
+    /**
+     * Reconstructs a proper Date object from a Firebase timestamp snapshot
+     */
+    private Date reconstructDateFromSnapshot(DataSnapshot snapshot) {
+        if (!snapshot.exists()) return null;
+
+        Integer date = snapshot.child("date").getValue(Integer.class);
+        Integer year = snapshot.child("year").getValue(Integer.class);
+        Integer month = snapshot.child("month").getValue(Integer.class); // 0-based
+        Integer day = snapshot.child("day").getValue(Integer.class);
+        Integer hours = snapshot.child("hours").getValue(Integer.class);
+        Integer minutes = snapshot.child("minutes").getValue(Integer.class);
+        Integer seconds = snapshot.child("seconds").getValue(Integer.class);
+
+        if (year == null || month == null || day == null) return null;
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DATE, date);
+        cal.set(Calendar.YEAR, year + 1900);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, date);
+        cal.set(Calendar.HOUR_OF_DAY, hours != null ? hours : 0);
+        cal.set(Calendar.MINUTE, minutes != null ? minutes : 0);
+        cal.set(Calendar.SECOND, seconds != null ? seconds : 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        return cal.getTime();
     }
 
 

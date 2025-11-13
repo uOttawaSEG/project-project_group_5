@@ -330,7 +330,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                                 // Give it a unique ID that will represent its key in the database
                                 String id = databaseSessions.push().getKey();
 
-                                Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, null, null, SessionStatus.OPEN, false);
+                                Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, "Khalid Riegan", "8888888888", SessionStatus.OPEN, false);
 
                                 // If automatic approval is selected than the timeslot will immediately be approved when booked by a student
                                 if (automatic) {
@@ -386,6 +386,32 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
         }
 
         return slots;
+    }
+
+    private Date reconstructDateFromSnapshot(DataSnapshot snapshot) {
+        if (!snapshot.exists()) return null;
+
+        Integer date = snapshot.child("date").getValue(Integer.class);
+        Integer year = snapshot.child("year").getValue(Integer.class);
+        Integer month = snapshot.child("month").getValue(Integer.class); // 0-based
+        Integer day = snapshot.child("day").getValue(Integer.class);
+        Integer hours = snapshot.child("hours").getValue(Integer.class);
+        Integer minutes = snapshot.child("minutes").getValue(Integer.class);
+        Integer seconds = snapshot.child("seconds").getValue(Integer.class);
+
+        if (year == null || month == null || day == null) return null;
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DATE, date);
+        cal.set(Calendar.YEAR, year + 1900);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, date);
+        cal.set(Calendar.HOUR_OF_DAY, hours != null ? hours : 0);
+        cal.set(Calendar.MINUTE, minutes != null ? minutes : 0);
+        cal.set(Calendar.SECOND, seconds != null ? seconds : 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        return cal.getTime();
     }
 
     public void onClickBackToDashboard(View view) {
