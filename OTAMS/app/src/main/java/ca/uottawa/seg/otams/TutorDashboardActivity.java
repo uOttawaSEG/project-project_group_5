@@ -50,35 +50,6 @@ public class TutorDashboardActivity extends AppCompatActivity {
             sessionListAdapter = sessionAdapter;
         }
 
-        /*
-        @Override
-        public void onTabSelected(TabLayout.Tab tab) {
-            String tabString = Objects.requireNonNull(tab.getText()).toString();
-            Calendar c = Calendar.getInstance();
-            if (getString(R.string.all_sessions).equals(tabString)) {
-                // filter = s -> RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.PENDING;
-                // filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
-
-                // Shows all sessions except past sessions with a delete button beside each one and the little arrow to see more details. Availibility slots that were never booked but have already passed should also not be displayed
-                // Thus, it would probably be best to filter sessions by time here maybe
-            }
-            if (getString(R.string.upcoming_sessions).equals(tabString)) {
-                // filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
-
-                // Shows sessions that have been approved only
-                // Thus it would probably be best to filter sessions by time and approved
-            }
-            if (getString(R.string.past_sessions).equals(tabString)) {
-                // filter = s -> s.getStartTime().before(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
-
-                // Shows sessions that have already happened (approved and in the past)
-                // Thus it would probably be best to filter sessions by time and approved
-            }
-            TutorDashboardActivity.this.getAllSessionsOfTutor(tutorPhoneNumber);
-        }
-
-         */
-
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
             String tabString = Objects.requireNonNull(tab.getText()).toString();
@@ -86,36 +57,23 @@ public class TutorDashboardActivity extends AppCompatActivity {
             Date now = c.getTime();
 
             if (getString(R.string.all_sessions).equals(tabString)) {
-                // All sessions that are NOT in the past
-                // (so we exclude any sessions whose startTime < now)
+                // filter = s -> RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.PENDING;
+                // filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
 
-
-                filter = s -> {
-                    Date start = s.getStartTime();
-                    if (start == null) return false;
-                    return start.after(now) // only upcoming or current
-                            && !"REJECTED".equalsIgnoreCase(s.getSessionStatus())
-                            && !"CANCELLED".equalsIgnoreCase(s.getSessionStatus());
-                };
-
+                // Shows all sessions that have not yet passed and have not been rejected or cancelled (i.e. approved, pending and open session slots)
+                filter = s -> s.getEndTime().after(now) && !s.getSessionStatus().equals("REJECTED") && !s.getSessionStatus().equals("CANCELLED");
             }
             else if (getString(R.string.upcoming_sessions).equals(tabString)) {
-                // Approved sessions only, in the future
-                filter = s -> {
-                    Date start = s.getStartTime();
-                    if (start == null) return false;
-                    return start.after(now)
-                            && "APPROVED".equalsIgnoreCase(s.getSessionStatus());
-                };
+                // filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
+
+                // Shows all sessions that have been booked by a student and approved by the tutor and have yet to happen
+                filter = s -> s.getEndTime().after(now) && s.getSessionStatus().equals("APPROVED");
             }
             else if (getString(R.string.past_sessions).equals(tabString)) {
-                // Approved sessions that already happened
-                filter = s -> {
-                    Date start = s.getStartTime();
-                    if (start == null) return false;
-                    return start.before(now)
-                            && "APPROVED".equalsIgnoreCase(s.getSessionStatus());
-                };
+                // filter = s -> s.getStartTime().before(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
+
+                // Shows all sessions that the tutor has already finished
+                filter = s -> s.getEndTime().before(now) && s.getSessionStatus().equals("APPROVED");
             }
 
             TutorDashboardActivity.this.getAllSessionsOfTutor(tutorPhoneNumber);
@@ -177,6 +135,7 @@ public class TutorDashboardActivity extends AppCompatActivity {
         // Get all sessions from Firebase
         DatabaseReference sessionsReference = FirebaseDatabase.getInstance().getReference("sessions");
         Query tutorSessions = sessionsReference.orderByChild("tutorPhoneNumber").equalTo(tutorPhoneNumber);
+
         tutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -185,12 +144,50 @@ public class TutorDashboardActivity extends AppCompatActivity {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String phoneNumber = ds.child("tutorPhoneNumber").getValue(String.class);
                          if (tutorPhoneNumber.equals(phoneNumber)) {
+                             // If the session found in the database belongs to the tutor then create a session object from it (save the session)
                             Session s = ds.getValue(Session.class);
-                            returnList.add(s);
+
+                            if (s != null) {
+                                // Fetch the start/end timestamps stored in the database
+                                DataSnapshot startTimeSnapshot = ds.child("startTime");
+                                DataSnapshot endTimeSnapshot = ds.child("endTime");
+
+                                // Variables that will hold the start/end timestamps fetched from the database as Date objects
+                                Date startTime = null;
+                                Date endTime = null;
+
+                                if (startTimeSnapshot.exists()) {
+                                    // If there is a start time stored in the database (should always be true), then fetch and store its milliseconds representation
+                                    Long startTimeInMillis = startTimeSnapshot.child("time").getValue(Long.class);
+
+                                    if (startTimeInMillis != null) {
+                                        // If this representation in the database is valid (should always be), then create a Date object from it
+                                        startTime = new Date(startTimeInMillis);
+                                    }
+                                }
+
+                                if (endTimeSnapshot.exists()) {
+                                    // If there is a start time stored in the database (should always be true), then fetch and store its milliseconds representation
+                                    Long endTimeInMillis = endTimeSnapshot.child("time").getValue(Long.class);
+
+                                    if (endTimeInMillis != null) {
+                                        // If this representation in the database is valid (should always be), then create a Date object from it
+                                        endTime = new Date(endTimeInMillis);
+                                    }
+                                }
+
+                                // Set the start and end times of the session inside the session object representing it to these Date objects.
+                                // This is necessary since Firebase stores the start and end times as non Date objects (technically) that are
+                                // not properly converted and saved inside a session
+                                s.setStartTime(startTime);
+                                s.setEndTime(endTime);
+
+                                // Add the created session to the list storing all of this tutor's sessions
+                                returnList.add(s);
+                            }
                         }
                     }
                 }
-
                 populateRecyclerView(filterSessionBy(returnList, myTabFilter.getFilter()));
             }
 
