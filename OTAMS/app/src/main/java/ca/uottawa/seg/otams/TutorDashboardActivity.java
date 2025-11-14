@@ -133,7 +133,6 @@ public class TutorDashboardActivity extends AppCompatActivity {
             return sessionList.stream().filter(filterMechanism).collect(Collectors.toList());
     }
 
-    /*
     private void getAllSessionsOfTutor(String tutorPhoneNumber) {
         // Get all sessions from Firebase
         DatabaseReference sessionsReference = FirebaseDatabase.getInstance().getReference("sessions");
@@ -146,46 +145,19 @@ public class TutorDashboardActivity extends AppCompatActivity {
                 if (snapshot.exists()) {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String phoneNumber = ds.child("tutorPhoneNumber").getValue(String.class);
-                         if (tutorPhoneNumber.equals(phoneNumber)) {
-                             // If the session found in the database belongs to the tutor then create a session object from it (save the session)
+                        if (tutorPhoneNumber.equals(phoneNumber)) {
+                            // If the session found in the database belongs to the tutor then create a session object from it (save the session)
                             Session s = ds.getValue(Session.class);
 
                             if (s != null) {
-                                // Fetch the start/end timestamps stored in the database
-                                DataSnapshot startTimeSnapshot = ds.child("startTime");
-                                DataSnapshot endTimeSnapshot = ds.child("endTime");
+                                // Fetch the start/end timestamps stored in the database and save them inside properly reconstructed date objects
+                                Date startTime = reconstructSessionDate(ds.child("startTime"));
+                                Date endTime = reconstructSessionDate(ds.child("endTime"));
 
-                                // Variables that will hold the start/end timestamps fetched from the database as Date objects
-                                Date startTime = null;
-                                Date endTime = null;
-
-                                if (startTimeSnapshot.exists()) {
-                                    // If there is a start time stored in the database (should always be true), then fetch and store its milliseconds representation
-                                    Long startTimeInMillis = startTimeSnapshot.child("time").getValue(Long.class);
-
-                                    if (startTimeInMillis != null) {
-                                        // If this representation in the database is valid (should always be), then create a Date object from it
-                                        startTime = new Date(startTimeInMillis);
-                                    }
-                                }
-
-                                if (endTimeSnapshot.exists()) {
-                                    // If there is a start time stored in the database (should always be true), then fetch and store its milliseconds representation
-                                    Long endTimeInMillis = endTimeSnapshot.child("time").getValue(Long.class);
-
-                                    if (endTimeInMillis != null) {
-                                        // If this representation in the database is valid (should always be), then create a Date object from it
-                                        endTime = new Date(endTimeInMillis);
-                                    }
-                                }
-
-                                // Set the start and end times of the session inside the session object representing it to these Date objects.
-                                // This is necessary since Firebase stores the start and end times as non Date objects (technically) that are
-                                // not properly converted and saved inside a session
+                                // Set the session object's start and end times to those date objects
                                 s.setStartTime(startTime);
                                 s.setEndTime(endTime);
 
-                                // Add the created session to the list storing all of this tutor's sessions
                                 returnList.add(s);
                             }
                         }
@@ -200,74 +172,54 @@ public class TutorDashboardActivity extends AppCompatActivity {
             }
         });
     }
-    */
 
-    private void getAllSessionsOfTutor(String tutorPhoneNumber) {
-        DatabaseReference sessionsReference = FirebaseDatabase.getInstance().getReference("sessions");
-        Query tutorSessions = sessionsReference.orderByChild("tutorPhoneNumber").equalTo(tutorPhoneNumber);
+    // Properly reconstructs the start and end time of a session fetched from the database as a date object
+    private Date reconstructSessionDate (DataSnapshot snapshot) {
+        if (snapshot.exists()) {
+            // Fetch the values of each part of the start or end time in the database
+            Integer date = snapshot.child("date").getValue(Integer.class);
+            Integer year = snapshot.child("year").getValue(Integer.class);
+            Integer month = snapshot.child("month").getValue(Integer.class); // 0-based
+            // Integer day = snapshot.child("day").getValue(Integer.class);
+            Integer hours = snapshot.child("hours").getValue(Integer.class);
+            Integer minutes = snapshot.child("minutes").getValue(Integer.class);
+            Integer seconds = snapshot.child("seconds").getValue(Integer.class);
 
-        tutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Session> returnList = new ArrayList<>();
-
-                if (snapshot.exists()) {
-                    for (DataSnapshot ds : snapshot.getChildren()) {
-                        String phoneNumber = ds.child("tutorPhoneNumber").getValue(String.class);
-                        if (!tutorPhoneNumber.equals(phoneNumber)) continue;
-
-                        Session s = ds.getValue(Session.class);
-
-                        // Fetch start and end times from Firebase
-                        if (s != null) {
-                            Date startTime = reconstructDateFromSnapshot(ds.child("startTime"));
-                            Date endTime = reconstructDateFromSnapshot(ds.child("endTime"));
-
-                            s.setStartTime(startTime);
-                            s.setEndTime(endTime);
-
-                            returnList.add(s);
-                        }
-                    }
-                }
-
-                populateRecyclerView(filterSessionBy(returnList, myTabFilter.getFilter()));
+            // Check that the date related values are valid before setting anything
+            if (year == null || month == null || date == null) {
+                return null;
             }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle error if needed
+            // If they are valid then create an object that represents the exact start/end time
+            Calendar cal = Calendar.getInstance();
+
+            // Set date related values
+            cal.set(Calendar.DATE, date);
+            cal.set(Calendar.YEAR, year + 1900);
+            cal.set(Calendar.MONTH, month);
+            cal.set(Calendar.DAY_OF_MONTH, date);
+
+            // Set time related values
+            if (hours != null) {
+                cal.set(Calendar.HOUR_OF_DAY, hours);
+            } else {
+                cal.set(Calendar.HOUR_OF_DAY, 0);
             }
-        });
-    }
+            if (minutes != null) {
+                cal.set(Calendar.MINUTE, minutes);
+            } else {
+                cal.set(Calendar.MINUTE, 0);
+            }
+            if (seconds != null) {
+                cal.set(Calendar.SECOND, seconds);
+            } else {
+                cal.set(Calendar.SECOND, 0);
+            }
+            cal.set(Calendar.MILLISECOND, 0);
 
-    /**
-     * Reconstructs a proper Date object from a Firebase timestamp snapshot
-     */
-    private Date reconstructDateFromSnapshot(DataSnapshot snapshot) {
-        if (!snapshot.exists()) return null;
-
-        Integer date = snapshot.child("date").getValue(Integer.class);
-        Integer year = snapshot.child("year").getValue(Integer.class);
-        Integer month = snapshot.child("month").getValue(Integer.class); // 0-based
-        Integer day = snapshot.child("day").getValue(Integer.class);
-        Integer hours = snapshot.child("hours").getValue(Integer.class);
-        Integer minutes = snapshot.child("minutes").getValue(Integer.class);
-        Integer seconds = snapshot.child("seconds").getValue(Integer.class);
-
-        if (year == null || month == null || day == null) return null;
-
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DATE, date);
-        cal.set(Calendar.YEAR, year + 1900);
-        cal.set(Calendar.MONTH, month);
-        cal.set(Calendar.DAY_OF_MONTH, date);
-        cal.set(Calendar.HOUR_OF_DAY, hours != null ? hours : 0);
-        cal.set(Calendar.MINUTE, minutes != null ? minutes : 0);
-        cal.set(Calendar.SECOND, seconds != null ? seconds : 0);
-        cal.set(Calendar.MILLISECOND, 0);
-
-        return cal.getTime();
+            return cal.getTime();
+        }
+        return null;
     }
 
 

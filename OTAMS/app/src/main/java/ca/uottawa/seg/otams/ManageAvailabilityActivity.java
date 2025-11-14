@@ -77,7 +77,6 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
         void onFailure(Exception e);
     }
 
-
     private static class DateChangeListener implements CalendarView.OnDateChangeListener {
 
         private final Calendar currentSetCalendar;
@@ -312,11 +311,24 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                         // Keeps track of the number of session slots created
                         int sessionSlotsCreated = 0;
 
+                        // Determines which errors to show if any
+                        boolean inPastError = false;
+                        boolean overlapError = false;
+
                         // Iterate through the smaller 30 minute increment timeslots
                         for (Date[] createdTimeslot : splitTimeslots) {
                             // Determine the start and end time of the 30 minute timeslot
                             Date startSplitTimeslot = createdTimeslot[0];
                             Date endSplitTimeslot = createdTimeslot[1];
+
+                            // Validate that the timeslot is not before the current time today
+                            Calendar now = Calendar.getInstance();
+                            Calendar splitStartCal = Calendar.getInstance();
+                            splitStartCal.setTime(startSplitTimeslot);
+
+                            boolean inPast = dateFromCalendar.get(Calendar.YEAR) == now.get(Calendar.YEAR) &&
+                                    dateFromCalendar.get(Calendar.DAY_OF_YEAR) == now.get(Calendar.DAY_OF_YEAR) &&
+                                    startSplitTimeslot.before(now.getTime());
 
                             boolean overlapExists = false;
                             for (Session s : overlapSessions) {
@@ -324,15 +336,16 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                                 Date tutorSessionStartTime = s.getStartTime();
                                 Date tutorSessionEndTime = s.getEndTime();
 
-                                // Check if there's overlap
-                                if (startSplitTimeslot.before(tutorSessionEndTime) && endSplitTimeslot.after(tutorSessionStartTime)) {
+                                // Check if there's overlap (sessions that were rejected can be overlapped since they no longer exist for the tutor)
+                                if (startSplitTimeslot.before(tutorSessionEndTime) && endSplitTimeslot.after(tutorSessionStartTime) && !s.getSessionStatus().equals("REJECTED")) {
                                     overlapExists = true;
+                                    overlapError = true;
                                     break;
                                 }
                             }
 
-                            // If no overlap exists then add the 30 minute timeslot to the database
-                            if (!overlapExists) {
+                            // If no overlap exists and the timeslot is not created for a time earlier than now then add the 30 minute timeslot to the database
+                            if (!overlapExists && !inPast) {
 
                                 // Give it a unique ID that will represent its key in the database
                                 String id = databaseSessions.push().getKey();
@@ -349,18 +362,39 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
 
                                 sessionSlotsCreated++;
                             }
+
+                            // If the timeslot was invalid then note why it was invalid (either overlaps with existing timeslots or was created for a time earlier than now)
+                            if (overlapExists) {
+                                overlapError = true;
+                            }
+                            if (inPast) {
+                                inPastError = true;
+                            }
                         }
 
                         if (sessionSlotsCreated == 1 && splitTimeslots.size() == 1) {
                             c.onSuccess("Timeslot created successfully!");
                         }
                         else if (sessionSlotsCreated == splitTimeslots.size()) {
-                            c.onSuccess("All timeslots created successfully!");                       }
-                        else if (sessionSlotsCreated > 0) {
+                            c.onSuccess("All timeslots created successfully!");
+                        }
+                        else if (sessionSlotsCreated == 0 && overlapError && inPastError) {
+                            c.onFailure(new Exception("ERROR: Cannot create timeslots that overlap or are earlier than now."));
+                        }
+                        else if (sessionSlotsCreated == 0 && overlapError) {
+                            c.onFailure(new Exception("ERROR: Cannot create overlapping timeslots."));
+                        }
+                        else if (sessionSlotsCreated == 0 && inPastError) {
+                            c.onFailure(new Exception("ERROR: Cannot create timeslots at a time earlier than now."));
+                        }
+                        else if (sessionSlotsCreated > 0 && overlapError && inPastError) {
+                            c.onFailure(new Exception("WARNING: Some timeslots could not be created because of overlap or being for a time earlier than now."));
+                        }
+                        else if (sessionSlotsCreated > 0 && overlapError) {
                             c.onFailure(new Exception("WARNING: Some timeslots could not be created because they overlap with existing ones."));
                         }
-                        else {
-                            c.onFailure(new Exception("ERROR: Cannot create overlapping timeslots."));
+                        else if (sessionSlotsCreated > 0 && inPastError) {
+                            c.onFailure(new Exception("WARNING: Some timeslots could not be created because they are for a time earlier than now."));
                         }
                     }
                     @Override
