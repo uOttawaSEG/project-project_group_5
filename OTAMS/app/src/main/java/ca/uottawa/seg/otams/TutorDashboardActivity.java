@@ -159,7 +159,13 @@ public class TutorDashboardActivity extends AppCompatActivity {
                                 s.setStartTime(startTime);
                                 s.setEndTime(endTime);
 
-                                returnList.add(s);
+                                // Check if the session has already past (i.e. is a past session) and update its status in the database if it is (and has not already been updated)
+                                if (endTime.before(new Date()) && !sessionStatus.equals("COMPLETED")) {
+                                    s.setSessionStatus(SessionStatus.COMPLETED);
+                                    ds.getRef().child("sessionStatus").setValue("COMPLETE");
+
+                                    returnList.add(s);
+                                }
                             }
                         }
                     }
@@ -268,10 +274,8 @@ public class TutorDashboardActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        // Determines which tab (Pending Session Requests, Upcoming Sessions or Past Sessions) the tutor is currently on in the dashboard
-        // Add code here
-
-        // Refreshes the request inbox for the selected tab
-        // Add code in here
+        // Refreshes the inbox for the selected tab (i.e. update inbox to reflect any changes when coming back from manage availability page
+        // so that if they added a slot it is shown immediately upon returning to their dashboard)
+        getAllSessionsOfTutor(tutorPhoneNumber);
     }
 }

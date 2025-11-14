@@ -5,19 +5,25 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
 public class StudentInformationActivity extends AppCompatActivity {
 
-    public static final String EMAIL = "email";
+    // public static final String EMAIL = "email";
     public static final String PHONE_NUMBER = "phoneNumber";
-    public static final String PROGRAM = "program";
+    // public static final String PROGRAM = "program";
+    private String sessionId;
     private TextView name;
     private TextView email;
     private TextView phoneNumber;
@@ -33,79 +39,92 @@ public class StudentInformationActivity extends AppCompatActivity {
         name = findViewById(R.id.detail_full_name);
         email = findViewById(R.id.detail_session_email);
         phoneNumber = findViewById(R.id.session_phone_number);
-        program = findViewById(R.id.session_program);
+        program = findViewById(R.id.detail_program);
 
         // Stores the info about the request that was passed from the previous activity
         Intent intent = getIntent();
+
+        sessionId = intent.getStringExtra("id");
+
         // Changes the placeholder text to the info for the specified request
         name.setText(intent.getStringExtra(STUDENT_NAME));
         phoneNumber.setText(intent.getStringExtra(PHONE_NUMBER));
+        // email.setText(intent.getStringExtra(EMAIL));
+        // program.setText(intent.getStringExtra(PROGRAM));
+
+        // Fetch the missing student details (i.e. their email and program) from the users portion of the database
+        fetchStudentDetails(intent.getStringExtra(PHONE_NUMBER));
     }
 
-    //METHOD IS INCOMPLETE
-    public void onClickReject(View view) {
-        int pressID=view.getId();
+    private void fetchStudentDetails(String phone) {
+        // Fetch the student from the users portion of the database by using their phone number (i.e. the id for that student's entry)
+        DatabaseReference students = FirebaseDatabase.getInstance().getReference("users").child(phone);
+        students.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Fetch and store the student's email and program
+                    String studentEmail = snapshot.child("email").getValue(String.class);
+                    String studentProgram = snapshot.child("program").getValue(String.class);
 
-        // Check if the administrator rejected the request
-        if (pressID == R.id.rejectButton) {
-            Intent intent=getIntent();
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("sessions");
-            String sessionId = intent.getStringExtra("id");
-            if(sessionId!=null){
-                ref.child(sessionId).removeValue();//remove the session from the database
+                    // Changes the placeholder text to the info for the specified request
+                    email.setText(studentEmail);
+                    program.setText(studentProgram);
+                }
             }
-            finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
-    //METHOD IS INCOMPLETE
+    public void onClickReject(View view) {
+        // int pressID=view.getId();
+
+        // Set the status of the session in the database to rejected
+        if (sessionId != null) {
+            DatabaseReference session = FirebaseDatabase.getInstance().getReference("sessions").child(sessionId);
+            session.child("sessionStatus").setValue("REJECTED");
+        }
+        finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
+    }
+
     public void onClickApprove(View view) {
-        int pressID=view.getId();
-        // Check if the administrator approved the request
+        // Set the status of the session in the database to approved
+        if (sessionId != null) {
+            DatabaseReference session = FirebaseDatabase.getInstance().getReference("sessions").child(sessionId);
+            session.child("sessionStatus").setValue("APPROVED");
+        }
+        finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
+
+        // int pressID=view.getId();
+        // Check if the tutor approved the request
+        /*
         if (pressID == R.id.approveButton) {
-            setSessionStatus(RegistrationStatus.APPROVED);
+
+            setSessionStatus(SessionStatus.APPROVED);
             // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
             finish();
         }
+        */
     }
 
-    private void setSessionStatus(RegistrationStatus sessionStatus) {
+    private void setSessionStatus(SessionStatus sessionStatus) {
         Intent intent = getIntent();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("sessions");
         ref.child(Objects.requireNonNull(intent.getStringExtra("id"))).child("sessionStatus").setValue(sessionStatus.toString());
     }
 
-
     public void onClickBackToDashboard(View view) {
         int pressID=view.getId();
 
-        // Check if the user is trying to access the admin dashboard
-        if (pressID == R.id.button_dashboard) {
-            // Set the next page to the admin dashboard page
-            Intent intent = new Intent(StudentInformationActivity.this, TutorDashboardActivity.class);
+        // Check if the tutor is trying to return to their dashboard
+        if (pressID == R.id.backToDashboardBtn) {
 
-
-            // Send the user to the tutor dashboard page
-            startActivity(intent);
+            // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
+            finish();
         }
     }
-
-    //copied from AdminRequestDetailsAcitivity.java
-    //applies to users not sessions
-    //i want to search by session id but im so confused and dont know how (╥﹏╥)
-    /*
-    public void setRequestStatus(RegistrationStatus requestStatus) {
-        // Grab all users' info from the database
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
-
-        // Determine the id (phone number) of the user entry the request was from
-        TextView userIdTextView = findViewById(R.id.detailPhoneNumber);
-        String userId = userIdTextView.getText().toString();
-
-        // Find the user in the database that had its request status changed (use the phone number since that is the id for every entry in the database) and update its status accordingly
-        reference.child(userId).child("requestStatus").setValue(requestStatus.toString());
-    }
-     */
 }
 
 
