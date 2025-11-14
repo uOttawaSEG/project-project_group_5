@@ -40,6 +40,12 @@
             android:exported="false" />
         <activity android:name=".StudentInformationActivity"
             android:exported="false" />
+        <activity android:name=".StudentInfoPastActivity"
+            android:exported="false" />
+        <activity android:name=".OpenTimeslotPageActivity"
+            android:exported="false" />
+        <activity android:name=".StudentInfoUpcomingActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true" >
