@@ -34,7 +34,7 @@ public class SessionListAdapter extends RecyclerView.Adapter<SessionListView> {
         holder.getDateAndTime().setText(MessageFormat.format("{0} {1}-{2}", s.getDate(), sdf.format(s.getStartTime()), sdf.format(s.getEndTime())));
         holder.getStudentName().setText(s.getStudentName());
         holder.getArrow().setOnClickListener(v -> {
-            // Send tutor to different page when they click the arrow depending on the status of the session
+            // Send the tutor to a different page when they click the arrow depending on the status of the session
             Intent intent;
             if (s.getSessionStatus().equals("OPEN")) {
                 intent = new Intent(v.getContext(), StudentInformationActivity.class); // Set the next page
@@ -50,7 +50,6 @@ public class SessionListAdapter extends RecyclerView.Adapter<SessionListView> {
             }
             else {
                 intent = new Intent(v.getContext(), StudentInformationActivity.class); // Set the next page
-
             }
 
             // Pass the details of the user who made the request (excluding their password) to the next page so it can be displayed there

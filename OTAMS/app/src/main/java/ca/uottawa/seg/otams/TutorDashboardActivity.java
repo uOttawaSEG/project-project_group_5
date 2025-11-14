@@ -75,7 +75,7 @@ public class TutorDashboardActivity extends AppCompatActivity {
                 // filter = s -> s.getStartTime().before(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
 
                 // Shows all sessions that the tutor has already finished
-                filter = s -> s.getEndTime().before(now) && s.getSessionStatus().equals("OPEN");
+                filter = s -> s.getEndTime().before(now) && s.getSessionStatus().equals("COMPLETED");
             }
 
             TutorDashboardActivity.this.getAllSessionsOfTutor(tutorPhoneNumber);
@@ -159,11 +159,21 @@ public class TutorDashboardActivity extends AppCompatActivity {
                                 s.setStartTime(startTime);
                                 s.setEndTime(endTime);
 
-                                // Check if the session has already past (i.e. is a past session) and update its status in the database if it is (and has not already been updated)
-                                if (endTime.before(new Date()) && !sessionStatus.equals("COMPLETED")) {
-                                    s.setSessionStatus(SessionStatus.COMPLETED);
-                                    ds.getRef().child("sessionStatus").setValue("COMPLETE");
+                                Calendar c = Calendar.getInstance();
+                                Date now = c.getTime();
 
+                                if (endTime.before(now) && sessionStatus.equals("APPROVED")) {
+                                    // Check if the session has already past (i.e. is a past session) and update its status in the database if it is (and has not already been updated)
+                                    s.setSessionStatus(SessionStatus.COMPLETED);
+                                    ds.getRef().child("sessionStatus").setValue("COMPLETED");
+
+                                    returnList.add(s);
+                                }
+                                else if (endTime.before(now) && (sessionStatus.equals("OPEN") || sessionStatus.equals("PENDING"))) {
+                                    // If the timeslot's time has already past and was not booked then delete it from the database and do not display it anywhere in the dashboard
+                                    ds.getRef().removeValue();
+                                }
+                                else {
                                     returnList.add(s);
                                 }
                             }
