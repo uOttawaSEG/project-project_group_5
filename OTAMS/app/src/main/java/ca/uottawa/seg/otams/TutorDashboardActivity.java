@@ -58,18 +58,27 @@ public class TutorDashboardActivity extends AppCompatActivity {
 
             // Date now = new Date();
 
-            if (getString(R.string.all_sessions).equals(tabString)) {
+            if (getString(R.string.open_timeslots).equals(tabString)) {
                 // filter = s -> RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.PENDING;
                 // filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
+                // filter = s -> s.getEndTime().after(now) && !s.getSessionStatus().equals("REJECTED") && !s.getSessionStatus().equals("CANCELLED");
 
-                // Shows all sessions that have not yet passed and have not been rejected or cancelled (i.e. approved, pending and open session slots)
-                filter = s -> s.getEndTime().after(now) && !s.getSessionStatus().equals("REJECTED") && !s.getSessionStatus().equals("CANCELLED");
+                // Shows all timeslots that the tutor created that have not been booked yet
+                filter = s -> s.getEndTime().after(now) && s.getSessionStatus().equals("OPEN");
+            }
+            else if (getString(R.string.pending_sessions).equals(tabString)) {
+                // filter = s -> RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.PENDING;
+                // filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
+                // filter = s -> s.getEndTime().after(now) && !s.getSessionStatus().equals("REJECTED") && !s.getSessionStatus().equals("CANCELLED");
+
+                // Shows all sessions that have been requested by student but have not been approved/rejected by the tutor yet
+                filter = s -> s.getEndTime().after(now) && s.getSessionStatus().equals("PENDING");
             }
             else if (getString(R.string.upcoming_sessions).equals(tabString)) {
                 // filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
 
                 // Shows all sessions that have been booked by a student and approved by the tutor and have yet to happen
-                filter = s -> s.getEndTime().after(now) && s.getSessionStatus().equals("OPEN");
+                filter = s -> s.getEndTime().after(now) && s.getSessionStatus().equals("APPROVED");
             }
             else if (getString(R.string.past_sessions).equals(tabString)) {
                 // filter = s -> s.getStartTime().before(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;

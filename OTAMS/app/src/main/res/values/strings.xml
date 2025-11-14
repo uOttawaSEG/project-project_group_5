@@ -48,7 +48,9 @@
 
     <string name="logged_in_tutor">Tutor</string>
     <string name="tutor_dashboard">Tutor Dashboard</string>
-    <string name="all_sessions">All Sessions</string>
+    <string name="open_timeslots">Open Timeslots</string>
+    <string name="pending_sessions">Pending Sessions</string>
+    <!-- <string name="all_sessions">All Sessions</string> -->
     <!-- <string name="pending_session_requests">Pending Session Requests</string> -->
     <string name="upcoming_sessions">Upcoming Sessions</string>
     <string name="past_sessions">Past Sessions</string>
