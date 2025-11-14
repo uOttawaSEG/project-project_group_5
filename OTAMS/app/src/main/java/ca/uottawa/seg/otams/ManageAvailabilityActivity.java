@@ -216,8 +216,15 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Calendar c = dcl.getCurrentSetCalendar();
-                Date startTime = tsocl.getStartTime();
-                Date endTime = tsocl.getEndTime();
+                // Date startTime = tsocl.getStartTime();
+                // Date endTime = tsocl.getEndTime();
+
+                Date rawStartTime = tsocl.getStartTime();
+                Date rawEndTime   = tsocl.getEndTime();
+
+                Date startTime = combineDateAndTime(c, rawStartTime);
+                Date endTime   = combineDateAndTime(c, rawEndTime);
+
                 addSlotInDatabase(c, startTime, endTime, new Callback() {
                     @Override
                     public void onSuccess(String message) {
@@ -231,7 +238,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                         if (e != null) {
                             Toast.makeText(ManageAvailabilityActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         } else {
-                            Toast.makeText(ManageAvailabilityActivity.this, "Failed to add slots.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ManageAvailabilityActivity.this, "Failed to add timeslots.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -270,7 +277,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                 String tutorFullName = snapshot.child("firstName").getValue(String.class) + " " + snapshot.child("lastName").getValue(String.class);
 
                 // Split the timeslot into multiple smaller 30 minute timeslots
-                List<Date[]> splitTimeslots = splitIntoHalfHourChunks(startTime, endTime);
+                List<Date[]> splitTimeslots = splitIntoThirtyIncSessions(startTime, endTime);
 
                 DatabaseReference sessions = FirebaseDatabase.getInstance().getReference("sessions");
 
@@ -325,7 +332,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                             }
 
                             // If no overlap exists then add the 30 minute timeslot to the database
-                            if (overlapExists == false) {
+                            if (!overlapExists) {
 
                                 // Give it a unique ID that will represent its key in the database
                                 String id = databaseSessions.push().getKey();
@@ -344,7 +351,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                             }
                         }
 
-                        if (sessionSlotsCreated == 1) {
+                        if (sessionSlotsCreated == 1 && splitTimeslots.size() == 1) {
                             c.onSuccess("Timeslot created successfully!");
                         }
                         else if (sessionSlotsCreated == splitTimeslots.size()) {
@@ -367,51 +374,45 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
         });
     }
 
-    private List<Date[]> splitIntoHalfHourChunks(Date startTime, Date endTime) {
+    private List<Date[]> splitIntoThirtyIncSessions(Date startTime, Date endTime) {
+        // Store each date as two values in a list: start and end time
         List<Date[]> slots = new ArrayList<>();
 
+        // Convert date objects into calender objects
         Calendar start = Calendar.getInstance();
         start.setTime(startTime);
         Calendar end = Calendar.getInstance();
         end.setTime(endTime);
 
+        // Keep breaking up the large session into smaller 30 minute sessions until the session has fully been broked down
         while (start.before(end)) {
+            // Clone the object so its start and end times can be modified without messing up the original
             Calendar next = (Calendar) start.clone();
             next.add(Calendar.MINUTE, 30);
-            if (next.after(end)) {
-                next.setTime(endTime); // trim if not a full 30 mins
-            }
+
+            // Creates two date objects (start and end time) that represent one timeslot together
             slots.add(new Date[]{start.getTime(), next.getTime()});
+
+            // Continue splitting the timeslot
             start = next;
         }
 
         return slots;
     }
 
-    private Date reconstructDateFromSnapshot(DataSnapshot snapshot) {
-        if (!snapshot.exists()) return null;
+    private Date combineDateAndTime(Calendar dateFromCalendar, Date timeOnly) {
+        // Create a calender object with the date set to today (to be overridden with the session date later)
+        Calendar sessionDate = Calendar.getInstance();
 
-        Integer date = snapshot.child("date").getValue(Integer.class);
-        Integer year = snapshot.child("year").getValue(Integer.class);
-        Integer month = snapshot.child("month").getValue(Integer.class); // 0-based
-        Integer day = snapshot.child("day").getValue(Integer.class);
-        Integer hours = snapshot.child("hours").getValue(Integer.class);
-        Integer minutes = snapshot.child("minutes").getValue(Integer.class);
-        Integer seconds = snapshot.child("seconds").getValue(Integer.class);
+        // Set the time fields of the object (hours/minutes/seconds)
+        sessionDate.setTime(timeOnly);
 
-        if (year == null || month == null || day == null) return null;
+        // Overwrite the date fields with the date the tutor selected from the calender
+        sessionDate.set(Calendar.YEAR, dateFromCalendar.get(Calendar.YEAR));
+        sessionDate.set(Calendar.MONTH, dateFromCalendar.get(Calendar.MONTH));
+        sessionDate.set(Calendar.DAY_OF_MONTH, dateFromCalendar.get(Calendar.DAY_OF_MONTH));
 
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DATE, date);
-        cal.set(Calendar.YEAR, year + 1900);
-        cal.set(Calendar.MONTH, month);
-        cal.set(Calendar.DAY_OF_MONTH, date);
-        cal.set(Calendar.HOUR_OF_DAY, hours != null ? hours : 0);
-        cal.set(Calendar.MINUTE, minutes != null ? minutes : 0);
-        cal.set(Calendar.SECOND, seconds != null ? seconds : 0);
-        cal.set(Calendar.MILLISECOND, 0);
-
-        return cal.getTime();
+        return sessionDate.getTime();
     }
 
     public void onClickBackToDashboard(View view) {
