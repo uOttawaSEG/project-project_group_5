@@ -145,7 +145,8 @@ public class TutorDashboardActivity extends AppCompatActivity {
                 if (snapshot.exists()) {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String phoneNumber = ds.child("tutorPhoneNumber").getValue(String.class);
-                        if (tutorPhoneNumber.equals(phoneNumber)) {
+                        String sessionStatus = ds.child("sessionStatus").getValue(String.class);
+                        if (tutorPhoneNumber.equals(phoneNumber) && !sessionStatus.equals("REJECTED")) {
                             // If the session found in the database belongs to the tutor then create a session object from it (save the session)
                             Session s = ds.getValue(Session.class);
 
