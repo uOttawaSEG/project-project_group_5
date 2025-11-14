@@ -350,7 +350,12 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                                 // Give it a unique ID that will represent its key in the database
                                 String id = databaseSessions.push().getKey();
 
-                                Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, "Khalid Riegan", "8888888888", SessionStatus.OPEN, false);
+                                // Premade sessions created for testing purposes
+                                // Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, "Khalid Riegan", "8888888888", SessionStatus.OPEN, false);
+                                // Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, "Mari Anne", "5555555555", SessionStatus.APPROVED, false);
+                                // Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, "Lyselle Ordelle", "6666666666", SessionStatus.PENDING, false);
+
+                                Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, null, null, SessionStatus.OPEN, false);
 
                                 // If automatic approval is selected than the timeslot will immediately be approved when booked by a student
                                 if (automatic) {
