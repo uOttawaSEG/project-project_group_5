@@ -62,16 +62,16 @@ public class StudentDashboardActivity  extends AppCompatActivity{
             Calendar c = Calendar.getInstance();
             if (getString(R.string.student_pending_sessions).equals(tabString)) {
                 //something
-            }
+            } else
             if (getString(R.string.student_upcoming_sessions).equals(tabString)) {
 
                 //something
 
-            }
+            } else
             if (getString(R.string.student_past_sessions).equals(tabString)) {
                 //something
 
-            }if (getString(R.string.rejected_sessions).equals(tabString)) {
+            } else if (getString(R.string.rejected_sessions).equals(tabString)) {
                 //something
 
             }
@@ -122,7 +122,7 @@ public class StudentDashboardActivity  extends AppCompatActivity{
     }
 
     private static List<Session> filterSessionBy(List<Session> sessionList, Predicate<Session> filterMechanism) {
-        return sessionList.stream().filter(filterMechanism).collect(Collectors.toList());
+        return filterMechanism == null ? sessionList : sessionList.stream().filter(filterMechanism).collect(Collectors.toList());
     }
 
     private void getAllSessionsOfStudent(String studentEmail) {
