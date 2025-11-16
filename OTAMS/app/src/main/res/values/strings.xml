@@ -63,4 +63,16 @@
     <string name="tutor_approval_automate">Automate Approval</string>
     <string name="availability_slots">Availability Slots</string>
 
+    <string name="student_pending_sessions">Pending Sessions</string>
+    <string name="student_dashboard">Student Dashboard</string>
+    <string name="rejected_sessions">Rejected Sessions</string>
+    <string name="student_upcoming_sessions">Upcoming Sessions</string>
+    <string name="student_past_sessions">Past Sessions</string>
+    <string name="manage_sessions">Manage Sessions</string>
+
+    <string name="logged_in_student">Student</string>
+    <string name="search_button">Search by Course</string>
+
+
+
 </resources>

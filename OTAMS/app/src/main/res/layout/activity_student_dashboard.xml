@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/back_button"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/default_background"
+    android:orientation="vertical"
+    android:padding="24dp"
+    tools:context=".TutorDashboardActivity">
+
+    <!-- Screen Title -->
+
+    <TextView
+        android:id="@+id/studentDashboardTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:paddingBottom="10dp"
+        android:text="@string/student_dashboard"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <!-- Tab Layout for Pending and Rejected -->
+
+    <!-- RecyclerView that will change depending on selected tab -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/student_tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/transparent"
+        app:tabIndicatorColor="@color/white"
+        app:tabIndicatorHeight="4dp"
+        app:tabRippleColor="@android:color/transparent"
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextColor="@android:color/darker_gray">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/student_pending_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/student_pending_sessions" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/student_upcoming_requests_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/student_upcoming_sessions" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/student_past_sessions_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/student_past_sessions" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/student_rejected_sessions_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rejected_sessions" />
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/session_request_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical" />
+
+    <Button
+        android:id="@+id/button_manage_availability"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="93dp"
+        android:onClick="onClickManageSessions"
+        android:padding="10dp"
+        android:text="@string/manage_sessions"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/log_off"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="9dp"
+        android:onClick="onClickLogOff"
+        android:padding="10dp"
+        android:text="@string/log_off"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+
+</LinearLayout>

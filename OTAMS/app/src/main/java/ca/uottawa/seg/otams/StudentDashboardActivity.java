@@ -1,5 +1,10 @@
 package ca.uottawa.seg.otams;
 
+import static android.content.Intent.getIntent;
+import static android.provider.Settings.System.getString;
+
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -29,20 +34,21 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class TutorDashboardActivity extends AppCompatActivity {
-
-    //private RegistrationStatus rs = null;
+public class StudentDashboardActivity  extends AppCompatActivity{
     private RecyclerView recycleView;
     private SessionListAdapter ula;
-    String tutorPhoneNumber; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
+    String studentEmail; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
 
     private TabFilter myTabFilter;
+
     private class TabFilter implements TabLayout.OnTabSelectedListener {
 
         private Predicate<Session> filter;
         private final TabLayout tabLayout;
 
         private final SessionListAdapter sessionListAdapter;
+
+
 
         public TabFilter(TabLayout tl, SessionListAdapter sessionAdapter){
             filter  = null;
@@ -54,19 +60,22 @@ public class TutorDashboardActivity extends AppCompatActivity {
         public void onTabSelected(TabLayout.Tab tab) {
             String tabString = Objects.requireNonNull(tab.getText()).toString();
             Calendar c = Calendar.getInstance();
-            if (getString(R.string.pending_session_requests).equals(tabString)) {
-                filter = s -> RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.PENDING;
+            if (getString(R.string.student_pending_sessions).equals(tabString)) {
+                //something
             }
-            if (getString(R.string.upcoming_sessions).equals(tabString)) {
-                filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus())==RegistrationStatus.APPROVED;
+            if (getString(R.string.student_upcoming_sessions).equals(tabString)) {
 
-
-            }
-            if (getString(R.string.past_sessions).equals(tabString)) {
-                filter = s -> s.getStartTime().before(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus())==RegistrationStatus.APPROVED;
+                //something
 
             }
-            TutorDashboardActivity.this.getAllSessionsOfTutor(tutorPhoneNumber);
+            if (getString(R.string.student_past_sessions).equals(tabString)) {
+                //something
+
+            }if (getString(R.string.rejected_sessions).equals(tabString)) {
+                //something
+
+            }
+            StudentDashboardActivity.this.getAllSessionsOfStudent(studentEmail);
         }
 
         @Override
@@ -97,9 +106,8 @@ public class TutorDashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
-        setContentView(R.layout.activity_tutor_dashboard);
+        setContentView(R.layout.activity_student_dashboard);
 
-        // Stores the phone number of the tutor that was passed from the previous activity
         Intent intent = getIntent();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.back_button), (v, insets) -> {
@@ -108,32 +116,32 @@ public class TutorDashboardActivity extends AppCompatActivity {
             return insets;
         });
 
-        tutorPhoneNumber = intent.getStringExtra("phoneNumber");
+        studentEmail = intent.getStringExtra("email");
         recycleView = findViewById(R.id.session_request_recycler_view);
         ula = new SessionListAdapter(new ArrayList<>());
-        final TabLayout td = findViewById(R.id.tutor_tab_layout);
-        myTabFilter = new TabFilter(td, ula);
+        final TabLayout td = findViewById(R.id.student_tab_layout);
+        myTabFilter = new StudentDashboardActivity.TabFilter(td, ula);
         td.addOnTabSelectedListener(myTabFilter);
-        getAllSessionsOfTutor(tutorPhoneNumber);
+        getAllSessionsOfStudent(studentEmail);
     }
 
     private static List<Session> filterSessionBy(List<Session> sessionList, Predicate<Session> filterMechanism) {
-            return sessionList.stream().filter(filterMechanism).collect(Collectors.toList());
+        return sessionList.stream().filter(filterMechanism).collect(Collectors.toList());
     }
 
-    private void getAllSessionsOfTutor(String tutorPhoneNumber) {
+    private void getAllSessionsOfStudent(String studentEmail) {
         // Get all sessions from Firebase
 
         DatabaseReference sessionsReference = FirebaseDatabase.getInstance().getReference("sessions");
-        Query tutorSessions = sessionsReference.orderByChild("tutorPhoneNumber").equalTo(tutorPhoneNumber);
+        Query tutorSessions = sessionsReference.orderByChild("studentEmail").equalTo(studentEmail);
         tutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 final List<Session> returnList = new ArrayList<>();
                 if (snapshot.exists()) {
                     for (DataSnapshot ds : snapshot.getChildren()) {
-                        String phoneNumber = ds.child("tutorPhoneNumber").getValue(String.class);
-                         if (tutorPhoneNumber.equals(phoneNumber)) {
+                        String phoneNumber = ds.child("studentEmail").getValue(String.class);
+                        if (studentEmail.equals(phoneNumber)) {
                             Session s = ds.getValue(Session.class);
                             returnList.add(s);
                         }
@@ -166,11 +174,21 @@ public class TutorDashboardActivity extends AppCompatActivity {
 
     public void onClickLogOff(View view) {
         // Set the next page to the login page
-        Intent intent = new Intent(TutorDashboardActivity.this, MainActivity.class);
+        Intent intent = new Intent(StudentDashboardActivity.this, MainActivity.class);
 
         // Send the user to the login page
         startActivity(intent);
     }
+
+
+    //Manage Sessions page needs to be implemented
+//    public void onClickManageSessions(View view) {
+//        Intent intent = new Intent(StudentDashboardActivity.this, MainActivity.class);
+//
+//        // Send the user to the login page
+//        startActivity(intent);
+//    }
+
 
     // Refresh the RecyclerView (request inbox) whenever the tutor returns back to their dashboard
     @Override
@@ -184,3 +202,5 @@ public class TutorDashboardActivity extends AppCompatActivity {
         // Add code in here
     }
 }
+
+
