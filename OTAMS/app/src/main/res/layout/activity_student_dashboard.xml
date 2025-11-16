@@ -73,15 +73,18 @@
         android:scrollbars="vertical" />
 
     <Button
-        android:id="@+id/button_manage_sessions"
+        android:id="@+id/student_dashboard_back_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="93dp"
+        android:layout_marginTop="9dp"
+        android:onClick="onClickBackToWelcomePage"
         android:padding="10dp"
-        android:text="@string/manage_sessions"
+        android:text="@string/back_to_welcome_page"
         android:textSize="20sp"
         android:textStyle="bold" />
+
+
 
     <Button
         android:id="@+id/log_off"

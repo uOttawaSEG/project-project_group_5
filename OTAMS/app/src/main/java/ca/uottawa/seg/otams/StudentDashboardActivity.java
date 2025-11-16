@@ -168,12 +168,21 @@ public class StudentDashboardActivity  extends AppCompatActivity{
         }
     }
 
+    public void onClickBackToWelcomePage(View view) {
+        // Set the next page to the login page
+        if (view.getId() == R.id.student_dashboard_back_button) {
+            finish();
+        }
+    }
+
     public void onClickLogOff(View view) {
         // Set the next page to the login page
-        Intent intent = new Intent(StudentDashboardActivity.this, MainActivity.class);
+        if (view.getId() == R.id.log_off) {
+            Intent intent = new Intent(StudentDashboardActivity.this, MainActivity.class);
 
-        // Send the user to the login page
-        startActivity(intent);
+            // Send the user to the login page
+            startActivity(intent);
+        }
     }
 
 

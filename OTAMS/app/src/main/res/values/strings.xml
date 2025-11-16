@@ -79,7 +79,7 @@
 
     <string name="logged_in_student">Student</string>
     <string name="search_button">Search by Course</string>
-
+    <string name="back_to_welcome_page">Back to Welcome Page</string>
 
 
 </resources>
