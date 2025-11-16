@@ -48,7 +48,10 @@
 
     <string name="logged_in_tutor">Tutor</string>
     <string name="tutor_dashboard">Tutor Dashboard</string>
-    <string name="pending_session_requests">Pending Session Requests</string>
+    <string name="open_timeslots">Open Timeslots</string>
+    <string name="pending_sessions">Pending Sessions</string>
+    <!-- <string name="all_sessions">All Sessions</string> -->
+    <!-- <string name="pending_session_requests">Pending Session Requests</string> -->
     <string name="upcoming_sessions">Upcoming Sessions</string>
     <string name="past_sessions">Past Sessions</string>
     <string name="manage_availability">Manage Availability</string>
@@ -59,6 +62,10 @@
     <string name="add_availability">Add Availability</string>
 
     <string name="student_information"> Student Information</string>
+    <string name="open_timeslot_page_title"> Open Timeslot</string>
+    <string name="pending_session_page_title"> Request from Student</string>
+    <string name="upcoming_session_page_title"> Upcoming Session with Student</string>
+    <string name="past_session_page_title"> Past Session with Student</string>
 
     <string name="tutor_approval_automate">Automate Approval</string>
     <string name="availability_slots">Availability Slots</string>

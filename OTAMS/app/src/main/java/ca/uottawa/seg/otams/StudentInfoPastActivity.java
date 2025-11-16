@@ -18,12 +18,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
-public class StudentInformationActivity extends AppCompatActivity {
+public class StudentInfoPastActivity extends AppCompatActivity {
 
     // public static final String EMAIL = "email";
     public static final String PHONE_NUMBER = "phoneNumber";
     // public static final String PROGRAM = "program";
-    private String sessionId;
+    // private String sessionId;
     private TextView name;
     private TextView email;
     private TextView phoneNumber;
@@ -33,20 +33,20 @@ public class StudentInformationActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_information);
+        setContentView(R.layout.activity_student_info_past);
 
-        // Text fields that need to be populated with the specified request's info
+        // Text fields that need to be populated with the specified student's info
         name = findViewById(R.id.detail_full_name);
         email = findViewById(R.id.detail_session_email);
         phoneNumber = findViewById(R.id.session_phone_number);
         program = findViewById(R.id.detail_program);
 
-        // Stores the info about the request that was passed from the previous activity
+        // Stores the info about the student that was passed from the previous activity
         Intent intent = getIntent();
 
-        sessionId = intent.getStringExtra("id");
+        // sessionId = intent.getStringExtra("id");
 
-        // Changes the placeholder text to the info for the specified request
+        // Changes the placeholder text to the info for the specified student
         name.setText(intent.getStringExtra(STUDENT_NAME));
         phoneNumber.setText(intent.getStringExtra(PHONE_NUMBER));
         // email.setText(intent.getStringExtra(EMAIL));
@@ -67,7 +67,7 @@ public class StudentInformationActivity extends AppCompatActivity {
                     String studentEmail = snapshot.child("email").getValue(String.class);
                     String studentProgram = snapshot.child("program").getValue(String.class);
 
-                    // Changes the placeholder text to the info for the specified request
+                    // Changes the placeholder text to the info for the specified student
                     email.setText(studentEmail);
                     program.setText(studentProgram);
                 }
@@ -76,26 +76,6 @@ public class StudentInformationActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-    }
-
-    public void onClickReject(View view) {
-        // int pressID=view.getId();
-
-        // Set the status of the session in the database to rejected
-        if (sessionId != null) {
-            DatabaseReference session = FirebaseDatabase.getInstance().getReference("sessions").child(sessionId);
-            session.child("sessionStatus").setValue("REJECTED");
-        }
-        finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
-    }
-
-    public void onClickApprove(View view) {
-        // Set the status of the session in the database to approved
-        if (sessionId != null) {
-            DatabaseReference session = FirebaseDatabase.getInstance().getReference("sessions").child(sessionId);
-            session.child("sessionStatus").setValue("APPROVED");
-        }
-        finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
     }
 
     public void onClickBackToDashboard(View view) {
@@ -109,5 +89,3 @@ public class StudentInformationActivity extends AppCompatActivity {
         }
     }
 }
-
-

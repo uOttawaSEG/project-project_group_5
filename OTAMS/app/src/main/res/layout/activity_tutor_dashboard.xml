@@ -39,6 +39,7 @@
         app:tabSelectedTextColor="@color/white"
         app:tabTextColor="@android:color/darker_gray">
 
+        <!-- Old tab layout
         <com.google.android.material.tabs.TabItem
             android:id="@+id/pending_tab"
             android:layout_width="wrap_content"
@@ -56,6 +57,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/past_sessions" />
+            -->
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/open_timeslots_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/open_timeslots" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/pending_sessions_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pending_sessions" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/upcoming_sessions_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/upcoming_sessions" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/past_sessions_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/past_sessions" />
+
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.recyclerview.widget.RecyclerView

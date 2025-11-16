@@ -13,14 +13,13 @@ public class Session {
     private String tutorPhoneNumber;
     private String studentName;
     private String studentPhoneNumber;
-    private RegistrationStatus sessionStatus;
+    private SessionStatus sessionStatus;
+    private boolean autoApprove;
+
     public Session() {
     }
 
-    public Session(String id, String date, Date startTime, Date endTime, String tutorName, String tutorPhoneNumber, String studentName, String studentPhoneNumber, String registrationStatus) {
-        this(id, date, startTime, endTime, tutorName, tutorPhoneNumber, studentName, studentPhoneNumber, RegistrationStatus.valueOf(registrationStatus.toUpperCase()));
-    }
-    public Session(String id, String date, Date startTime, Date endTime, String tutorName, String tutorPhoneNumber, String studentName, String studentPhoneNumber, RegistrationStatus registrationStatus) {
+    public Session(String id, String date, Date startTime, Date endTime, String tutorName, String tutorPhoneNumber, String studentName, String studentPhoneNumber, SessionStatus sessionStatus, boolean autoApprove) {
         this.id = id;
         this.date = date;
         this.startTime = startTime;
@@ -29,7 +28,8 @@ public class Session {
         this.tutorPhoneNumber = tutorPhoneNumber;
         this.studentName = studentName;
         this.studentPhoneNumber = studentPhoneNumber;
-        this.sessionStatus = registrationStatus;
+        this.sessionStatus = sessionStatus;
+        this.autoApprove = autoApprove;
     }
 
     // Getter and setter methods for variables
@@ -94,5 +94,11 @@ public class Session {
     }
 
     public String getSessionStatus(){ return this.sessionStatus.toString(); }
-    public void setSessionStatus(String status){ this.sessionStatus = RegistrationStatus.valueOf(status.toUpperCase()); }
+
+    public void setSessionStatus(SessionStatus sessionStatus){ this.sessionStatus = sessionStatus; }
+
+    public boolean getAutoApprove(){ return this.autoApprove; }
+
+    public void setAutoApprove(boolean autoApprove){ this.autoApprove = autoApprove; }
+
 }

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/default_background"
     android:padding="24dp"
-    tools:context=".StudentInformationActivity">
+    tools:context=".OpenTimeslotPageActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
             android:id="@+id/sessionDetailsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/pending_session_page_title"
+            android:text="@string/open_timeslot_page_title"
             android:textColor="@color/white"
             android:textSize="25sp"
             android:textStyle="bold"
@@ -35,22 +35,37 @@
 
         <!-- User Info Section -->
 
+        <!-- <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:id="@+id/detailUnbookedSession"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="This timeslot is not currently booked by anyone."
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+        </LinearLayout> -->
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="18dp">
+            android:layout_marginTop="20dp">
 
             <TextView
-                android:id="@+id/detailNameText"
+                android:id="@+id/detailDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name: "
+                android:text="Date: "
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/detail_full_name"
+                android:id="@+id/detail_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
@@ -64,15 +79,15 @@
             android:layout_marginTop="18dp">
 
             <TextView
-                android:id="@+id/detailEmailText"
+                android:id="@+id/detailTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Email: "
+                android:text="Time: "
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/detail_session_email"
+                android:id="@+id/detail_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
@@ -80,84 +95,27 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="18dp">
-
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/detailPhoneNumberText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Phone number: "
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/session_phone_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/session_program"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="Program: "
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/detail_program"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-
-        <!-- Approve/Reject Buttons Section -->
+        <!-- Delete Button Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginTop="34dp"
+            android:layout_marginTop="40dp"
             android:layout_marginBottom="20dp">
 
-            <!-- Approve Button -->
+            <!-- Delete Button -->
             <Button
-                android:id="@+id/approveButton"
+                android:id="@+id/deleteButton"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
-                android:text="Approve"
+                android:text="Delete"
                 android:textColor="#673AB7"
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:padding="10dp"
-                android:onClick="onClickApprove" />
-
-            <Space
-                android:layout_width="40dp"
-                android:layout_height="wrap_content" />
-
-            <!-- Reject Button -->
-            <Button
-                android:id="@+id/rejectButton"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                android:text="Reject"
-                android:textColor="#673AB7"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:padding="10dp"
-                android:onClick="onClickReject" />
+                android:onClick="onClickDelete" />
         </LinearLayout>
 
         <!-- Back Button -->

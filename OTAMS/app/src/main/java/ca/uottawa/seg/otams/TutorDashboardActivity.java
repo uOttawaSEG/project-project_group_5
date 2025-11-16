@@ -44,7 +44,7 @@ public class TutorDashboardActivity extends AppCompatActivity {
 
         private final SessionListAdapter sessionListAdapter;
 
-        public TabFilter(TabLayout tl, SessionListAdapter sessionAdapter){
+        public TabFilter(TabLayout tl, SessionListAdapter sessionAdapter) {
             filter  = null;
             tabLayout = tl;
             sessionListAdapter = sessionAdapter;
@@ -54,24 +54,45 @@ public class TutorDashboardActivity extends AppCompatActivity {
         public void onTabSelected(TabLayout.Tab tab) {
             String tabString = Objects.requireNonNull(tab.getText()).toString();
             Calendar c = Calendar.getInstance();
-            if (getString(R.string.pending_session_requests).equals(tabString)) {
-                filter = s -> RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.PENDING;
-            }
-            if (getString(R.string.upcoming_sessions).equals(tabString)) {
-                filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus())==RegistrationStatus.APPROVED;
+            Date now = c.getTime();
 
+            // Date now = new Date();
 
-            }
-            if (getString(R.string.past_sessions).equals(tabString)) {
-                filter = s -> s.getStartTime().before(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus())==RegistrationStatus.APPROVED;
+            if (getString(R.string.open_timeslots).equals(tabString)) {
+                // filter = s -> RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.PENDING;
+                // filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
+                // filter = s -> s.getEndTime().after(now) && !s.getSessionStatus().equals("REJECTED") && !s.getSessionStatus().equals("CANCELLED");
 
+                // Shows all timeslots that the tutor created that have not been booked yet
+                filter = s -> s.getEndTime().after(now) && s.getSessionStatus().equals("OPEN");
             }
+            else if (getString(R.string.pending_sessions).equals(tabString)) {
+                // filter = s -> RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.PENDING;
+                // filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
+                // filter = s -> s.getEndTime().after(now) && !s.getSessionStatus().equals("REJECTED") && !s.getSessionStatus().equals("CANCELLED");
+
+                // Shows all sessions that have been requested by student but have not been approved/rejected by the tutor yet
+                filter = s -> s.getEndTime().after(now) && s.getSessionStatus().equals("PENDING");
+            }
+            else if (getString(R.string.upcoming_sessions).equals(tabString)) {
+                // filter = s -> s.getStartTime().after(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
+
+                // Shows all sessions that have been booked by a student and approved by the tutor and have yet to happen
+                filter = s -> s.getEndTime().after(now) && s.getSessionStatus().equals("APPROVED");
+            }
+            else if (getString(R.string.past_sessions).equals(tabString)) {
+                // filter = s -> s.getStartTime().before(c.getTime())&&RegistrationStatus.valueOf(s.getSessionStatus()) == RegistrationStatus.APPROVED;
+
+                // Shows all sessions that the tutor has already finished
+                filter = s -> s.getEndTime().before(now) && s.getSessionStatus().equals("COMPLETED");
+            }
+
             TutorDashboardActivity.this.getAllSessionsOfTutor(tutorPhoneNumber);
         }
 
         @Override
         public void onTabUnselected(TabLayout.Tab tab) {
-            this.sessionListAdapter.clearData();
+            sessionListAdapter.clearData();
         }
 
         @Override
@@ -123,23 +144,51 @@ public class TutorDashboardActivity extends AppCompatActivity {
 
     private void getAllSessionsOfTutor(String tutorPhoneNumber) {
         // Get all sessions from Firebase
-
         DatabaseReference sessionsReference = FirebaseDatabase.getInstance().getReference("sessions");
         Query tutorSessions = sessionsReference.orderByChild("tutorPhoneNumber").equalTo(tutorPhoneNumber);
+
         tutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                final List<Session> returnList = new ArrayList<>();
+                List<Session> returnList = new ArrayList<>();
                 if (snapshot.exists()) {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String phoneNumber = ds.child("tutorPhoneNumber").getValue(String.class);
-                         if (tutorPhoneNumber.equals(phoneNumber)) {
+                        String sessionStatus = ds.child("sessionStatus").getValue(String.class);
+                        if (tutorPhoneNumber.equals(phoneNumber) && !sessionStatus.equals("REJECTED")) {
+                            // If the session found in the database belongs to the tutor then create a session object from it (save the session)
                             Session s = ds.getValue(Session.class);
-                            returnList.add(s);
+
+                            if (s != null) {
+                                // Fetch the start/end timestamps stored in the database and save them inside properly reconstructed date objects
+                                Date startTime = reconstructSessionDate(ds.child("startTime"));
+                                Date endTime = reconstructSessionDate(ds.child("endTime"));
+
+                                // Set the session object's start and end times to those date objects
+                                s.setStartTime(startTime);
+                                s.setEndTime(endTime);
+
+                                Calendar c = Calendar.getInstance();
+                                Date now = c.getTime();
+
+                                if (endTime.before(now) && sessionStatus.equals("APPROVED")) {
+                                    // Check if the session has already past (i.e. is a past session) and update its status in the database if it is (and has not already been updated)
+                                    s.setSessionStatus(SessionStatus.COMPLETED);
+                                    ds.getRef().child("sessionStatus").setValue("COMPLETED");
+
+                                    returnList.add(s);
+                                }
+                                else if (endTime.before(now) && (sessionStatus.equals("OPEN") || sessionStatus.equals("PENDING"))) {
+                                    // If the timeslot's time has already past and was not booked then delete it from the database and do not display it anywhere in the dashboard
+                                    ds.getRef().removeValue();
+                                }
+                                else {
+                                    returnList.add(s);
+                                }
+                            }
                         }
                     }
                 }
-
                 populateRecyclerView(filterSessionBy(returnList, myTabFilter.getFilter()));
             }
 
@@ -148,6 +197,55 @@ public class TutorDashboardActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    // Properly reconstructs the start and end time of a session fetched from the database as a date object
+    private Date reconstructSessionDate (DataSnapshot snapshot) {
+        if (snapshot.exists()) {
+            // Fetch the values of each part of the start or end time in the database
+            Integer date = snapshot.child("date").getValue(Integer.class);
+            Integer year = snapshot.child("year").getValue(Integer.class);
+            Integer month = snapshot.child("month").getValue(Integer.class); // 0-based
+            // Integer day = snapshot.child("day").getValue(Integer.class);
+            Integer hours = snapshot.child("hours").getValue(Integer.class);
+            Integer minutes = snapshot.child("minutes").getValue(Integer.class);
+            Integer seconds = snapshot.child("seconds").getValue(Integer.class);
+
+            // Check that the date related values are valid before setting anything
+            if (year == null || month == null || date == null) {
+                return null;
+            }
+
+            // If they are valid then create an object that represents the exact start/end time
+            Calendar cal = Calendar.getInstance();
+
+            // Set date related values
+            cal.set(Calendar.DATE, date);
+            cal.set(Calendar.YEAR, year + 1900);
+            cal.set(Calendar.MONTH, month);
+            cal.set(Calendar.DAY_OF_MONTH, date);
+
+            // Set time related values
+            if (hours != null) {
+                cal.set(Calendar.HOUR_OF_DAY, hours);
+            } else {
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+            }
+            if (minutes != null) {
+                cal.set(Calendar.MINUTE, minutes);
+            } else {
+                cal.set(Calendar.MINUTE, 0);
+            }
+            if (seconds != null) {
+                cal.set(Calendar.SECOND, seconds);
+            } else {
+                cal.set(Calendar.SECOND, 0);
+            }
+            cal.set(Calendar.MILLISECOND, 0);
+
+            return cal.getTime();
+        }
+        return null;
     }
 
 
@@ -172,15 +270,31 @@ public class TutorDashboardActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void onClickManageAvailability(View view) {
+
+        int pressID=view.getId();
+
+        // Check if the user is trying to access the manage availability page
+        if (pressID == R.id.button_manage_availability) {
+            // Set the next page to the manage availability page
+            Intent intent = new Intent(TutorDashboardActivity.this, ManageAvailabilityActivity.class);
+
+            // Pass the tutor's phone number to the next page so that the tutor can quickly be identified and found in the database (since the phone number is the key)
+            intent.putExtra("phoneNumber", tutorPhoneNumber);
+
+            // Send the user to the manage availability page (i.e. the one with the calender)
+            startActivity(intent);
+        }
+
+    }
+
     // Refresh the RecyclerView (request inbox) whenever the tutor returns back to their dashboard
     @Override
     protected void onResume() {
         super.onResume();
 
-        // Determines which tab (Pending Session Requests, Upcoming Sessions or Past Sessions) the tutor is currently on in the dashboard
-        // Add code here
-
-        // Refreshes the request inbox for the selected tab
-        // Add code in here
+        // Refreshes the inbox for the selected tab (i.e. update inbox to reflect any changes when coming back from manage availability page
+        // so that if they added a slot it is shown immediately upon returning to their dashboard)
+        getAllSessionsOfTutor(tutorPhoneNumber);
     }
 }
