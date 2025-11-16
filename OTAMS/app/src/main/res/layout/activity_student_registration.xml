@@ -96,7 +96,7 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="400dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:layout_gravity="center_horizontal"
@@ -111,6 +111,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Back"
+        android:textSize="20sp"
         android:onClick="onClickStudentBackButton"/>
 
 

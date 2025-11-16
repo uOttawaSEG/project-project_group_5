@@ -31,8 +31,11 @@
             android:exported="false" />
         <activity android:name=".AdminRequestDetailsActivity"
             android:exported="false" />
-
+        <activity android:name=".WelcomeStudentPageActivity"
+            android:exported="false" />
         <activity android:name=".TutorDashboardActivity"
+            android:exported="false" />
+        <activity android:name=".StudentDashboardActivity"
             android:exported="false" />
         <activity android:name=".WelcomeTutorPageActivity"
             android:exported="false" />

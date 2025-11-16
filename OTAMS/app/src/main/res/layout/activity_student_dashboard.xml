@@ -8,7 +8,7 @@
     android:background="@drawable/default_background"
     android:orientation="vertical"
     android:padding="24dp"
-    tools:context=".TutorDashboardActivity">
+    tools:context=".StudentDashboardActivity">
 
     <!-- Screen Title -->
 
@@ -26,7 +26,7 @@
 
     <!-- Tab Layout for Pending and Rejected -->
 
-    <!-- RecyclerView that will change depending on selected tab -->
+<!--     RecyclerView that will change depending on selected tab-->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/student_tab_layout"
         android:layout_width="match_parent"
@@ -73,12 +73,11 @@
         android:scrollbars="vertical" />
 
     <Button
-        android:id="@+id/button_manage_availability"
-        android:layout_width="400dp"
+        android:id="@+id/button_manage_sessions"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="93dp"
-        android:onClick="onClickManageSessions"
         android:padding="10dp"
         android:text="@string/manage_sessions"
         android:textSize="20sp"

@@ -105,17 +105,13 @@ public class StudentDashboardActivity  extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-
         setContentView(R.layout.activity_student_dashboard);
-
-        Intent intent = getIntent();
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.back_button), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        Intent intent = getIntent();
         studentEmail = intent.getStringExtra("email");
         recycleView = findViewById(R.id.session_request_recycler_view);
         ula = new SessionListAdapter(new ArrayList<>());

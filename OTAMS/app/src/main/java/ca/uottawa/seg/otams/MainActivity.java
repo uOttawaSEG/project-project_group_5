@@ -113,13 +113,15 @@ public class MainActivity extends AppCompatActivity {
                                 if (rs.getStatusClass() != null) {
                                     Intent intent = new Intent(MainActivity.this, rs.getStatusClass());
                                     intent.putExtra("role", roleFromDatabase);
+
                                     startActivity(intent);
                                 } else {
                                     if ("Student".equals(roleFromDatabase)) {
-                                        Intent intent = new Intent(MainActivity.this, WelcomePageActivity.class);
+                                        Intent intent = new Intent(MainActivity.this, WelcomeStudentPageActivity.class);
 
                                         // Pass the user's role to the next page so it can be displayed there
                                         intent.putExtra("role", roleFromDatabase);
+                                        intent.putExtra("email", userSnapshot.child("email").getValue(String.class));
 
                                         // Send the user to the appropriate page
                                         startActivity(intent);

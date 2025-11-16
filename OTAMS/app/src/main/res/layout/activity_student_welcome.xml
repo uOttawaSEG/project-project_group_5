@@ -7,7 +7,7 @@
     android:background="@drawable/default_background"
     android:orientation="vertical"
     android:padding="24dp"
-    tools:context=".WelcomeTutorPageActivity">
+    tools:context=".WelcomeStudentPageActivity">
 
     <TextView
         android:id="@+id/welcomeTitleText"
@@ -53,19 +53,17 @@
 
     <Button
         android:id="@+id/button_search"
-        android:layout_width="400dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_gravity="center_horizontal"
         android:padding="10dp"
         android:text="@string/search_button"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:onClick="onClickDashboard"/>
-
+        android:textStyle="bold" />
     <Button
         android:id="@+id/button_dashboard"
-        android:layout_width="400dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_gravity="center_horizontal"
@@ -77,7 +75,7 @@
 
     <Button
         android:id="@+id/button_log_off"
-        android:layout_width="400dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_gravity="center_horizontal"
