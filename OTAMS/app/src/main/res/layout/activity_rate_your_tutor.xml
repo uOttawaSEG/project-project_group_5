@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/default_background"
+    android:padding="24dp">
+
+
+    <TextView
+        android:id="@+id/backArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/u2b05"
+        android:textColor="@color/white"
+        android:textSize="40sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+
+    <TextView
+        android:id="@+id/rateTutorTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rate_your_tutor"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="28sp"
+        app:layout_constraintTop_toBottomOf="@id/backArrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"/>
+
+
+    <TextView
+        android:id="@+id/tutorName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tutor_name"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@id/rateTutorTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="40dp"/>
+
+
+    <TextView
+        android:id="@+id/tutorCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/course"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@id/tutorName"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp"/>
+
+
+    <TextView
+        android:id="@+id/sessionTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/date_amp_time"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@id/tutorCourse"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp"/>
+
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:stepSize="1"
+        android:rating="0"
+        android:layout_marginTop="40dp"
+        android:progressTint="#673AB7"
+        android:secondaryProgressTint="#B39DDB"
+        app:layout_constraintTop_toBottomOf="@id/sessionTime"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <Button
+        android:id="@+id/submitRatingButton"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="@string/submit_rating"
+        android:textColor="#673AB7"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:backgroundTint="@color/white"
+        android:padding="12dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintTop_toBottomOf="@id/ratingBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
