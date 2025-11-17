@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/back_button"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@drawable/default_background"
+android:orientation="vertical"
+android:padding="24dp"
+tools:context=".CourseSearchActivity">
+
+    <TextView
+        android:id="@+id/courseSearchTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/course_search_title"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="0dp"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:gravity="center"/>
+
+    <SearchView
+        android:id="@+id/courseSearchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:queryHint="@string/course_search_bar"
+        android:background="@color/white"
+        android:theme="@style/courseSearchBarStyle" />
+
+    <TextView
+        android:id="@+id/courseResultsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/course_search_results_title"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:visibility="gone" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/course_search_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical"
+        android:visibility="gone"/>
+
+
+    <!-- Back Button -->
+    <Button
+        android:id="@+id/button_backToStudentDashboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/white"
+        android:text="@string/back_to_dashboard"
+        android:textColor="#673AB7"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="30dp"
+        android:onClick="onClickBackToDashboard" />
+
+</LinearLayout>
+
