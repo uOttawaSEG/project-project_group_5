@@ -21,6 +21,22 @@ public class WelcomeStudentPageActivity extends AppCompatActivity {
         Intent intent = getIntent();
         studentEmail = intent.getStringExtra("email");
     }
+
+    public void onClickSearchCourse(View view) {
+        int pressID=view.getId();
+
+        if (pressID == R.id.button_search) {
+            // Set the next page to the search course page
+            Intent intent = new Intent(WelcomeStudentPageActivity.this, CourseSearchActivity.class);
+
+            // Pass the student's phone number to the next page so that the student can quickly be identified and found in the database (since the phone number is the key)
+            intent.putExtra("email", studentEmail);
+
+            // Send the user to the course search page
+            startActivity(intent);
+        }
+    }
+
     public void onClickDashboard(View view) {
         int pressID=view.getId();
 

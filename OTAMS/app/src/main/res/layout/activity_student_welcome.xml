@@ -60,7 +60,9 @@
         android:padding="10dp"
         android:text="@string/search_button"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:onClick="onClickSearchCourse"/>
+
     <Button
         android:id="@+id/button_dashboard"
         android:layout_width="match_parent"
