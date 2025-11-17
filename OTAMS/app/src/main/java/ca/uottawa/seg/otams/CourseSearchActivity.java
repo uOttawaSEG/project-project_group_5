@@ -25,6 +25,11 @@ public class CourseSearchActivity extends Activity {
             return true;
         }
     })
+
+    more stuff:
+    - once the search is clicked, the results show up as recycle view
+    - it shows tutor name, date, time, courses offered, rating, and a book button
+    - the frontend of it is in activity_list_course_results. i will update the spacing of it later once i get an idea of how it looks when there is info
     */
 
 

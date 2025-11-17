@@ -249,6 +249,8 @@ public class TutorDashboardActivity extends AppCompatActivity {
     }
 
 
+
+
     private void populateRecyclerView(List<Session> sessionsList) {
         if (ula.getSessionList().isEmpty()) {
             // If the inbox is being populated for the first time then create and adapter for it
