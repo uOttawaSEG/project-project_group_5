@@ -12,62 +12,60 @@ public class CourseSearchActivity extends AppCompatActivity {
 
     private String studentEmail;
     private String studentPhoneNumber;
-    private SearchView courseSearchBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_search);
 
-        // get extras passed from previous screen (may be null)
+        // Received from previous activity (may be null)
         Intent intent = getIntent();
         studentEmail = intent.getStringExtra("email");
         studentPhoneNumber = intent.getStringExtra("phoneNumber");
 
-        courseSearchBar = findViewById(R.id.courseSearchBar);
-        // show the submit (magnifier) button inside the SearchView
+        SearchView courseSearchBar = findViewById(R.id.courseSearchBar);
+        // Make sure submit button is enabled
         courseSearchBar.setSubmitButtonEnabled(true);
-
-        // optional: make IME action be "search"
-        courseSearchBar.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
 
         courseSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                // trim and basic validation
-                if (query == null) return true;
-                String courseQuery = query.trim();
-                if (courseQuery.isEmpty()) {
-                    // give quick feedback
+                // Called when user presses enter or the submit (magnifier) icon
+                if (query == null || query.trim().isEmpty()) {
                     Toast.makeText(CourseSearchActivity.this, "Please enter a course code", Toast.LENGTH_SHORT).show();
-                    return true; // handled
+                    return true;
                 }
 
-                // Start the results activity and pass the search string (and student info)
-                Intent resultsIntent = new Intent(CourseSearchActivity.this, MainActivity.class);
-                // Intent resultsIntent = new Intent(CourseSearchActivity.this, CourseSearchResultsActivity.class);
-                resultsIntent.putExtra("courseQuery", courseQuery);
+                // Start results activity, pass the query and current student info
+                Intent resultsIntent = new Intent(CourseSearchActivity.this, CourseSearchResultsActivity.class);
+                resultsIntent.putExtra("courseQuery", query.trim());
                 resultsIntent.putExtra("email", studentEmail);
                 resultsIntent.putExtra("phoneNumber", studentPhoneNumber);
                 startActivity(resultsIntent);
 
-                // collapse keyboard and clear focus (SearchView specific)
-                courseSearchBar.clearFocus();
-                return true; // indicate we handled the submit
+                // Collapse keyboard / SearchView default behavior
+                courseSearchBar.onActionViewCollapsed();
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                // we don't react while typing for now
+                // do nothing for now
                 return false;
+            }
+        });
+
+        // Optional: if user clicks magnifier when empty, we show a hint
+        courseSearchBar.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                // nothing
             }
         });
     }
 
-    // back button — unchanged
+    //return to dashboard button
     public void onClickBackToDashboard(android.view.View view) {
-        int pressID = view.getId();
-        if (pressID == R.id.button_backToStudentDashboard) {
+        if (view.getId() == R.id.button_backToStudentDashboard) {
             finish();
         }
     }
