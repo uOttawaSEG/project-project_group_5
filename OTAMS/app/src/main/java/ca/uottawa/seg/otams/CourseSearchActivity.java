@@ -1,12 +1,46 @@
 package ca.uottawa.seg.otams;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
-public class CourseSearchActivity extends Activity {
+public class CourseSearchActivity extends AppCompatActivity {
+
+    private String studentEmail;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_course_search);
+
+        // Stores the email of the student that logged in that was passed from the previous activity
+        Intent intent = getIntent();
+        studentEmail = intent.getStringExtra("email");
+
+
+
+        //search bar little bit of code
+        SearchView courseSearchBar = findViewById(R.id.courseSearchBar);
+        courseSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            //when user presses enter after inputting course code
+            public boolean onQueryTextSubmit(String courseInput) {
+                //put stuff here like getting the tutor info using the courseInput from search bar
+                return true;
+            }
+
+            //when user is typing don't change the page or do anything
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+
+        });
+    }
+
 
     /*these are some ideas I was thinking about when creating the frontend. i put it in a comment just to explain what i did and hopefully guide the backend into what is going on - feel free to change it though!:
 
@@ -33,22 +67,10 @@ public class CourseSearchActivity extends Activity {
 
     book button: - backend not yet implemented
     - the book button will book the session and should then remove it from results - not yet implemented
-
-
-
-    //search bar little bit of code
-    SearchView courseSearchBar = findViewById(R.id.courseSearchBar);
-    courseSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-        @Override
-        //when user presses enter after inputting course code
-        public boolean onQueryTextSubmit(String courseInput) {
-            //put stuff here like getting the tutor info using the courseInput from search bar
-            return true;
-        }
-    })
-
     */
+
+
+
 
 
 
