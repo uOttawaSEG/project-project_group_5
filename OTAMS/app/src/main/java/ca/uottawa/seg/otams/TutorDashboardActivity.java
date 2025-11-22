@@ -36,6 +36,8 @@ public class TutorDashboardActivity extends AppCompatActivity {
     private SessionListAdapter ula;
     String tutorPhoneNumber; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
 
+    // String coursesOffered;
+
     private TabFilter myTabFilter;
     private class TabFilter implements TabLayout.OnTabSelectedListener {
 
@@ -128,6 +130,8 @@ public class TutorDashboardActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // coursesOffered = intent.getStringExtra("coursesOffered");
 
         tutorPhoneNumber = intent.getStringExtra("phoneNumber");
         recycleView = findViewById(R.id.session_request_recycler_view);

@@ -121,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
 
                                         // Pass the user's role to the next page so it can be displayed there
                                         intent.putExtra("role", roleFromDatabase);
+
+                                        intent.putExtra("phoneNumber", userSnapshot.child("phoneNumber").getValue(String.class));
                                         intent.putExtra("email", userSnapshot.child("email").getValue(String.class));
 
                                         // Send the user to the appropriate page
@@ -129,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                                     if ("Tutor".equals(roleFromDatabase)) {
                                         Intent intent = new Intent(MainActivity.this, WelcomeTutorPageActivity.class);
                                         intent.putExtra("phoneNumber", userSnapshot.child("phoneNumber").getValue(String.class));
+                                        // intent.putExtra("coursesOffered", userSnapshot.child("coursesOffered").getValue(String.class));
                                         intent.putExtra("email", userSnapshot.child("email").getValue(String.class));
                                         startActivity(intent);
                                     }

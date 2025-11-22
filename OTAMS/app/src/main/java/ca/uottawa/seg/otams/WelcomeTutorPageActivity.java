@@ -12,6 +12,7 @@ public class WelcomeTutorPageActivity extends AppCompatActivity {
 
     private String tutorPhoneNumber; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
     private String tutorEmail;
+    // private String coursesOffered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +23,8 @@ public class WelcomeTutorPageActivity extends AppCompatActivity {
         Intent intent = getIntent();
         tutorPhoneNumber = intent.getStringExtra("phoneNumber");
         tutorEmail = intent.getStringExtra("email");
+
+        // coursesOffered = intent.getStringExtra("coursesOffered");
     }
     public void onClickDashboard(View view) {
         int pressID=view.getId();
@@ -34,6 +37,8 @@ public class WelcomeTutorPageActivity extends AppCompatActivity {
             // Pass the tutor's phone number to the next page so that the tutor can quickly be identified and found in the database (since the phone number is the key)
             intent.putExtra("phoneNumber", tutorPhoneNumber);
             intent.putExtra("email", tutorEmail);
+
+            // intent.putExtra("coursesOffered", coursesOffered);
 
             // Send the user to the tutor dashboard page
             startActivity(intent);

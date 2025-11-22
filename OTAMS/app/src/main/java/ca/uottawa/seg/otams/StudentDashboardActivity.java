@@ -37,8 +37,8 @@ import java.util.stream.Collectors;
 public class StudentDashboardActivity  extends AppCompatActivity{
     private RecyclerView recycleView;
     private SessionListAdapter ula;
-    String studentEmail; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
-
+    String studentEmail;
+    String studentPhoneNumber; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
     private TabFilter myTabFilter;
 
     private class TabFilter implements TabLayout.OnTabSelectedListener {

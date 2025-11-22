@@ -275,6 +275,8 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                 // If the tutor exists within the database, saves their full name (the one stored in the database)
                 String tutorFullName = snapshot.child("firstName").getValue(String.class) + " " + snapshot.child("lastName").getValue(String.class);
 
+                String coursesOffered = snapshot.child("coursesOffered").getValue(String.class);
+
                 // Split the timeslot into multiple smaller 30 minute timeslots
                 List<Date[]> splitTimeslots = splitIntoThirtyIncSessions(startTime, endTime);
 
@@ -351,11 +353,11 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                                 String id = databaseSessions.push().getKey();
 
                                 // Premade sessions created for testing purposes
-                                // Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, "Khalid Riegan", "8888888888", SessionStatus.OPEN, false);
-                                // Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, "Mari Anne", "5555555555", SessionStatus.APPROVED, false);
-                                // Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, "Lyselle Ordelle", "6666666666", SessionStatus.PENDING, false);
+                                // Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, "Khalid Riegan", "8888888888", SessionStatus.OPEN, false, coursesOffered);
+                                // Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, "Mari Anne", "5555555555", SessionStatus.APPROVED, false, coursesOffered);
+                                // Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, "Lyselle Ordelle", "6666666666", SessionStatus.PENDING, false, coursesOffered);
 
-                                Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, null, null, SessionStatus.OPEN, false);
+                                Session newSession = new Session(id, sessionDate, startSplitTimeslot, endSplitTimeslot, tutorFullName, tutorPhoneNumber, null, null, SessionStatus.OPEN, false, coursesOffered);
 
                                 // If automatic approval is selected than the timeslot will immediately be approved when booked by a student
                                 if (automatic) {

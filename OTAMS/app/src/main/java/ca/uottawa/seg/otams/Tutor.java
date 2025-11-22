@@ -4,6 +4,7 @@ public class Tutor extends User {
     // Instance variables
     private String highestDegree;
     private String coursesOffered;
+    private int rating;
 
     public Tutor() {}
 
@@ -12,6 +13,7 @@ public class Tutor extends User {
 
         this.highestDegree = highestDegree;
         this.coursesOffered = coursesOffered;
+        this.rating = 2;
     }
 
     // Getter and setter methods for variables
@@ -30,4 +32,13 @@ public class Tutor extends User {
     public void setCoursesOffered(String coursesOffered) {
         this.coursesOffered = coursesOffered;
     }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
 }
