@@ -29,7 +29,7 @@ public class WelcomeStudentPageActivity extends AppCompatActivity {
             // Set the next page to the search course page
             Intent intent = new Intent(WelcomeStudentPageActivity.this, CourseSearchActivity.class);
 
-            // Pass the student's phone number to the next page so that the student can quickly be identified and found in the database (since the phone number is the key)
+            // Pass the student's email to the next page so that the student can quickly be identified and found in the database (since the email is the key)
             intent.putExtra("email", studentEmail);
 
             // Send the user to the course search page

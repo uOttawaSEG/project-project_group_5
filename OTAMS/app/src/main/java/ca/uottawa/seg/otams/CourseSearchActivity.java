@@ -21,6 +21,7 @@ public class CourseSearchActivity extends AppCompatActivity {
         studentEmail = intent.getStringExtra("email");
 
 
+        /*//KEEP THIS COMMENTED OUT BECAUSE IT BREAKS THE APP: when user clicks go to course search page, this piece of code makes it log out instead and you will never be able to access the actual page
 
         //search bar little bit of code
         SearchView courseSearchBar = findViewById(R.id.courseSearchBar);
@@ -37,8 +38,9 @@ public class CourseSearchActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
-
         });
+        */
+
     }
 
 

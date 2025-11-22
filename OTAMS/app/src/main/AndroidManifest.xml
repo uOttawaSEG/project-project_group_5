@@ -49,6 +49,8 @@
             android:exported="false" />
         <activity android:name=".StudentInfoUpcomingActivity"
             android:exported="false" />
+        <activity android:name=".CourseSearchActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true" >

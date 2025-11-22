@@ -30,8 +30,8 @@ tools:context=".CourseSearchActivity">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:queryHint="@string/course_search_bar"
-        android:background="@color/white" />
-        <!-- android:theme="@style/courseSearchBarStyle" -->
+        android:background="@color/white"
+        android:theme="@style/courseSearchBarStyle" />
 
 
     <TextView
