@@ -15,11 +15,12 @@ public class Session {
     private String studentPhoneNumber;
     private SessionStatus sessionStatus;
     private boolean autoApprove;
+    private String courses;
 
     public Session() {
     }
 
-    public Session(String id, String date, Date startTime, Date endTime, String tutorName, String tutorPhoneNumber, String studentName, String studentPhoneNumber, SessionStatus sessionStatus, boolean autoApprove) {
+    public Session(String id, String date, Date startTime, Date endTime, String tutorName, String tutorPhoneNumber, String studentName, String studentPhoneNumber, SessionStatus sessionStatus, boolean autoApprove, String courses) {
         this.id = id;
         this.date = date;
         this.startTime = startTime;
@@ -30,6 +31,7 @@ public class Session {
         this.studentPhoneNumber = studentPhoneNumber;
         this.sessionStatus = sessionStatus;
         this.autoApprove = autoApprove;
+        this.courses = courses;
     }
 
     // Getter and setter methods for variables
@@ -100,5 +102,9 @@ public class Session {
     public boolean getAutoApprove(){ return this.autoApprove; }
 
     public void setAutoApprove(boolean autoApprove){ this.autoApprove = autoApprove; }
+
+    public String getCourses() { return courses; }
+    public void setCourses(String courses) { this.courses = courses; }
+
 
 }
