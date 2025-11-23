@@ -3,13 +3,32 @@ package ca.uottawa.seg.otams;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CourseSearchActivity extends AppCompatActivity {
 
     private String studentEmail;
+    private RecyclerView courseList;
+    private CourseListAdapter cla;
+
+    private EditText searchBar;
+
+    private Button courseSearchBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +38,15 @@ public class CourseSearchActivity extends AppCompatActivity {
         // Stores the email of the student that logged in that was passed from the previous activity
         Intent intent = getIntent();
         studentEmail = intent.getStringExtra("email");
+        this.courseList = findViewById(R.id.course_search_recycler_view);
+        this.searchBar = findViewById(R.id.course_search);
+        this.courseSearchBtn = findViewById(R.id.course_search_button);
+        this.cla = new CourseListAdapter(getAllTutorsMap(this.searchBar.getText().toString()));
+        this.courseSearchBtn.setOnClickListener(v -> {
+            String searchText = this.searchBar.getText().toString();
+            if (searchText.isBlank()) populateRecyclerView(List.of()); else populateRecyclerView(findSessionsByCourseName(searchText));
+        });
+
 
 
         /*//KEEP THIS COMMENTED OUT BECAUSE IT BREAKS THE APP: when user clicks go to course search page, this piece of code makes it log out instead and you will never be able to access the actual page
@@ -41,6 +69,34 @@ public class CourseSearchActivity extends AppCompatActivity {
         });
         */
 
+    }
+
+    private List<Session> findSessionsByCourseName(String courseName) {
+        return List.of();
+    }
+
+    Map<String, Tutor> getAllTutorsMap(String courseName) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+
+
+        return Map.of();
+    }
+
+    private void populateRecyclerView(List<Session> courseList) {
+        if (cla.getCourseSession().isEmpty()) {
+            // If the inbox is being populated for the first time then create and adapter for it
+            RecyclerView rv = this.courseList;
+            rv.setLayoutManager(new LinearLayoutManager(this));
+            cla.getCourseSession().addAll(courseList);
+            rv.setAdapter(cla);
+        } else {
+            // If the adapter already exists then just update it instead of creating a new one
+            if (courseList.isEmpty()) {
+                cla.clearData();
+            } else {
+                cla.updateData(courseList);
+            }
+        }
     }
 
 

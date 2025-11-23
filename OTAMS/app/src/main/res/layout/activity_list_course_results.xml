@@ -18,41 +18,39 @@
             android:id="@+id/tvTutorName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@android:color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Dr. John Smith" />
 
         <!-- Date -->
+
+        <!-- Time Range -->
         <TextView
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:drawablePadding="4dp"
-            android:textSize="14sp"
             android:textColor="@android:color/darker_gray"
-            app:drawableStartCompat="@android:drawable/ic_menu_my_calendar"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTutorName"
             tools:text="Mar 15" />
 
-        <!-- Time Range -->
         <TextView
             android:id="@+id/tvTimeRange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
             android:drawablePadding="4dp"
-            android:textSize="14sp"
             android:textColor="@android:color/darker_gray"
-            app:drawableStartCompat="@android:drawable/ic_menu_recent_history"
-            app:layout_constraintStart_toEndOf="@id/tvDate"
-            app:layout_constraintTop_toTopOf="@id/tvDate"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@id/tvDate"
+            app:layout_constraintStart_toEndOf="@+id/tvDate"
+            app:layout_constraintTop_toTopOf="@id/tvDate"
             tools:text="10:00 AM - 11:30 AM" />
 
         <!-- Rating Bar -->
@@ -61,29 +59,29 @@
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:isIndicator="true"
             android:numStars="5"
             android:stepSize="0.5"
-            android:isIndicator="true"
-            app:layout_constraintStart_toEndOf="@id/tvTimeRange"
-            app:layout_constraintTop_toTopOf="@id/tvDate"
             app:layout_constraintBottom_toBottomOf="@id/tvDate"
+            app:layout_constraintStart_toEndOf="@+id/tvTimeRange"
+            app:layout_constraintTop_toTopOf="@id/tvDate"
             tools:rating="4.5" />
 
         <!-- Rating Text -->
+        <!-- Request Session Button -->
+
         <TextView
             android:id="@+id/tvRatingText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:textSize="14sp"
+            android:drawablePadding="4dp"
             android:textColor="@android:color/darker_gray"
-            app:layout_constraintBottom_toBottomOf="@id/ratingBar"
-            app:layout_constraintStart_toEndOf="@id/ratingBar"
-            app:layout_constraintTop_toTopOf="@id/ratingBar"
-            tools:text="4.5" />
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/tvDate"
+            app:layout_constraintStart_toEndOf="@+id/tvRatingBar"
+            app:layout_constraintTop_toTopOf="@id/tvDate"
+            tools:text="4.8" />
 
-        <!-- Request Session Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/tvBtnRequestSession"
             android:layout_width="0dp"

@@ -25,7 +25,7 @@ tools:context=".CourseSearchActivity">
         android:paddingRight="12dp"
         android:gravity="center"/>
 
-    <SearchView
+    <EditText
         android:id="@+id/courseSearchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +35,7 @@ tools:context=".CourseSearchActivity">
 
     <!-- Search Button -->
     <Button
-        android:id="@+id/button_search"
+        android:id="@+id/course_search_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

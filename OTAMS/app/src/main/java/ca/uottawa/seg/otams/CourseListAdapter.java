@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -30,16 +31,17 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
         @Override
         public void onClick(View v) {
             this.buttonRef.setActivated(false);
+
             /**
-             * Connect to Firebase and set session to PENDING
+             * Connect to Firebase and set session to PENDING or to APPROVED if auto-approve
              */
         }
     }
     private final List<Session> courseSession;
     private final Map<String, Tutor> tutorMap;
 
-    public CourseListAdapter(List<Session> courseSession, Map<String, Tutor> tutorMap) {
-        this.courseSession = courseSession;
+    public CourseListAdapter(Map<String, Tutor> tutorMap) {
+        this.courseSession = new ArrayList<>();
         this.tutorMap = tutorMap;
     }
 
@@ -78,6 +80,11 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
     public void clearData() {
         this.courseSession.clear();
         notifyDataSetChanged();
+    }
+
+
+    List<Session> getCourseSession() {
+        return this.courseSession;
     }
 
 }
