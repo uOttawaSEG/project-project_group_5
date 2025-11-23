@@ -90,6 +90,7 @@
     <string name="course_search_title">Search for a Tutor</string>
     <string name="course_search_bar">Search by course code (SEG2105)</string>
     <string name="course_search_results_title">Available tutors for _______</string>
+    <string name="search_for_course">Search</string>
 
     <string name="course_search_results_book">Book</string>
 

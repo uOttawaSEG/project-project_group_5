@@ -33,7 +33,6 @@ tools:context=".CourseSearchActivity">
         android:background="@color/white"
         android:theme="@style/courseSearchBarStyle" />
 
-
     <TextView
         android:id="@+id/courseResultsTitle"
         android:layout_width="wrap_content"
@@ -61,14 +60,14 @@ tools:context=".CourseSearchActivity">
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:backgroundTint="@color/white"
-        android:text="@string/back_to_dashboard"
+        android:text="@string/search_for_course"
         android:textColor="#673AB7"
         android:textStyle="bold"
         android:textSize="20sp"
         android:padding="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="30dp"
-        android:onClick="onClickBackToDashboard" />
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:onClick="onClickBackSearch" />
 
     <!-- Back Button -->
     <Button
