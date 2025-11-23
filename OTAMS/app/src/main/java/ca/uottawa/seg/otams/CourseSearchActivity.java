@@ -22,6 +22,7 @@ import java.util.Map;
 public class CourseSearchActivity extends AppCompatActivity {
 
     private String studentEmail;
+    private String studentPhoneNumber;
     private RecyclerView courseList;
     private CourseListAdapter cla;
 
@@ -38,8 +39,9 @@ public class CourseSearchActivity extends AppCompatActivity {
         // Stores the email of the student that logged in that was passed from the previous activity
         Intent intent = getIntent();
         studentEmail = intent.getStringExtra("email");
+        studentPhoneNumber = intent.getStringExtra("phoneNumber");
         this.courseList = findViewById(R.id.course_search_recycler_view);
-        this.searchBar = findViewById(R.id.course_search);
+        this.searchBar = findViewById(R.id.courseSearchBar);
         this.courseSearchBtn = findViewById(R.id.course_search_button);
         this.cla = new CourseListAdapter(getAllTutorsMap(this.searchBar.getText().toString()));
         this.courseSearchBtn.setOnClickListener(v -> {
@@ -73,11 +75,14 @@ public class CourseSearchActivity extends AppCompatActivity {
 
     private List<Session> findSessionsByCourseName(String courseName) {
         return List.of();
+
+        // TO-DO
     }
 
     Map<String, Tutor> getAllTutorsMap(String courseName) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
 
+        // TO-DO
 
         return Map.of();
     }

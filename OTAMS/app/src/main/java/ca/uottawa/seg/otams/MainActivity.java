@@ -123,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
                                         intent.putExtra("role", roleFromDatabase);
                                         intent.putExtra("email", userSnapshot.child("email").getValue(String.class));
 
+                                        intent.putExtra("phoneNumber", userSnapshot.child("phoneNumber").getValue(String.class));
+
                                         // Send the user to the appropriate page
                                         startActivity(intent);
                                     }
