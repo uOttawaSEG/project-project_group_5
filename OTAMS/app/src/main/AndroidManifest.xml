@@ -51,6 +51,8 @@
             android:exported="false" />
         <activity android:name=".CourseSearchActivity"
             android:exported="false" />
+        <activity android:name=".CourseResultsActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true" >
