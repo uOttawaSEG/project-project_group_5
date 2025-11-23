@@ -6,13 +6,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,13 +47,15 @@ public class CourseSearchActivity extends AppCompatActivity {
         this.courseList = findViewById(R.id.course_search_recycler_view);
         this.searchBar = findViewById(R.id.courseSearchBar);
         this.courseSearchBtn = findViewById(R.id.course_search_button);
-        this.cla = new CourseListAdapter(getAllTutorsMap(this.searchBar.getText().toString()));
+
+        // this.cla = new CourseListAdapter(getAllTutorsMap(this.searchBar.getText().toString()));
+        this.cla = new CourseListAdapter(new HashMap<>(), studentPhoneNumber);
+        getAllTutorsMap(this.searchBar.getText().toString());
+
         this.courseSearchBtn.setOnClickListener(v -> {
             String searchText = this.searchBar.getText().toString();
             if (searchText.isBlank()) populateRecyclerView(List.of()); else populateRecyclerView(findSessionsByCourseName(searchText));
         });
-
-
 
         /*//KEEP THIS COMMENTED OUT BECAUSE IT BREAKS THE APP: when user clicks go to course search page, this piece of code makes it log out instead and you will never be able to access the actual page
 
@@ -75,17 +81,74 @@ public class CourseSearchActivity extends AppCompatActivity {
 
     private List<Session> findSessionsByCourseName(String courseName) {
 
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("sessions");
+        List<Session> results = new ArrayList<>();
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                results.clear();
+                for (DataSnapshot sessionSnapshot : snapshot.getChildren()) {
+                    String courses = sessionSnapshot.child("courses").getValue(String.class);
+                    String status = sessionSnapshot.child("sessionStatus").getValue(String.class);
+
+                    // Check if this session has the course and is OPEN
+                    if (courses != null && courses.toUpperCase().contains(courseName.toUpperCase()) &&
+                            status != null && status.equals(SessionStatus.OPEN.toString())) {
+                        Session session = sessionSnapshot.getValue(Session.class);
+                        if (session != null) {
+                            results.add(session);
+                        }
+                    }
+                }
+                populateRecyclerView(results);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                populateRecyclerView(new ArrayList<>());
+            }
+        });
+
+        return results;
+
         // TO-DO
 
-        return List.of();
+        // return List.of();
     }
 
     Map<String, Tutor> getAllTutorsMap(String courseName) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+        Map<String, Tutor> tutorMap = new HashMap<>();
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                tutorMap.clear();
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    String userRole = userSnapshot.child("role").getValue(String.class);
+
+                    // Only process tutors
+                    if (userRole != null && userRole.equals("Tutor")) {
+                        Tutor tutor = userSnapshot.getValue(Tutor.class);
+                        if (tutor != null) {
+                            String tutorName = tutor.getFirstName() + " " + tutor.getLastName();
+                            tutorMap.put(tutorName, tutor);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        return tutorMap;
 
         // TO-DO
 
-        return Map.of();
+        // return Map.of();
     }
 
     private void populateRecyclerView(List<Session> courseList) {
