@@ -30,7 +30,7 @@ public class SessionListAdapter extends RecyclerView.Adapter<SessionListView> {
 
     @Override
     public void onBindViewHolder(@NonNull SessionListView holder, int position) {
-        Session s = this.sessionList.get(position);
+        final Session s = this.sessionList.get(position);
         holder.getDateAndTime().setText(MessageFormat.format("{0} {1}-{2}", s.getDate(), sdf.format(s.getStartTime()), sdf.format(s.getEndTime())));
         holder.getStudentName().setText(s.getStudentName());
         holder.getArrow().setOnClickListener(v -> {

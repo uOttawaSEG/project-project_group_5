@@ -5,6 +5,8 @@ public class Tutor extends User {
     private String highestDegree;
     private String coursesOffered;
 
+    private float avgRatingValue;
+
     public Tutor() {}
 
     public Tutor(String firstName, String lastName, String email, String password, String phoneNumber, String highestDegree, String coursesOffered) {
@@ -29,5 +31,13 @@ public class Tutor extends User {
 
     public void setCoursesOffered(String coursesOffered) {
         this.coursesOffered = coursesOffered;
+    }
+
+    public float getAvgRatingValue() {
+        return avgRatingValue;
+    }
+
+    public void setAvgRatingValue(float avgRatingValue) {
+        this.avgRatingValue = avgRatingValue;
     }
 }
