@@ -33,27 +33,6 @@ tools:context=".CourseSearchActivity">
         android:background="@color/white"
         android:theme="@style/courseSearchBarStyle" />
 
-
-    <TextView
-        android:id="@+id/courseResultsTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/course_search_results_title"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:visibility="gone" />
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/course_search_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="30dp"
-        android:layout_weight="1"
-        android:scrollbars="vertical"
-        android:visibility="gone"/>
-
     <!-- Search Button -->
     <Button
         android:id="@+id/button_search"
@@ -61,14 +40,34 @@ tools:context=".CourseSearchActivity">
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:backgroundTint="@color/white"
-        android:text="@string/back_to_dashboard"
+        android:text="Search"
         android:textColor="#673AB7"
         android:textStyle="bold"
         android:textSize="20sp"
         android:padding="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="30dp"
-        android:onClick="onClickBackToDashboard" />
+        android:onClick="onClickSearchCourse" />
+
+    <TextView
+        android:id="@+id/courseResultsTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text=""
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/course_search_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical" />
 
     <!-- Back Button -->
     <Button
@@ -85,6 +84,5 @@ tools:context=".CourseSearchActivity">
         android:layout_marginTop="10dp"
         android:layout_marginBottom="30dp"
         android:onClick="onClickBackToDashboard" />
-
 </LinearLayout>
 
