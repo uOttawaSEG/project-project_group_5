@@ -74,9 +74,10 @@ public class CourseSearchActivity extends AppCompatActivity {
     }
 
     private List<Session> findSessionsByCourseName(String courseName) {
-        return List.of();
 
         // TO-DO
+
+        return List.of();
     }
 
     Map<String, Tutor> getAllTutorsMap(String courseName) {
