@@ -26,7 +26,6 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
 
         private final Button buttonRef;
         private final Session session;
-
         private final String studentPhoneNumber;
 
         private RequestSessionButtonListener(Button btn, Session s, String phoneNumber) {
@@ -39,9 +38,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
         public void onClick(View v) {
             this.buttonRef.setActivated(false);
 
-            /**
-             * Connect to Firebase and set session to PENDING or to APPROVED if auto-approve
-             */
+            // Connect to Firebase and set session to PENDING or to APPROVED if auto-approve was selected for that session by the tutor
 
             DatabaseReference bookingsRef = FirebaseDatabase.getInstance().getReference("bookings");
             String bookingId = bookingsRef.push().getKey();
@@ -61,7 +58,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
             bookingsRef.child(bookingId).setValue(bookingData).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(this.buttonRef.getContext(), "Session requested!", Toast.LENGTH_SHORT).show();
-                    // Optionally update session status to PENDING or BOOKED
+                    // Update session status to PENDING or BOOKED
                     updateSessionStatus(this.session.getId());
                 } else {
                     Toast.makeText(this.buttonRef.getContext(), "Failed to request session", Toast.LENGTH_SHORT).show();
@@ -97,14 +94,21 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
     @Override
     public void onBindViewHolder(@NonNull CourseListView holder, int position) {
         final Session s = this.courseSession.get(position);
-        final Tutor tutorInfo = Objects.requireNonNull(this.tutorMap.get(s.getTutorName()));
+        final Tutor tutorInfo = this.tutorMap.get(s.getTutorName());
+
+        // Handle case where tutor is not found
+        if (tutorInfo == null) {
+            holder.getRatingBar().setRating(0);
+            holder.getRatingText().setText("N/A");
+        } else {
+            holder.getRatingBar().setRating(tutorInfo.getAvgRatingValue());
+            holder.getRatingText().setText(String.valueOf(tutorInfo.getAvgRatingValue()));
+        }
 
         holder.getTutorName().setText(s.getTutorName());
         holder.getDate().setText(s.getDate());
         holder.getTimeRange().setText(MessageFormat.format("{0} to {1}",
                 sdf.format(s.getStartTime()), sdf.format(s.getEndTime())));
-        holder.getRatingBar().setRating(tutorInfo.getAvgRatingValue());
-        holder.getRatingText().setText(String.valueOf(tutorInfo.getAvgRatingValue()));
 
         RequestSessionButtonListener rsbl = new RequestSessionButtonListener(
                 holder.getRequestSession(), s, this.studentPhoneNumber);
