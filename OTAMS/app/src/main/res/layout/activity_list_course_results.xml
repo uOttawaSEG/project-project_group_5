@@ -21,11 +21,38 @@
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvRatingBar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Dr. John Smith" />
 
+        <!-- Rating Bar -->
+        <RatingBar
+            android:id="@+id/tvRatingBar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:stepSize="0.5"
+            app:layout_constraintBottom_toBottomOf="@id/tvTutorName"
+            app:layout_constraintEnd_toStartOf="@id/tvRatingText"
+            app:layout_constraintTop_toTopOf="@id/tvTutorName"
+            tools:rating="4.5" />
+
+        <!-- Rating Text -->
+        <TextView
+            android:id="@+id/tvRatingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/tvTutorName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvTutorName"
+            tools:text="4.8" />
         <!-- Date -->
 
         <!-- Time Range -->
@@ -45,6 +72,7 @@
             android:id="@+id/tvTimeRange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:drawablePadding="4dp"
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp"
@@ -53,34 +81,7 @@
             app:layout_constraintTop_toTopOf="@id/tvDate"
             tools:text="10:00 AM - 11:30 AM" />
 
-        <!-- Rating Bar -->
-        <RatingBar
-            android:id="@+id/tvRatingBar"
-            style="?android:attr/ratingBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:isIndicator="true"
-            android:numStars="5"
-            android:stepSize="0.5"
-            app:layout_constraintBottom_toBottomOf="@id/tvDate"
-            app:layout_constraintStart_toEndOf="@+id/tvTimeRange"
-            app:layout_constraintTop_toTopOf="@id/tvDate"
-            tools:rating="4.5" />
 
-        <!-- Rating Text -->
-        <!-- Request Session Button -->
-
-        <TextView
-            android:id="@+id/tvRatingText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="4dp"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@id/tvDate"
-            app:layout_constraintStart_toEndOf="@+id/tvRatingBar"
-            app:layout_constraintTop_toTopOf="@id/tvDate"
-            tools:text="4.8" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/tvBtnRequestSession"
