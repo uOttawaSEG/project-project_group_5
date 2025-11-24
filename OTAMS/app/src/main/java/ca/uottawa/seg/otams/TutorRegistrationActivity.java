@@ -128,6 +128,22 @@ public class TutorRegistrationActivity extends AppCompatActivity {
             coursesOffered.setError("Courses offered is required");
             valid = false;
         }
+        else {
+            // Otherwise, check that the courses are listed with no special characters
+            if (coursesOfferedInput.matches(".*[.,;:/\\\\].*")) {
+                coursesOffered.setError("ERROR: Cannot include commas, periods, or other special characters. Separate courses with a space or newline instead e.g., SEG2105 CEG2136 CSI2110)");
+                valid = false;
+            }
+
+            // And that they are formatted like course codes with spaces or newlines separating each course listed
+            String singleCourse = "[A-Za-z]{3,4}\\d{3,4}";
+            String pattern = singleCourse + "(?:[ \\n]+" + singleCourse + ")*";
+
+            if (valid && !coursesOfferedInput.matches(pattern)) {
+                coursesOffered.setError("ERROR: Invalid format. Courses should be formatted as course codes (e.g., SEG2105 CEG2136 CSI2110)");
+                valid = false;
+            }
+        }
 
         if(valid){//check if all fields have been filled in with appropriate information
 
