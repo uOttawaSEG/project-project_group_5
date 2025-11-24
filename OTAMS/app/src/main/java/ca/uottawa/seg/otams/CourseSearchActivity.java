@@ -18,13 +18,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CourseSearchActivity extends AppCompatActivity {
 
-    private String studentEmail;
+    private String studentName;
     private String studentPhoneNumber;
     private RecyclerView courseList;
     private CourseListAdapter cla;
@@ -41,17 +42,18 @@ public class CourseSearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_course_search);
 
         Intent intent = getIntent();
-        studentEmail = intent.getStringExtra("email");
+        studentName = intent.getStringExtra("name");
         studentPhoneNumber = intent.getStringExtra("phoneNumber");
 
         this.courseList = findViewById(R.id.course_search_recycler_view);
         this.searchBar = findViewById(R.id.courseSearchBar);
         this.courseSearchBtn = findViewById(R.id.course_search_button);
 
-        this.cla = new CourseListAdapter(tutorMap, studentPhoneNumber);
+        this.cla = new CourseListAdapter(tutorMap, studentPhoneNumber, studentName, this::onSessionBooked);
 
-        // Load tutors first, THEN allow searching
+        // Load tutors and student's existing bookings
         getAllTutorsMap();
+        getStudentBookings();
 
         this.courseSearchBtn.setOnClickListener(v -> {
             String searchText = this.searchBar.getText().toString();
@@ -75,9 +77,8 @@ public class CourseSearchActivity extends AppCompatActivity {
                     String courses = sessionSnapshot.child("courses").getValue(String.class);
                     String status = sessionSnapshot.child("sessionStatus").getValue(String.class);
 
-                    // Check if this session has the course and is OPEN
-                    if (courses != null && courses.toUpperCase().contains(courseName.toUpperCase()) &&
-                            status != null && status.equals(SessionStatus.OPEN.toString())) {
+                    // Check if the current session is for the typed course and is open
+                    if (courses != null && courseMatchesExactly(courses, courseName) && status != null && status.equals(SessionStatus.OPEN.toString())) {
                         Session session = sessionSnapshot.getValue(Session.class);
                         if (session != null) {
                             results.add(session);
@@ -94,6 +95,17 @@ public class CourseSearchActivity extends AppCompatActivity {
         });
 
         return results;
+    }
+
+    // Check if course is being taught by that tutor in that session
+    private boolean courseMatchesExactly(String coursesString, String searchTerm) {
+        String[] courseArray = coursesString.split("\\s+");
+        for (String course : courseArray) {
+            if (course.equalsIgnoreCase(searchTerm.trim())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void getAllTutorsMap() {
@@ -123,6 +135,54 @@ public class CourseSearchActivity extends AppCompatActivity {
                 tutorsLoaded = false;
             }
         });
+    }
+
+    private void getStudentBookings() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("sessions");
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                studentBookings.clear();
+                for (DataSnapshot sessionSnapshot : snapshot.getChildren()) {
+                    Session session = sessionSnapshot.getValue(Session.class);
+                    if (session != null) {
+                        String status = sessionSnapshot.child("sessionStatus").getValue(String.class);
+                        String studentPhone = sessionSnapshot.child("studentPhoneNumber").getValue(String.class);
+
+                        // Get student bookings that are PENDING or APPROVED
+                        if (studentPhone != null && studentPhone.equals(studentPhoneNumber) &&
+                                status != null && (status.equals(SessionStatus.PENDING.toString()) ||
+                                status.equals(SessionStatus.APPROVED.toString()))) {
+                            studentBookings.add(session);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+    public boolean hasTimeConflict(Date startTime, Date endTime) {
+        for (Session booking : studentBookings) {
+            // Check if there's an overlap
+            if (!(endTime.before(booking.getStartTime()) || startTime.after(booking.getEndTime()))) {
+                return true; // Overlap found
+            }
+        }
+        return false;
+    }
+
+    // Callback when a session is successfully booked
+    private void onSessionBooked(Session bookedSession) {
+        // Remove the booked session from results in real time
+        cla.removeSession(bookedSession);
+
+        // Add to student's bookings list
+        studentBookings.add(bookedSession);
     }
 
     private void populateRecyclerView(List<Session> courseList) {
