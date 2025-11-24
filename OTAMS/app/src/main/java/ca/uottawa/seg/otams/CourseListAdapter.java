@@ -19,9 +19,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
+
+    public interface OnSessionBookedListener {
+        void onSessionBooked(Session session);
+    }
+
     private static class RequestSessionButtonListener implements View.OnClickListener {
 
         private final Button buttonRef;
@@ -43,46 +47,27 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
         @Override
         public void onClick(View v) {
 
-            // Check for time conflicts
-            if (activity.hasTimeConflict(session.getStartTime(), session.getEndTime())) {
+            // Check for time conflicts only if activity is available
+            if (activity != null && activity.hasTimeConflict(session.getStartTime(), session.getEndTime())) {
                 Toast.makeText(this.buttonRef.getContext(),
                         "You have a scheduling conflict with another session",
                         Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            this.buttonRef.setActivated(false);
-
-            // Connect to Firebase and set session to PENDING or to APPROVED if auto-approve was selected for that session by the tutor
-
-            // DatabaseReference bookingsRef = FirebaseDatabase.getInstance().getReference("bookings");
-            // String bookingId = bookingsRef.push().getKey();
+            this.buttonRef.setEnabled(false);
 
             DatabaseReference bookingsRef = FirebaseDatabase.getInstance().getReference("sessions");
             String sessionId = this.session.getId();
 
             Map<String, Object> bookingData = new HashMap<>();
-            updateData.put("sessionStatus", SessionStatus.PENDING.toString());
-            updateData.put("studentPhoneNumber", this.studentPhoneNumber);
-            updateData.put("studentName", this.studentName);
-            /*
-            bookingData.put("sessionId", this.session.getId());
-            bookingData.put("tutorName", this.session.getTutorName());
-            bookingData.put("tutorPhoneNumber", this.session.getTutorPhoneNumber());
+            bookingData.put("sessionStatus", SessionStatus.PENDING.toString());
             bookingData.put("studentPhoneNumber", this.studentPhoneNumber);
-            bookingData.put("status", "PENDING");
-            bookingData.put("timestamp", System.currentTimeMillis());
-            bookingData.put("courses", this.session.getCourses());
-            bookingData.put("date", this.session.getDate());
-            bookingData.put("startTime", this.session.getStartTime());
-            bookingData.put("endTime", this.session.getEndTime());
-            */
+            bookingData.put("studentName", this.studentName);
 
-            bookingsRef.child(sessionId).setValue(bookingData).addOnCompleteListener(task -> {
+            bookingsRef.child(sessionId).updateChildren(bookingData).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(this.buttonRef.getContext(), "Session requested!", Toast.LENGTH_SHORT).show();
-
-                    // updateSessionStatus(this.session.getId());
 
                     // Update the session object and notify the student
                     this.session.setSessionStatus(SessionStatus.PENDING);
@@ -94,27 +79,19 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
                         callback.onSessionBooked(this.session);
                     }
                 } else {
-                    Toast.makeText(this.buttonRef.getContext(), "Failed to request session", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this.buttonRef.getContext(), "Failed to request session: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     this.buttonRef.setEnabled(true);
                 }
             });
         }
-        /*
-        private void updateSessionStatus(String sessionId) {
-            DatabaseReference sessionRef = FirebaseDatabase.getInstance().getReference("sessions").child(sessionId);
-            // Update to PENDING after student requests
-            sessionRef.child("sessionStatus").setValue(SessionStatus.PENDING.toString());
-        }
-        */
     }
+
     private final List<Session> courseSession;
     private final Map<String, Tutor> tutorMap;
     private final String studentPhoneNumber;
     private final String studentName;
     private final CourseSearchActivity activity;
     private final OnSessionBookedListener onSessionBookedListener;
-
-
 
     public CourseListAdapter(Map<String, Tutor> tutorMap, String studentPhoneNumber, String studentName, CourseSearchActivity activity, OnSessionBookedListener listener) {
         this.courseSession = new ArrayList<>();
@@ -126,7 +103,12 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
     }
 
     public CourseListAdapter(Map<String, Tutor> tutorMap, String studentPhoneNumber, String studentName, OnSessionBookedListener listener) {
-        this(tutorMap, studentPhoneNumber, studentName, null, listener);
+        this.courseSession = new ArrayList<>();
+        this.tutorMap = tutorMap;
+        this.studentPhoneNumber = studentPhoneNumber;
+        this.studentName = studentName;
+        this.activity = null;
+        this.onSessionBookedListener = listener;
     }
 
     @NonNull
@@ -134,7 +116,6 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
     public CourseListView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_list_course_results, parent, false);
         return new CourseListView(v);
-
     }
 
     @Override
@@ -187,5 +168,4 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
     List<Session> getCourseSession() {
         return this.courseSession;
     }
-
 }

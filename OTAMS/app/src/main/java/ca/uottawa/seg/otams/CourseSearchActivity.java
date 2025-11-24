@@ -2,6 +2,7 @@ package ca.uottawa.seg.otams;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,6 +35,7 @@ public class CourseSearchActivity extends AppCompatActivity {
     private Button courseSearchBtn;
 
     private Map<String, Tutor> tutorMap = new HashMap<>();
+    private List<Session> studentBookings = new ArrayList<>();
     private boolean tutorsLoaded = false;
 
     @Override
@@ -49,7 +51,7 @@ public class CourseSearchActivity extends AppCompatActivity {
         this.searchBar = findViewById(R.id.courseSearchBar);
         this.courseSearchBtn = findViewById(R.id.course_search_button);
 
-        this.cla = new CourseListAdapter(tutorMap, studentPhoneNumber, studentName, this::onSessionBooked);
+        this.cla = new CourseListAdapter(tutorMap, studentPhoneNumber, studentName, this, this::onSessionBooked);
 
         // Load tutors and student's existing bookings
         getAllTutorsMap();
@@ -162,6 +164,7 @@ public class CourseSearchActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("CourseSearch", "Error fetching student bookings: " + error.getMessage());
             }
         });
     }
