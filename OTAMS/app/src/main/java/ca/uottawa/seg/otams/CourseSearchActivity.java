@@ -39,7 +39,7 @@ public class CourseSearchActivity extends AppCompatActivity {
         Intent intent = getIntent();
         studentEmail = intent.getStringExtra("email");
         this.courseList = findViewById(R.id.course_search_recycler_view);
-        this.searchBar = findViewById(R.id.course_search);
+        this.searchBar = findViewById(R.id.courseSearchBar);
         this.courseSearchBtn = findViewById(R.id.course_search_button);
         this.cla = new CourseListAdapter(getAllTutorsMap(this.searchBar.getText().toString()));
         this.courseSearchBtn.setOnClickListener(v -> {
