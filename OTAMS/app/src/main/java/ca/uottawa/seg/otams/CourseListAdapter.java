@@ -60,8 +60,12 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
             DatabaseReference bookingsRef = FirebaseDatabase.getInstance().getReference("sessions");
             String sessionId = this.session.getId();
 
+            // Determine if session should be auto-approved
+            String sessionStatus = this.session.getAutoApprove() ?
+                    SessionStatus.APPROVED.toString() : SessionStatus.PENDING.toString();
+
             Map<String, Object> bookingData = new HashMap<>();
-            bookingData.put("sessionStatus", SessionStatus.PENDING.toString());
+            bookingData.put("sessionStatus", sessionStatus);
             bookingData.put("studentPhoneNumber", this.studentPhoneNumber);
             bookingData.put("studentName", this.studentName);
 
@@ -70,7 +74,8 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
                     Toast.makeText(this.buttonRef.getContext(), "Session requested!", Toast.LENGTH_SHORT).show();
 
                     // Update the session object and notify the student
-                    this.session.setSessionStatus(SessionStatus.PENDING);
+                    this.session.setSessionStatus(this.session.getAutoApprove() ?
+                            SessionStatus.APPROVED : SessionStatus.PENDING);
                     this.session.setStudentPhoneNumber(this.studentPhoneNumber);
                     this.session.setStudentName(this.studentName);
 
@@ -99,15 +104,6 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
         this.studentPhoneNumber = studentPhoneNumber;
         this.studentName = studentName;
         this.activity = activity;
-        this.onSessionBookedListener = listener;
-    }
-
-    public CourseListAdapter(Map<String, Tutor> tutorMap, String studentPhoneNumber, String studentName, OnSessionBookedListener listener) {
-        this.courseSession = new ArrayList<>();
-        this.tutorMap = tutorMap;
-        this.studentPhoneNumber = studentPhoneNumber;
-        this.studentName = studentName;
-        this.activity = null;
         this.onSessionBookedListener = listener;
     }
 

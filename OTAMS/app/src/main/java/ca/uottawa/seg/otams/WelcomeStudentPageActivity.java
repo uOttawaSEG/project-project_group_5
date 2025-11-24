@@ -22,7 +22,7 @@ public class WelcomeStudentPageActivity extends AppCompatActivity {
         // Stores the phone number of the student that logged in that was passed from the previous activity
         Intent intent = getIntent();
         studentEmail = intent.getStringExtra("email");
-        studentEmail = intent.getStringExtra("name");
+        studentName = intent.getStringExtra("name");
         studentPhoneNumber = intent.getStringExtra("phoneNumber");
     }
 
