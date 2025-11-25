@@ -11,15 +11,19 @@ import androidx.appcompat.app.AppCompatActivity;
 public class WelcomeStudentPageActivity extends AppCompatActivity {
 
     private String studentEmail;
+    private String studentName;
+    private String studentPhoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_welcome);
 
-        // Stores the phone number of the tutor that logged in that was passed from the previous activity
+        // Stores the phone number of the student that logged in that was passed from the previous activity
         Intent intent = getIntent();
         studentEmail = intent.getStringExtra("email");
+        studentName = intent.getStringExtra("name");
+        studentPhoneNumber = intent.getStringExtra("phoneNumber");
     }
 
     public void onClickSearchCourse(View view) {
@@ -30,7 +34,8 @@ public class WelcomeStudentPageActivity extends AppCompatActivity {
             Intent intent = new Intent(WelcomeStudentPageActivity.this, CourseSearchActivity.class);
 
             // Pass the student's email to the next page so that the student can quickly be identified and found in the database (since the email is the key)
-            intent.putExtra("email", studentEmail);
+            intent.putExtra("name", studentName);
+            intent.putExtra("phoneNumber", studentPhoneNumber);
 
             // Send the user to the course search page
             startActivity(intent);
@@ -47,6 +52,7 @@ public class WelcomeStudentPageActivity extends AppCompatActivity {
 
             // Pass the student's phone number to the next page so that the student can quickly be identified and found in the database (since the phone number is the key)
             intent.putExtra("email", studentEmail);
+            intent.putExtra("phoneNumber", studentPhoneNumber);
 
             // Send the user to the student dashboard page
             startActivity(intent);
