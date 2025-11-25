@@ -22,6 +22,7 @@ import java.util.Map;
 
 public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
 
+    // Implemented to allow the adapter to notify the course search activity when a session is booked
     public interface OnSessionBookedListener {
         void onSessionBooked(Session session);
     }
@@ -47,44 +48,60 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
         @Override
         public void onClick(View v) {
 
-            // Check for time conflicts only if activity is available
+            // When the student clicks the button to book a session, checks if the session overlaps with one of their existing sessions
             if (activity != null && activity.hasTimeConflict(session.getStartTime(), session.getEndTime())) {
-                Toast.makeText(this.buttonRef.getContext(),
-                        "You have a scheduling conflict with another session",
-                        Toast.LENGTH_SHORT).show();
+                // If there is an overlap then alert the student
+                Toast.makeText(this.buttonRef.getContext(), "ERROR: A scheduling conflict exists with another booked session", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            // Only allows the button to be clicked once (the student cannot try to book the session multiple times)
             this.buttonRef.setEnabled(false);
 
-            DatabaseReference bookingsRef = FirebaseDatabase.getInstance().getReference("sessions");
+            DatabaseReference sessions = FirebaseDatabase.getInstance().getReference("sessions");
             String sessionId = this.session.getId();
 
-            // Determine if session should be auto-approved
-            String sessionStatus = this.session.getAutoApprove() ?
-                    SessionStatus.APPROVED.toString() : SessionStatus.PENDING.toString();
+            String sessionStatus = SessionStatus.PENDING.toString();
 
-            Map<String, Object> bookingData = new HashMap<>();
-            bookingData.put("sessionStatus", sessionStatus);
-            bookingData.put("studentPhoneNumber", this.studentPhoneNumber);
-            bookingData.put("studentName", this.studentName);
+            // Determine whether the tutor enabled auto approval for that session slot and sets the session's status to approved instead of pending if it is
+            if (this.session.getAutoApprove()) {
+                sessionStatus = SessionStatus.APPROVED.toString();
+            }
 
-            bookingsRef.child(sessionId).updateChildren(bookingData).addOnCompleteListener(task -> {
+            // Create a map with the data that needs to be added to the sessionentry in the database (i.e. need to update the session's status and include some info regarding the student who booked it)
+            Map<String, Object> sessionData = new HashMap<>();
+            sessionData.put("sessionStatus", sessionStatus);
+            sessionData.put("studentPhoneNumber", this.studentPhoneNumber);
+            sessionData.put("studentName", this.studentName);
+
+            sessions.child(sessionId).updateChildren(sessionData).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Toast.makeText(this.buttonRef.getContext(), "Session requested!", Toast.LENGTH_SHORT).show();
+                    // Updates the session entry in the database with the new info
 
-                    // Update the session object and notify the student
-                    this.session.setSessionStatus(this.session.getAutoApprove() ?
-                            SessionStatus.APPROVED : SessionStatus.PENDING);
+                    // Alerts the student that their booking was successful (different message depending on whether the request was approved immediately (i.e. auto approval was on) or not)
+                    if (this.session.getAutoApprove()) {
+                        this.session.setSessionStatus(SessionStatus.APPROVED);
+
+                        Toast.makeText(this.buttonRef.getContext(), "Session booked!", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        this.session.setSessionStatus(SessionStatus.APPROVED);
+
+                        Toast.makeText(this.buttonRef.getContext(), "Session requested!", Toast.LENGTH_SHORT).show();
+                    }
+
                     this.session.setStudentPhoneNumber(this.studentPhoneNumber);
                     this.session.setStudentName(this.studentName);
 
-                    // Notify callback to remove from list
+                    // Notifies the course search activity that the session was successfully booked
                     if (callback != null) {
                         callback.onSessionBooked(this.session);
                     }
                 } else {
-                    Toast.makeText(this.buttonRef.getContext(), "Failed to request session: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    // If the session was unable to be booked then alert the student
+                    Toast.makeText(this.buttonRef.getContext(), "ERROR: Failed to request session: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+
+                    // Allow the button to be pressed again if it failed to do anything the first time
                     this.buttonRef.setEnabled(true);
                 }
             });
@@ -119,7 +136,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
         final Session s = this.courseSession.get(position);
         final Tutor tutorInfo = this.tutorMap.get(s.getTutorPhoneNumber());
 
-        // Handle case where tutor is not found
+        // Handle case where tutor is not found (to avoid app crashing)
         if (tutorInfo == null) {
             holder.getRatingBar().setRating(0);
             holder.getRatingText().setText("N/A");
