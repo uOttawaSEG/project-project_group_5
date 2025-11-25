@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 public class StudentDashboardActivity  extends AppCompatActivity{
     private RecyclerView recycleView;
     private SessionListAdapter ula;
-    String studentEmail; // Stores the phone number of the tutor so their entry in the database can quickly be found (since phone number is the key)
+    String studentEmail;
 
     private TabFilter myTabFilter;
 
@@ -56,26 +56,21 @@ public class StudentDashboardActivity  extends AppCompatActivity{
             sessionListAdapter = sessionAdapter;
         }
 
+        //Called whenever activity loads on screen
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
             String tabString = Objects.requireNonNull(tab.getText()).toString();
             Calendar c = Calendar.getInstance();
-            if (getString(R.string.student_pending_sessions).equals(tabString)) {
-                //something
-            } else
+            SessionStatus sessionStatus = SessionStatus.PENDING;
             if (getString(R.string.student_upcoming_sessions).equals(tabString)) {
-
-                //something
-
+                sessionStatus = SessionStatus.APPROVED;
             } else
             if (getString(R.string.student_past_sessions).equals(tabString)) {
-                //something
-
+                sessionStatus = SessionStatus.COMPLETED;
             } else if (getString(R.string.rejected_sessions).equals(tabString)) {
-                //something
-
+                sessionStatus = SessionStatus.REJECTED;
             }
-            StudentDashboardActivity.this.getAllSessionsOfStudent(studentEmail);
+            StudentDashboardActivity.this.filterSessionBy(sessionStatus);
         }
 
         @Override
@@ -101,6 +96,29 @@ public class StudentDashboardActivity  extends AppCompatActivity{
         }
     }
 
+    private SessionStatus getSessionStatus(TabLayout.Tab selectedTab) {
+        String tabString = selectedTab.getText().toString();
+        if (tabString.equals(getString(R.string.pending_sessions))) {
+            return SessionStatus.PENDING;
+        }
+        if (tabString.equals(getString(R.string.rejected_requests))) {
+            return SessionStatus.REJECTED;
+        }
+        if (tabString.equals(getString(R.string.past_sessions))) {
+            return SessionStatus.COMPLETED;
+        }
+        return SessionStatus.APPROVED;
+
+    }
+    private SessionStatus getSessionStatus(TabLayout tb) {
+        TabLayout.Tab selectedTab = tb.getTabAt(tb.getSelectedTabPosition());
+        if (selectedTab == null) {
+            selectedTab = tb.getTabAt(0);
+            selectedTab.select();
+        }
+        return getSessionStatus(selectedTab);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,44 +136,54 @@ public class StudentDashboardActivity  extends AppCompatActivity{
         final TabLayout td = findViewById(R.id.student_tab_layout);
         myTabFilter = new StudentDashboardActivity.TabFilter(td, ula);
         td.addOnTabSelectedListener(myTabFilter);
-        getAllSessionsOfStudent(studentEmail);
+        //Automatically open on pending
+        filterSessionBy(SessionStatus.PENDING);
     }
 
     private static List<Session> filterSessionBy(List<Session> sessionList, Predicate<Session> filterMechanism) {
         return filterMechanism == null ? sessionList : sessionList.stream().filter(filterMechanism).collect(Collectors.toList());
     }
 
-    private void getAllSessionsOfStudent(String studentEmail) {
+    private void filterSessionBy(SessionStatus sessionStatus) {
         // Get all sessions from Firebase
-
         DatabaseReference sessionsReference = FirebaseDatabase.getInstance().getReference("sessions");
         Query tutorSessions = sessionsReference.orderByChild("studentEmail").equalTo(studentEmail);
         tutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                final List<Session> returnList = new ArrayList<>();
-                if (snapshot.exists()) {
+                List<Session> sessionList = new ArrayList<>(); // List containing the details of every session for this user
+
+                // If a session exists in the database with the specified session status
+                if(snapshot.exists()) {
+
+                    // Iterate through every session in the database with the specified session status and adds it to the corresponding session inbox in the student dashboard
                     for (DataSnapshot ds : snapshot.getChildren()) {
-                        String phoneNumber = ds.child("studentEmail").getValue(String.class);
-                        if (studentEmail.equals(phoneNumber)) {
+
+                        // Then fetch the session status
+                        String requestStatusFromDatabase = ds.child("requestStatus").getValue(String.class);
+                        // Fetch the student's email
+                        String studentEmailCheck = ds.child("studentEmail").getValue(String.class);
+
+                        if (studentEmail.equals(studentEmailCheck) && sessionStatus.toString().equals(requestStatusFromDatabase)) {
                             Session s = ds.getValue(Session.class);
-                            returnList.add(s);
+                            sessionList.add(s);
                         }
                     }
                 }
 
-                populateRecyclerView(filterSessionBy(returnList, myTabFilter.getFilter()));
-            }
+                populateRecyclerView(filterSessionBy(sessionList, myTabFilter.getFilter()));
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
+                }
+
         });
     }
 
 
-    private void populateRecyclerView(List<Session> sessionsList) {
+            private void populateRecyclerView(List<Session> sessionsList) {
         if (ula.getSessionList().isEmpty()) {
             // If the inbox is being populated for the first time then create and adapter for it
             RecyclerView rv = this.recycleView;
@@ -185,26 +213,16 @@ public class StudentDashboardActivity  extends AppCompatActivity{
         }
     }
 
-
-    //Manage Sessions page needs to be implemented
-//    public void onClickManageSessions(View view) {
-//        Intent intent = new Intent(StudentDashboardActivity.this, MainActivity.class);
-//
-//        // Send the user to the login page
-//        startActivity(intent);
-//    }
-
-
     // Refresh the RecyclerView (request inbox) whenever the tutor returns back to their dashboard
     @Override
     protected void onResume() {
         super.onResume();
 
         // Determines which tab (Pending Session Requests, Upcoming Sessions or Past Sessions) the tutor is currently on in the dashboard
-        // Add code here
+        TabLayout tb = findViewById(R.id.student_tab_layout);
 
         // Refreshes the request inbox for the selected tab
-        // Add code in here
+        filterSessionBy(getSessionStatus(tb));
     }
 }
 
