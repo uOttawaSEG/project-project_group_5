@@ -85,7 +85,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
                         Toast.makeText(this.buttonRef.getContext(), "Session booked!", Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        this.session.setSessionStatus(SessionStatus.APPROVED);
+                        this.session.setSessionStatus(SessionStatus.PENDING);
 
                         Toast.makeText(this.buttonRef.getContext(), "Session requested!", Toast.LENGTH_SHORT).show();
                     }
