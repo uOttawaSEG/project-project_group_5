@@ -117,7 +117,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListView> {
     @Override
     public void onBindViewHolder(@NonNull CourseListView holder, int position) {
         final Session s = this.courseSession.get(position);
-        final Tutor tutorInfo = this.tutorMap.get(s.getTutorName());
+        final Tutor tutorInfo = this.tutorMap.get(s.getTutorPhoneNumber());
 
         // Handle case where tutor is not found
         if (tutorInfo == null) {
