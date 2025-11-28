@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 public class StudentDashboardActivity  extends AppCompatActivity{
     private RecyclerView recycleView;
     private SessionListAdapter ula;
-    String studentEmail;
+    String studentPhoneNumber;
 
     private TabFilter myTabFilter;
 
@@ -130,7 +130,7 @@ public class StudentDashboardActivity  extends AppCompatActivity{
             return insets;
         });
         Intent intent = getIntent();
-        studentEmail = intent.getStringExtra("email");
+        studentPhoneNumber = intent.getStringExtra("phoneNumber");
         recycleView = findViewById(R.id.session_request_recycler_view);
         ula = new SessionListAdapter(new ArrayList<>());
         final TabLayout td = findViewById(R.id.student_tab_layout);
@@ -147,7 +147,7 @@ public class StudentDashboardActivity  extends AppCompatActivity{
     private void filterSessionBy(SessionStatus sessionStatus) {
         // Get all sessions from Firebase
         DatabaseReference sessionsReference = FirebaseDatabase.getInstance().getReference("sessions");
-        Query tutorSessions = sessionsReference.orderByChild("studentEmail").equalTo(studentEmail);
+        Query tutorSessions = sessionsReference.orderByChild("phoneNumber").equalTo(studentPhoneNumber);
         tutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -162,9 +162,9 @@ public class StudentDashboardActivity  extends AppCompatActivity{
                         // Then fetch the session status
                         String requestStatusFromDatabase = ds.child("requestStatus").getValue(String.class);
                         // Fetch the student's email
-                        String studentEmailCheck = ds.child("studentEmail").getValue(String.class);
+                        String studentPhoneNumberCheck = ds.child("studentPhoneNumber").getValue(String.class);
 
-                        if (studentEmail.equals(studentEmailCheck) && sessionStatus.toString().equals(requestStatusFromDatabase)) {
+                        if (studentPhoneNumber.equals(studentPhoneNumberCheck) && sessionStatus.toString().equals(requestStatusFromDatabase)) {
                             Session s = ds.getValue(Session.class);
                             sessionList.add(s);
                         }
