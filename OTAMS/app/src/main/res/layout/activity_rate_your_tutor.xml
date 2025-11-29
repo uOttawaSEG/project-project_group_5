@@ -12,9 +12,11 @@
         android:id="@+id/backArrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/u2b05"
+        android:text="⬅"
         android:textColor="@color/white"
         android:textSize="40sp"
+        android:clickable="true"
+        android:onClick="onClickBackArrow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -37,10 +39,10 @@
         android:id="@+id/tutorName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/tutor_name"
+        android:text="Tutor Name"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:textSize="18sp"
+        android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/rateTutorTitle"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="40dp"/>
@@ -50,26 +52,26 @@
         android:id="@+id/tutorCourse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/course"
+        android:text="Course"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:textSize="18sp"
         app:layout_constraintTop_toBottomOf="@id/tutorName"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="12dp"/>
 
 
     <TextView
         android:id="@+id/sessionTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/date_amp_time"
+        android:text="Date &amp; Time"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:textSize="18sp"
         app:layout_constraintTop_toBottomOf="@id/tutorCourse"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="12dp"/>
 
 
     <RatingBar
@@ -79,7 +81,7 @@
         android:numStars="5"
         android:stepSize="1"
         android:rating="0"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="50dp"
         android:progressTint="#673AB7"
         android:secondaryProgressTint="#B39DDB"
         app:layout_constraintTop_toBottomOf="@id/sessionTime"
@@ -97,7 +99,7 @@
         android:textSize="18sp"
         android:backgroundTint="@color/white"
         android:padding="12dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="50dp"
         app:layout_constraintTop_toBottomOf="@id/ratingBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

@@ -1,6 +1,5 @@
 package ca.uottawa.seg.otams;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,53 +16,56 @@ import com.google.firebase.database.ValueEventListener;
 
 public class StudentInfoPastActivity extends AppCompatActivity {
 
+    public static final String PHONE_NUMBER = "phoneNumber";
     private String sessionId;
-    private TextView tutorName;
-    private TextView tutorEmail;
-    private TextView tutorPhoneNumber;
-    private TextView sessionCourse;
+    private String studentPhoneNumber;
+    private TextView name;
+    private TextView email;
+    private TextView phoneNumber;
+    private TextView course;
 
-    @Override
+    static final String TUTOR_NAME = "tutorName";
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_info_pending);
+        setContentView(R.layout.activity_student_info_past);
 
-        // Text fields that need to be populated with the session's info
-        tutorName = findViewById(R.id.detail_full_name);
-        tutorEmail = findViewById(R.id.detail_session_email);
-        tutorPhoneNumber = findViewById(R.id.session_phone_number);
-        sessionCourse = findViewById(R.id.detail_course);
+        // Text fields that need to be populated with the specified tutor's info
+        name = findViewById(R.id.detail_full_name);
+        email = findViewById(R.id.detail_session_email);
+        phoneNumber = findViewById(R.id.session_phone_number);
+        course = findViewById(R.id.detail_course);
 
-        // Stores the session ID that was passed from the previous activity
+        // Stores the info about the session that was passed from the previous activity
         Intent intent = getIntent();
         sessionId = intent.getStringExtra("id");
+        studentPhoneNumber = intent.getStringExtra("studentPhoneNumber");
 
-        // Fetch the session details from the database
+        // Fetch session and tutor details
         fetchSessionDetails(sessionId);
     }
 
     private void fetchSessionDetails(String sessionId) {
-        // Fetch session from database
         DatabaseReference session = FirebaseDatabase.getInstance().getReference("sessions").child(sessionId);
         session.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    // Fetch & store session
                     Session s = snapshot.getValue(Session.class);
 
                     if (s != null) {
-                        // Display tutor's name
-                        tutorName.setText(s.getTutorName());
+                        // Display tutor name
+                        name.setText(s.getTutorName());
 
-                        // Display session course
-                        sessionCourse.setText(s.getCourses());
+                        // Display course
+                        course.setText(s.getCourses());
 
-                        // Fetch the tutor's additional details (email and phone) from the users portion of the database
+                        // Fetch tutor's contact details
                         fetchTutorDetails(s.getTutorPhoneNumber());
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -77,13 +79,12 @@ public class StudentInfoPastActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    // Fetch and store the tutor's email and phone number
-                    String email = snapshot.child("email").getValue(String.class);
-                    String phone = snapshot.child("phoneNumber").getValue(String.class);
+                    // Fetch and store the tutor's email
+                    String tutorEmail = snapshot.child("email").getValue(String.class);
 
-                    // Display the tutor's contact information
-                    tutorEmail.setText(email);
-                    tutorPhoneNumber.setText(phone);
+                    // Changes the placeholder text to the info for the specified tutor
+                    email.setText(tutorEmail);
+                    phoneNumber.setText(phone);
                 }
             }
             @Override
@@ -92,22 +93,29 @@ public class StudentInfoPastActivity extends AppCompatActivity {
         });
     }
 
-    public void onClickRateTutor(View view) {
-        int pressID = view.getId();
-
-        // CHeck if the student is trying to rate their tutor
-        if(pressID == R.id.rateTutorBtn){
-
-        }
-    }
-
     public void onClickBackToDashboard(View view) {
-        int pressID = view.getId();
+        int pressID=view.getId();
 
         // Check if the student is trying to return to their dashboard
         if (pressID == R.id.backToDashboardBtn) {
             // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
             finish();
+        }
+    }
+
+    public void onClickRateTutor(View view) {
+        int pressID=view.getId();
+
+        // Check if the student wants to rate the tutor
+        if (pressID == R.id.rateTutorBtn) {
+            Intent intent = new Intent(StudentInfoPastActivity.this, RateTutorActivity.class);
+
+            // Pass the session ID and student phone number to the rating activity
+            intent.putExtra("sessionId", sessionId);
+            intent.putExtra("studentPhoneNumber", studentPhoneNumber);
+
+            // Send the user to the rating page
+            startActivity(intent);
         }
     }
 }

@@ -59,6 +59,8 @@ public class SessionListAdapter extends RecyclerView.Adapter<SessionListView> {
                     intent = new Intent(v.getContext(), StudentInfoUpcomingActivity.class);
                 } else if (sessionStatus.equals("COMPLETED")) {
                     intent = new Intent(v.getContext(), StudentInfoPastActivity.class);
+                    // Pass student phone number for rating functionality
+                    intent.putExtra("studentPhoneNumber", s.getStudentPhoneNumber());
                 } else if (sessionStatus.equals("REJECTED")) {
                     intent = new Intent(v.getContext(), StudentInfoRejectedActivity.class);
                 } else {
