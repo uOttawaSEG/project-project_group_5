@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 public class StudentInfoPendingActivity extends AppCompatActivity {
 
     private String sessionId;
@@ -24,6 +28,7 @@ public class StudentInfoPendingActivity extends AppCompatActivity {
     private TextView tutorPhoneNumber;
     private TextView sessionCourse;
     private TextView sessionTime;
+    private Session currentSession; // Store session for cancellation check
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,8 @@ public class StudentInfoPendingActivity extends AppCompatActivity {
                     Session s = snapshot.getValue(Session.class);
 
                     if (s != null) {
+                        currentSession = s; // Store for later use
+
                         // Display tutor's name
                         tutorName.setText(s.getTutorName());
 
@@ -101,13 +108,41 @@ public class StudentInfoPendingActivity extends AppCompatActivity {
 
     public void onClickCancel(View view) {
         // Change the session back to an open timeslot
-        if (sessionId != null) {
+        // Check whether session is >24 hours from current time
+        if (sessionId != null && currentSession != null && isMoreThan24HoursAway(currentSession)) {
             DatabaseReference session = FirebaseDatabase.getInstance().getReference("sessions").child(sessionId);
             session.child("studentName").setValue(null);
             session.child("studentPhoneNumber").setValue(null);
             session.child("sessionStatus").setValue("OPEN");
+
+            Toast.makeText(this, "Session cancelled successfully", Toast.LENGTH_SHORT).show();
+            finish(); // Remove the current activity from the activity stack
+        } else {
+            // Show error message if cancellation is not allowed
+            Toast.makeText(this, "Cannot cancel: Session must be more than 24 hours away", Toast.LENGTH_LONG).show();
         }
-        finish(); // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
+    }
+
+    private boolean isMoreThan24HoursAway(Session session) {
+        try {
+            // Get current time
+            Date currentTime = new Date();
+
+            // Get session start time
+            Date sessionStartTime = session.getStartTime();
+
+            // Calculate the difference in milliseconds
+            long diffInMillis = sessionStartTime.getTime() - currentTime.getTime();
+
+            // Convert to hours
+            long diffInHours = TimeUnit.MILLISECONDS.toHours(diffInMillis);
+
+            // Return true if more than 24 hours away
+            return diffInHours > 24;
+        } catch (Exception e) {
+            // If there's an error, default to not allowing cancellation
+            return false;
+        }
     }
 
     public void onClickBackToDashboard(View view) {
