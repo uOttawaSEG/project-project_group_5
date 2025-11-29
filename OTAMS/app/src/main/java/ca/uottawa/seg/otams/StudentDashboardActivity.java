@@ -1,10 +1,5 @@
 package ca.uottawa.seg.otams;
 
-import static android.content.Intent.getIntent;
-import static android.provider.Settings.System.getString;
-
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -27,17 +22,15 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
-public class StudentDashboardActivity  extends AppCompatActivity{
+public class StudentDashboardActivity extends AppCompatActivity {
     private RecyclerView recycleView;
     private SessionListAdapter ula;
     String studentPhoneNumber;
+    String studentEmail;
 
     private TabFilter myTabFilter;
 
@@ -45,27 +38,21 @@ public class StudentDashboardActivity  extends AppCompatActivity{
 
         private Predicate<Session> filter;
         private final TabLayout tabLayout;
-
         private final SessionListAdapter sessionListAdapter;
 
-
-
-        public TabFilter(TabLayout tl, SessionListAdapter sessionAdapter){
-            filter  = null;
+        public TabFilter(TabLayout tl, SessionListAdapter sessionAdapter) {
+            filter = null;
             tabLayout = tl;
             sessionListAdapter = sessionAdapter;
         }
 
-        //Called whenever activity loads on screen
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
             String tabString = Objects.requireNonNull(tab.getText()).toString();
-            Calendar c = Calendar.getInstance();
             SessionStatus sessionStatus = SessionStatus.PENDING;
             if (getString(R.string.student_upcoming_sessions).equals(tabString)) {
                 sessionStatus = SessionStatus.APPROVED;
-            } else
-            if (getString(R.string.student_past_sessions).equals(tabString)) {
+            } else if (getString(R.string.student_past_sessions).equals(tabString)) {
                 sessionStatus = SessionStatus.COMPLETED;
             } else if (getString(R.string.rejected_sessions).equals(tabString)) {
                 sessionStatus = SessionStatus.REJECTED;
@@ -98,18 +85,18 @@ public class StudentDashboardActivity  extends AppCompatActivity{
 
     private SessionStatus getSessionStatus(TabLayout.Tab selectedTab) {
         String tabString = selectedTab.getText().toString();
-        if (tabString.equals(getString(R.string.pending_sessions))) {
+        if (tabString.equals(getString(R.string.student_pending_sessions))) {
             return SessionStatus.PENDING;
         }
-        if (tabString.equals(getString(R.string.rejected_requests))) {
+        if (tabString.equals(getString(R.string.rejected_sessions))) {
             return SessionStatus.REJECTED;
         }
-        if (tabString.equals(getString(R.string.past_sessions))) {
+        if (tabString.equals(getString(R.string.student_past_sessions))) {
             return SessionStatus.COMPLETED;
         }
         return SessionStatus.APPROVED;
-
     }
+
     private SessionStatus getSessionStatus(TabLayout tb) {
         TabLayout.Tab selectedTab = tb.getTabAt(tb.getSelectedTabPosition());
         if (selectedTab == null) {
@@ -131,37 +118,27 @@ public class StudentDashboardActivity  extends AppCompatActivity{
         });
         Intent intent = getIntent();
         studentPhoneNumber = intent.getStringExtra("phoneNumber");
+        studentEmail = intent.getStringExtra("email");
         recycleView = findViewById(R.id.session_request_recycler_view);
-        ula = new SessionListAdapter(new ArrayList<>());
+        ula = new SessionListAdapter(new ArrayList<>(), true); // true indicates this is student view
         final TabLayout td = findViewById(R.id.student_tab_layout);
-        myTabFilter = new StudentDashboardActivity.TabFilter(td, ula);
+        myTabFilter = new TabFilter(td, ula);
         td.addOnTabSelectedListener(myTabFilter);
-        //Automatically open on pending
         filterSessionBy(SessionStatus.PENDING);
     }
 
-    private static List<Session> filterSessionBy(List<Session> sessionList, Predicate<Session> filterMechanism) {
-        return filterMechanism == null ? sessionList : sessionList.stream().filter(filterMechanism).collect(Collectors.toList());
-    }
-
     private void filterSessionBy(SessionStatus sessionStatus) {
-        // Get all sessions from Firebase
         DatabaseReference sessionsReference = FirebaseDatabase.getInstance().getReference("sessions");
-        Query tutorSessions = sessionsReference.orderByChild("phoneNumber").equalTo(studentPhoneNumber);
-        tutorSessions.addListenerForSingleValueEvent(new ValueEventListener() {
+        Query studentSessions = sessionsReference.orderByChild("studentPhoneNumber").equalTo(studentPhoneNumber);
+
+        studentSessions.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Session> sessionList = new ArrayList<>(); // List containing the details of every session for this user
+                List<Session> sessionList = new ArrayList<>();
 
-                // If a session exists in the database with the specified session status
-                if(snapshot.exists()) {
-
-                    // Iterate through every session in the database with the specified session status and adds it to the corresponding session inbox in the student dashboard
+                if (snapshot.exists()) {
                     for (DataSnapshot ds : snapshot.getChildren()) {
-
-                        // Then fetch the session status
-                        String requestStatusFromDatabase = ds.child("requestStatus").getValue(String.class);
-                        // Fetch the student's email
+                        String requestStatusFromDatabase = ds.child("sessionStatus").getValue(String.class);
                         String studentPhoneNumberCheck = ds.child("studentPhoneNumber").getValue(String.class);
 
                         if (studentPhoneNumber.equals(studentPhoneNumberCheck) && sessionStatus.toString().equals(requestStatusFromDatabase)) {
@@ -171,99 +148,43 @@ public class StudentDashboardActivity  extends AppCompatActivity{
                     }
                 }
 
-                populateRecyclerView(filterSessionBy(sessionList, myTabFilter.getFilter()));
-                }
+                populateRecyclerView(sessionList);
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         });
     }
 
-
     private void populateRecyclerView(List<Session> sessionsList) {
         if (ula.getSessionList().isEmpty()) {
-            // If the inbox is being populated for the first time then create and adapter for it
             RecyclerView rv = this.recycleView;
             rv.setLayoutManager(new LinearLayoutManager(this));
             ula.getSessionList().addAll(sessionsList);
             rv.setAdapter(ula);
         } else {
-            // If the adapter already exists then just update it instead of creating a new one
             ula.updateData(sessionsList);
         }
     }
 
-    public void onClickViewSessionDetails(View view) {
-        int pressID = view.getId();
-
-        if (pressID == R.id.arrow_text) {
-            // Get the position of the clicked item in the RecyclerView
-            int position = recycleView.getChildAdapterPosition((View) view.getParent());
-
-            // Get the session at that position from your adapter
-            Session clickedSession = ula.getSessionList().get(position);
-
-            // Get the session status
-            SessionStatus status = SessionStatus.valueOf(clickedSession.getSessionStatus());
-
-            // Route to the appropriate activity based on status
-            Intent intent;
-            switch (status) {
-                case PENDING:
-                    intent = new Intent(StudentDashboardActivity.this, StudentInfoPendingActivity.class);
-                    break;
-                case APPROVED:
-                    intent = new Intent(StudentDashboardActivity.this, StudentInfoUpcomingActivity.class);
-                    break;
-                case REJECTED:
-                    intent = new Intent(StudentDashboardActivity.this, StudentInfoRejectedActivity.class);
-                    break;
-                case COMPLETED:
-                    intent = new Intent(StudentDashboardActivity.this, StudentInfoPastActivity.class);
-                    break;
-                default:
-                    return; // Don't navigate if status is unknown
-            }
-
-            // Pass the session data to the detail activity
-            intent.putExtra("sessionId", clickedSession.getId());
-            intent.putExtra("studentEmail", studentEmail);
-
-            startActivity(intent);
-        }
-    }
-
     public void onClickBackToWelcomePage(View view) {
-        // Set the next page to the login page
         if (view.getId() == R.id.student_dashboard_back_button) {
             finish();
         }
     }
 
     public void onClickLogOff(View view) {
-        // Set the next page to the login page
         if (view.getId() == R.id.log_off) {
             Intent intent = new Intent(StudentDashboardActivity.this, MainActivity.class);
-
-            // Send the user to the login page
             startActivity(intent);
         }
     }
 
-    // Refresh the RecyclerView (request inbox) whenever the tutor returns back to their dashboard
     @Override
     protected void onResume() {
         super.onResume();
-
-        // Determines which tab (Pending Session Requests, Upcoming Sessions or Past Sessions) the tutor is currently on in the dashboard
         TabLayout tb = findViewById(R.id.student_tab_layout);
-
-        // Refreshes the request inbox for the selected tab
         filterSessionBy(getSessionStatus(tb));
     }
 }
-
-
