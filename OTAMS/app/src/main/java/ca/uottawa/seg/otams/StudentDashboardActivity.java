@@ -183,7 +183,7 @@ public class StudentDashboardActivity  extends AppCompatActivity{
     }
 
 
-            private void populateRecyclerView(List<Session> sessionsList) {
+    private void populateRecyclerView(List<Session> sessionsList) {
         if (ula.getSessionList().isEmpty()) {
             // If the inbox is being populated for the first time then create and adapter for it
             RecyclerView rv = this.recycleView;
@@ -193,6 +193,46 @@ public class StudentDashboardActivity  extends AppCompatActivity{
         } else {
             // If the adapter already exists then just update it instead of creating a new one
             ula.updateData(sessionsList);
+        }
+    }
+
+    public void onClickViewSessionDetails(View view) {
+        int pressID = view.getId();
+
+        if (pressID == R.id.arrow_text) {
+            // Get the position of the clicked item in the RecyclerView
+            int position = recycleView.getChildAdapterPosition((View) view.getParent());
+
+            // Get the session at that position from your adapter
+            Session clickedSession = ula.getSessionList().get(position);
+
+            // Get the session status
+            SessionStatus status = SessionStatus.valueOf(clickedSession.getSessionStatus());
+
+            // Route to the appropriate activity based on status
+            Intent intent;
+            switch (status) {
+                case PENDING:
+                    intent = new Intent(StudentDashboardActivity.this, StudentInfoPendingActivity.class);
+                    break;
+                case APPROVED:
+                    intent = new Intent(StudentDashboardActivity.this, StudentInfoUpcomingActivity.class);
+                    break;
+                case REJECTED:
+                    intent = new Intent(StudentDashboardActivity.this, StudentInfoRejectedActivity.class);
+                    break;
+                case COMPLETED:
+                    intent = new Intent(StudentDashboardActivity.this, StudentInfoPastActivity.class);
+                    break;
+                default:
+                    return; // Don't navigate if status is unknown
+            }
+
+            // Pass the session data to the detail activity
+            intent.putExtra("sessionId", clickedSession.getId());
+            intent.putExtra("studentEmail", studentEmail);
+
+            startActivity(intent);
         }
     }
 

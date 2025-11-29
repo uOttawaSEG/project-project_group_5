@@ -92,7 +92,11 @@
     <string name="course_search_results_title">Available tutors for _______</string>
 
     <string name="course_search_results_book">Book</string>
-
+    <string name="upcoming_sessions_with_tutor">Upcoming Sessions With Tutor</string>
+    <string name="past_session_with_tutor">Past Session With Tutor</string>
+    <string name="rate_tutor">Rate Tutor</string>
+    <string name="pending_session_with_tutor">Pending Session With Tutor</string>
+    <string name="rejected_session_with_tutor">Rejected Session With Tutor</string>
 
 
 </resources>
