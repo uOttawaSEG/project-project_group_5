@@ -46,30 +46,30 @@ public class StudentInfoPastActivity extends AppCompatActivity {
 
         // sessionId = intent.getStringExtra("id");
 
-        // Changes the placeholder text to the info for the specified student
-        name.setText(intent.getStringExtra(STUDENT_NAME));
+        // Changes the placeholder text to the info for the specified tutor
+        name.setText(intent.getStringExtra(TUTOR_NAME));
         phoneNumber.setText(intent.getStringExtra(PHONE_NUMBER));
         // email.setText(intent.getStringExtra(EMAIL));
         // program.setText(intent.getStringExtra(PROGRAM));
 
         // Fetch the missing student details (i.e. their email and program) from the users portion of the database
-        fetchStudentDetails(intent.getStringExtra(PHONE_NUMBER));
+        fetchTutorDetails(intent.getStringExtra(PHONE_NUMBER));
     }
 
-    private void fetchStudentDetails(String phone) {
-        // Fetch the student from the users portion of the database by using their phone number (i.e. the id for that student's entry)
-        DatabaseReference student = FirebaseDatabase.getInstance().getReference("users").child(phone);
-        student.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void fetchTutorDetails(String phone) {
+        // Fetch the tutor from the users portion of the database by using their phone number (i.e. the id for that student's entry)
+        DatabaseReference tutor = FirebaseDatabase.getInstance().getReference("users").child(phone);
+        tutor.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     // Fetch and store the student's email and program
-                    String studentEmail = snapshot.child("email").getValue(String.class);
-                    String studentCourse = snapshot.child("course").getValue(String.class);
+                    String tutorEmail = snapshot.child("email").getValue(String.class);
+                    String tutorCourse = snapshot.child("course").getValue(String.class);
 
                     // Changes the placeholder text to the info for the specified student
-                    email.setText(studentEmail);
-                    course.setText(studentCourse);
+                    email.setText(tutorEmail);
+                    course.setText(tutorCourse);
                 }
             }
             @Override
