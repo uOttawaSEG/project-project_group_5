@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,60 +15,53 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Objects;
-
 public class StudentInfoPastActivity extends AppCompatActivity {
 
-    // public static final String EMAIL = "email";
-    public static final String PHONE_NUMBER = "phoneNumber";
-    // public static final String PROGRAM = "program";
-    // private String sessionId;
-    private TextView name;
-    private TextView email;
-    private TextView phoneNumber;
-    private TextView course;
+    private String sessionId;
+    private TextView tutorName;
+    private TextView tutorEmail;
+    private TextView tutorPhoneNumber;
+    private TextView sessionCourse;
 
-    static final String TUTOR_NAME = "tutorName";
-
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_info_past);
+        setContentView(R.layout.activity_student_info_pending);
 
-        // Text fields that need to be populated with the specified tutor's info
-        name = findViewById(R.id.detail_full_name);
-        email = findViewById(R.id.detail_session_email);
-        phoneNumber = findViewById(R.id.session_phone_number);
-        course = findViewById(R.id.detail_course);
+        // Text fields that need to be populated with the session's info
+        tutorName = findViewById(R.id.detail_full_name);
+        tutorEmail = findViewById(R.id.detail_session_email);
+        tutorPhoneNumber = findViewById(R.id.session_phone_number);
+        sessionCourse = findViewById(R.id.detail_course);
 
-        // Stores the info about the student that was passed from the previous activity
+        // Stores the session ID that was passed from the previous activity
         Intent intent = getIntent();
+        sessionId = intent.getStringExtra("id");
 
-        // sessionId = intent.getStringExtra("id");
-
-        // Changes the placeholder text to the info for the specified tutor
-        name.setText(intent.getStringExtra(TUTOR_NAME));
-        phoneNumber.setText(intent.getStringExtra(PHONE_NUMBER));
-        // email.setText(intent.getStringExtra(EMAIL));
-        // program.setText(intent.getStringExtra(PROGRAM));
-
-        // Fetch the missing tutor details (i.e. their email and course) from the users portion of the database
-        fetchTutorDetails(intent.getStringExtra(PHONE_NUMBER));
+        // Fetch the session details from the database
+        fetchSessionDetails(sessionId);
     }
 
-    private void fetchTutorDetails(String phone) {
-        // Fetch the tutor from the users portion of the database by using their phone number (i.e. the id for that student's entry)
-        DatabaseReference tutor = FirebaseDatabase.getInstance().getReference("users").child(phone);
-        tutor.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void fetchSessionDetails(String sessionId) {
+        // Fetch session from database
+        DatabaseReference session = FirebaseDatabase.getInstance().getReference("sessions").child(sessionId);
+        session.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    // Fetch and store the student's email and program
-                    String tutorEmail = snapshot.child("email").getValue(String.class);
-                    String tutorCourse = snapshot.child("course").getValue(String.class);
+                    // Fetch & store session
+                    Session s = snapshot.getValue(Session.class);
 
-                    // Changes the placeholder text to the info for the specified student
-                    email.setText(tutorEmail);
-                    course.setText(tutorCourse);
+                    if (s != null) {
+                        // Display tutor's name
+                        tutorName.setText(s.getTutorName());
+
+                        // Display session course
+                        sessionCourse.setText(s.getCourses());
+
+                        // Fetch the tutor's additional details (email and phone) from the users portion of the database
+                        fetchTutorDetails(s.getTutorPhoneNumber());
+                    }
                 }
             }
             @Override
@@ -78,26 +70,44 @@ public class StudentInfoPastActivity extends AppCompatActivity {
         });
     }
 
-    public void onClickBackToDashboard(View view) {
-        int pressID=view.getId();
+    private void fetchTutorDetails(String phone) {
+        // Fetch the tutor from the users portion of the database by using their phone number
+        DatabaseReference tutor = FirebaseDatabase.getInstance().getReference("users").child(phone);
+        tutor.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Fetch and store the tutor's email and phone number
+                    String email = snapshot.child("email").getValue(String.class);
+                    String phone = snapshot.child("phoneNumber").getValue(String.class);
 
-        // Check if the tutor is trying to return to their dashboard
-        if (pressID == R.id.backToDashboardBtn) {
-
-            // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
-            finish();
-        }
+                    // Display the tutor's contact information
+                    tutorEmail.setText(email);
+                    tutorPhoneNumber.setText(phone);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
     public void onClickRateTutor(View view) {
-        int pressID=view.getId();
+        int pressID = view.getId();
 
-        // Check if the tutor is trying to return to their dashboard
-        if (pressID == R.id.rateTutorBtn) {
-            Intent intent = new Intent(StudentInfoPastActivity.this, RateTutorActivity.class);
+        // CHeck if the student is trying to rate their tutor
+        if(pressID == R.id.rateTutorBtn){
 
-            // Send the user to the login page
-            startActivity(intent);
+        }
+    }
+
+    public void onClickBackToDashboard(View view) {
+        int pressID = view.getId();
+
+        // Check if the student is trying to return to their dashboard
+        if (pressID == R.id.backToDashboardBtn) {
+            // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
+            finish();
         }
     }
 }
