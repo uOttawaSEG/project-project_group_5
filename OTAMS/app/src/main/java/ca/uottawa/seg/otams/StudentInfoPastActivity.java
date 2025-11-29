@@ -27,19 +27,19 @@ public class StudentInfoPastActivity extends AppCompatActivity {
     private TextView name;
     private TextView email;
     private TextView phoneNumber;
-    private TextView program;
+    private TextView course;
 
-    static final String STUDENT_NAME = "studentName";
+    static final String TUTOR_NAME = "tutorName";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_info_past);
 
-        // Text fields that need to be populated with the specified student's info
+        // Text fields that need to be populated with the specified tutor's info
         name = findViewById(R.id.detail_full_name);
         email = findViewById(R.id.detail_session_email);
         phoneNumber = findViewById(R.id.session_phone_number);
-        program = findViewById(R.id.detail_program);
+        course = findViewById(R.id.detail_course);
 
         // Stores the info about the student that was passed from the previous activity
         Intent intent = getIntent();
@@ -65,11 +65,11 @@ public class StudentInfoPastActivity extends AppCompatActivity {
                 if (snapshot.exists()) {
                     // Fetch and store the student's email and program
                     String studentEmail = snapshot.child("email").getValue(String.class);
-                    String studentProgram = snapshot.child("program").getValue(String.class);
+                    String studentCourse = snapshot.child("course").getValue(String.class);
 
                     // Changes the placeholder text to the info for the specified student
                     email.setText(studentEmail);
-                    program.setText(studentProgram);
+                    course.setText(studentCourse);
                 }
             }
             @Override
@@ -86,6 +86,18 @@ public class StudentInfoPastActivity extends AppCompatActivity {
 
             // Remove the current activity from the activity stack (go back to the previous activity i.e. the dashboard)
             finish();
+        }
+    }
+
+    public void onClickRateTutor(View view) {
+        int pressID=view.getId();
+
+        // Check if the tutor is trying to return to their dashboard
+        if (pressID == R.id.rateTutorBtn) {
+            Intent intent = new Intent(StudentInfoPastActivity.this, RateTutorActivity.class);
+
+            // Send the user to the login page
+            startActivity(intent);
         }
     }
 }
