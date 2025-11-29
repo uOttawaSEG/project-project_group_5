@@ -52,7 +52,7 @@ public class StudentInfoPastActivity extends AppCompatActivity {
         // email.setText(intent.getStringExtra(EMAIL));
         // program.setText(intent.getStringExtra(PROGRAM));
 
-        // Fetch the missing student details (i.e. their email and program) from the users portion of the database
+        // Fetch the missing tutor details (i.e. their email and course) from the users portion of the database
         fetchTutorDetails(intent.getStringExtra(PHONE_NUMBER));
     }
 
