@@ -21,10 +21,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -163,18 +167,33 @@ public class StudentDashboardActivity extends AppCompatActivity {
     }
 
     private void sortSessionsChronologically(List<Session> sessions) {
-        sessions.sort(new Comparator<Session>() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+        Collections.sort(sessions, new Comparator<Session>() {
             @Override
             public int compare(Session s1, Session s2) {
-                // First compare by date string (assuming format allows string comparison like "yyyy-MM-dd")
-                int dateCompare = s2.getDate().compareTo(s1.getDate());
+                try {
+                    // Parse the date strings to Date objects
+                    Date date1 = dateFormat.parse(s1.getDate());
+                    Date date2 = dateFormat.parse(s2.getDate());
 
-                // If dates are the same compare by start time
-                if (dateCompare == 0 && s1.getStartTime() != null && s2.getStartTime() != null) {
-                    return s2.getStartTime().compareTo(s1.getStartTime());
+                    if (date1 != null && date2 != null) {
+                        // Compare dates (most recent first)
+                        int dateCompare = date1.compareTo(date2);
+
+                        // If dates are the same, compare by start time
+                        if (dateCompare == 0 && s1.getStartTime() != null && s2.getStartTime() != null) {
+                            return s1.getStartTime().compareTo(s2.getStartTime());
+                        }
+
+                        return dateCompare;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
 
-                return dateCompare;
+                // Fallback to string comparison if parsing fails
+                return s1.getDate().compareTo(s2.getDate());
             }
         });
     }
