@@ -97,6 +97,7 @@
     <string name="rate_tutor">Rate Tutor</string>
     <string name="pending_session_with_tutor">Pending Session With Tutor</string>
     <string name="rejected_session_with_tutor">Rejected Session With Tutor</string>
+    <string name="upcoming_session_with_student">Upcoming Session With Student</string>
 
 
 </resources>
