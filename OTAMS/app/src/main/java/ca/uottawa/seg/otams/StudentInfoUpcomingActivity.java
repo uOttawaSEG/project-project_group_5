@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -61,6 +62,12 @@ public class StudentInfoUpcomingActivity extends AppCompatActivity {
                     Session s = snapshot.getValue(Session.class);
 
                     if (s != null) {
+                        // Reconstruct the start and end times from Firebase
+                        Date startTime = reconstructSessionDate(snapshot.child("startTime"));
+                        Date endTime = reconstructSessionDate(snapshot.child("endTime"));
+                        s.setStartTime(startTime);
+                        s.setEndTime(endTime);
+
                         currentSession = s; // Store for later use
 
                         // Display tutor's name
@@ -82,6 +89,54 @@ public class StudentInfoUpcomingActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+
+    // Properly reconstructs the start and end time of a session fetched from the database as a date object
+    private Date reconstructSessionDate(DataSnapshot snapshot) {
+        if (snapshot.exists()) {
+            // Fetch the values of each part of the start or end time in the database
+            Integer date = snapshot.child("date").getValue(Integer.class);
+            Integer year = snapshot.child("year").getValue(Integer.class);
+            Integer month = snapshot.child("month").getValue(Integer.class);
+            Integer hours = snapshot.child("hours").getValue(Integer.class);
+            Integer minutes = snapshot.child("minutes").getValue(Integer.class);
+            Integer seconds = snapshot.child("seconds").getValue(Integer.class);
+
+            // Check that the date related values are valid before setting anything
+            if (year == null || month == null || date == null) {
+                return null;
+            }
+
+            // If they are valid then create an object that represents the exact start/end time
+            Calendar cal = Calendar.getInstance();
+
+            // Set date related values
+            cal.set(Calendar.DATE, date);
+            cal.set(Calendar.YEAR, year + 1900);
+            cal.set(Calendar.MONTH, month);
+            cal.set(Calendar.DAY_OF_MONTH, date);
+
+            // Set time related values
+            if (hours != null) {
+                cal.set(Calendar.HOUR_OF_DAY, hours);
+            } else {
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+            }
+            if (minutes != null) {
+                cal.set(Calendar.MINUTE, minutes);
+            } else {
+                cal.set(Calendar.MINUTE, 0);
+            }
+            if (seconds != null) {
+                cal.set(Calendar.SECOND, seconds);
+            } else {
+                cal.set(Calendar.SECOND, 0);
+            }
+            cal.set(Calendar.MILLISECOND, 0);
+
+            return cal.getTime();
+        }
+        return null;
     }
 
     private void fetchTutorDetails(String phone) {
@@ -115,11 +170,11 @@ public class StudentInfoUpcomingActivity extends AppCompatActivity {
             session.child("studentPhoneNumber").setValue(null);
             session.child("sessionStatus").setValue("OPEN");
 
-            Toast.makeText(this, "Session cancelled successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Session cancelled successfully!", Toast.LENGTH_SHORT).show();
             finish(); // Remove the current activity from the activity stack
         } else {
             // Show error message if cancellation is not allowed
-            Toast.makeText(this, "Cannot cancel: Session must be more than 24 hours away", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "ERROR: Sessions less than 24 hours away cannot be cancelled", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -131,6 +186,11 @@ public class StudentInfoUpcomingActivity extends AppCompatActivity {
             // Get session start time
             Date sessionStartTime = session.getStartTime();
 
+            // Make sure session start time is not null
+            if (sessionStartTime == null) {
+                return false;
+            }
+
             // Calculate the difference in milliseconds
             long diffInMillis = sessionStartTime.getTime() - currentTime.getTime();
 
@@ -139,6 +199,7 @@ public class StudentInfoUpcomingActivity extends AppCompatActivity {
 
             // Return true if more than 24 hours away
             return diffInHours > 24;
+
         } catch (Exception e) {
             // If there's an error, default to not allowing cancellation
             return false;
