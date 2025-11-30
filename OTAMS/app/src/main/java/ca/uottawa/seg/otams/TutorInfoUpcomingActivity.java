@@ -41,6 +41,7 @@ public class TutorInfoUpcomingActivity extends AppCompatActivity {
         studentEmail = findViewById(R.id.detail_session_email);
         studentPhoneNumber = findViewById(R.id.session_phone_number);
         sessionCourse = findViewById(R.id.detail_course);
+        sessionTime = findViewById(R.id.detail_time);
 
         // Stores the data that was passed from the previous activity
         Intent intent = getIntent();
@@ -165,8 +166,8 @@ public class TutorInfoUpcomingActivity extends AppCompatActivity {
         // Check whether session is >24 hours from current time
         if (sessionId != null && currentSession != null && isMoreThan24HoursAway(currentSession)) {
             DatabaseReference session = FirebaseDatabase.getInstance().getReference("sessions").child(sessionId);
-            session.child("tutorName").setValue(null);
-            session.child("tutorPhoneNumber").setValue(null);
+            session.child("studentName").setValue(null);
+            session.child("studentPhoneNumber").setValue(null);
             session.child("sessionStatus").setValue("OPEN");
 
             Toast.makeText(this, "Session cancelled successfully!", Toast.LENGTH_SHORT).show();
