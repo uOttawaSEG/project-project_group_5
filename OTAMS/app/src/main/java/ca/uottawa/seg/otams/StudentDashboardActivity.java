@@ -169,7 +169,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
                 // First compare by date string (assuming format allows string comparison like "yyyy-MM-dd")
                 int dateCompare = s2.getDate().compareTo(s1.getDate());
 
-                // If dates are the same, compare by start time
+                // If dates are the same compare by start time
                 if (dateCompare == 0 && s1.getStartTime() != null && s2.getStartTime() != null) {
                     return s2.getStartTime().compareTo(s1.getStartTime());
                 }
