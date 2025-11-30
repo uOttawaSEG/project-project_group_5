@@ -2,7 +2,6 @@ package ca.uottawa.seg.otams;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +43,7 @@ public class CourseSearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_search);
 
-        // Recieve the data passed from the previous page (i.e. the student's full name and phone number)
+        // Receive the data passed from the previous page (i.e. the student's full name and phone number)
         Intent intent = getIntent();
         studentName = intent.getStringExtra("name");
         studentPhoneNumber = intent.getStringExtra("phoneNumber");
@@ -56,7 +56,7 @@ public class CourseSearchActivity extends AppCompatActivity {
 
         // Fetch all tutors' data and all the student's existing pending and approved sessions from the database
         getAllTutorsMap();
-        getstudentSessions();
+        getStudentSessions();
 
         // Populate the page with open session slots for the course code specified in the search bar by the student when the search button is clicked
         this.courseSearchBtn.setOnClickListener(v -> {
@@ -77,18 +77,35 @@ public class CourseSearchActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 results.clear(); // Clear previous search results
+                long currentTimeMillis = System.currentTimeMillis(); // Get the current time
+
                 for (DataSnapshot sessionSnapshot : snapshot.getChildren()) {
                     String courses = sessionSnapshot.child("courses").getValue(String.class);
                     String status = sessionSnapshot.child("sessionStatus").getValue(String.class);
 
                     // Check if the current session matches the course code and is open
                     if (courses != null && courseMatchesExactly(courses, courseName) && status != null && status.equals(SessionStatus.OPEN.toString())) {
+
                         Session session = sessionSnapshot.getValue(Session.class);
+
                         if (session != null) {
-                            results.add(session); // Adds it to the list if it is
+                            // Reconstruct the start and end times from Firebase
+                            Date startTime = reconstructSessionDate(sessionSnapshot.child("startTime"));
+                            Date endTime = reconstructSessionDate(sessionSnapshot.child("endTime"));
+
+                            session.setStartTime(startTime);
+                            session.setEndTime(endTime);
+
+                            // Only add the session if it hasn't started yet
+                            if (startTime != null && startTime.getTime() > currentTimeMillis) {
+                                results.add(session);
+                            }
                         }
                     }
                 }
+
+                // Sort sessions by start time (soonest first)
+                sortSessionsByDate(results);
                 populateRecyclerView(results);
             }
 
@@ -101,8 +118,72 @@ public class CourseSearchActivity extends AppCompatActivity {
         return results;
     }
 
+    // Properly reconstructs the start and end time of a session fetched from the database as a date object
+    private Date reconstructSessionDate(DataSnapshot snapshot) {
+        if (snapshot.exists()) {
+            // Fetch the values of each part of the start or end time in the database
+            Integer date = snapshot.child("date").getValue(Integer.class);
+            Integer year = snapshot.child("year").getValue(Integer.class);
+            Integer month = snapshot.child("month").getValue(Integer.class);
+            Integer hours = snapshot.child("hours").getValue(Integer.class);
+            Integer minutes = snapshot.child("minutes").getValue(Integer.class);
+            Integer seconds = snapshot.child("seconds").getValue(Integer.class);
+
+            // Check that the date related values are valid before setting anything
+            if (year == null || month == null || date == null) {
+                return null;
+            }
+
+            // If they are valid then create an object that represents the exact start/end time
+            Calendar cal = Calendar.getInstance();
+
+            // Set date related values
+            cal.set(Calendar.DATE, date);
+            cal.set(Calendar.YEAR, year + 1900);
+            cal.set(Calendar.MONTH, month);
+            cal.set(Calendar.DAY_OF_MONTH, date);
+
+            // Set time related values
+            if (hours != null) {
+                cal.set(Calendar.HOUR_OF_DAY, hours);
+            } else {
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+            }
+            if (minutes != null) {
+                cal.set(Calendar.MINUTE, minutes);
+            } else {
+                cal.set(Calendar.MINUTE, 0);
+            }
+            if (seconds != null) {
+                cal.set(Calendar.SECOND, seconds);
+            } else {
+                cal.set(Calendar.SECOND, 0);
+            }
+            cal.set(Calendar.MILLISECOND, 0);
+
+            return cal.getTime();
+        }
+        return null;
+    }
+
+    // Sorts sessions by start time with the soonest sessions first
+    private void sortSessionsByDate(List<Session> sessionList) {
+        sessionList.sort((s1, s2) -> {
+            if (s1.getStartTime() == null && s2.getStartTime() == null) {
+                return 0;
+            }
+            if (s1.getStartTime() == null) {
+                return 1; // s1 goes to the end
+            }
+            if (s2.getStartTime() == null) {
+                return -1; // s2 goes to the end
+            }
+            return s1.getStartTime().compareTo(s2.getStartTime());
+        });
+    }
+
     private boolean courseMatchesExactly(String coursesString, String searchTerm) {
-        String[] courseArray = coursesString.split("\\s+"); // Seperates the course codes by whitespace (i.e. spaces) into multiple smaller strings
+        String[] courseArray = coursesString.split("\\s+"); // Separates the course codes by whitespace (i.e. spaces) into multiple smaller strings
         for (String course : courseArray) {
             // Loop through each course listed and see if it matches the course code entered by the student (is a case-insensitive comparison to ensure that it does not matter whether the course code was typed in upper or lower case)
             if (course.equalsIgnoreCase(searchTerm.trim())) {
@@ -127,7 +208,7 @@ public class CourseSearchActivity extends AppCompatActivity {
                         Tutor tutor = userSnapshot.getValue(Tutor.class);
                         if (tutor != null) {
                             String tutorPhoneNumber = tutor.getPhoneNumber(); // Get the phone number of the tutor
-                            tutorMap.put(tutorPhoneNumber, tutor); // Store the tutor's info inside the map to easily access their info with the full name being the key
+                            tutorMap.put(tutorPhoneNumber, tutor); // Store the tutor's info inside the map to easily access their info with the phone number being the key
                         }
                     }
                 }
@@ -141,7 +222,7 @@ public class CourseSearchActivity extends AppCompatActivity {
         });
     }
 
-    private void getstudentSessions() {
+    private void getStudentSessions() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("sessions");
 
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -156,6 +237,13 @@ public class CourseSearchActivity extends AppCompatActivity {
 
                         // Get all of the student's sessions that are pending or approved
                         if (studentPhone != null && studentPhone.equals(studentPhoneNumber) && status != null && (status.equals(SessionStatus.PENDING.toString()) || status.equals(SessionStatus.APPROVED.toString()))) {
+
+                            // Reconstruct the dates for time conflict checking
+                            Date startTime = reconstructSessionDate(sessionSnapshot.child("startTime"));
+                            Date endTime = reconstructSessionDate(sessionSnapshot.child("endTime"));
+                            session.setStartTime(startTime);
+                            session.setEndTime(endTime);
+
                             studentSessions.add(session); // Add it to the list if it is
                         }
                     }
@@ -183,7 +271,7 @@ public class CourseSearchActivity extends AppCompatActivity {
         // Removes the session from the search results in real time
         cla.removeSession(bookedSession);
 
-        // Add the session to the list containing all of the student's currently pending and approved sessions (since it must also now be checked for overlaps, even with refreshing the page)
+        // Add the session to the list containing all of the student's currently pending and approved sessions (since it must also now be checked for overlaps, even without refreshing the page)
         studentSessions.add(bookedSession);
     }
 
@@ -205,7 +293,7 @@ public class CourseSearchActivity extends AppCompatActivity {
     public void onClickBackToDashboard(View view) {
         int pressID = view.getId();
         if (pressID == R.id.button_backToStudentDashboard) {
-            finish(); // If the dashboard button is clicked, then send to student back to the dashboard)
+            finish(); // If the dashboard button is clicked, then send the student back to the dashboard
         }
     }
 }
