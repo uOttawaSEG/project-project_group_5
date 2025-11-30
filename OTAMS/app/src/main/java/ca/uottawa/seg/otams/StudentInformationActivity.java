@@ -43,7 +43,6 @@ public class StudentInformationActivity extends AppCompatActivity {
 
         // Stores the info about the request that was passed from the previous activity
         Intent intent = getIntent();
-
         sessionId = intent.getStringExtra("id");
 
         // Changes the placeholder text to the info for the specified request
