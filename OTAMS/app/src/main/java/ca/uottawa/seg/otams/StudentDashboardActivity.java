@@ -24,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -55,11 +56,17 @@ public class StudentDashboardActivity extends AppCompatActivity {
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
             String tabString = Objects.requireNonNull(tab.getText()).toString();
+            Calendar c = Calendar.getInstance();
+            Date now = c.getTime();
+            filter=null;
+            //String tabString = Objects.requireNonNull(tab.getText()).toString();
             SessionStatus sessionStatus = SessionStatus.PENDING;
             if (getString(R.string.student_upcoming_sessions).equals(tabString)) {
                 sessionStatus = SessionStatus.APPROVED;
             } else if (getString(R.string.student_past_sessions).equals(tabString)) {
                 sessionStatus = SessionStatus.COMPLETED;
+                //filter = s -> s.getEndTime().after(now);
+                filter = s -> s.getEndTime() != null && s.getEndTime().before(now);
             } else if (getString(R.string.rejected_sessions).equals(tabString)) {
                 sessionStatus = SessionStatus.REJECTED;
             }
@@ -220,6 +227,53 @@ public class StudentDashboardActivity extends AppCompatActivity {
             Intent intent = new Intent(StudentDashboardActivity.this, MainActivity.class);
             startActivity(intent);
         }
+    }
+    private Date reconstructSessionDate (DataSnapshot snapshot) {
+        if (snapshot.exists()) {
+            // Fetch the values of each part of the start or end time in the database
+            Integer date = snapshot.child("date").getValue(Integer.class);
+            Integer year = snapshot.child("year").getValue(Integer.class);
+            Integer month = snapshot.child("month").getValue(Integer.class); // 0-based
+            // Integer day = snapshot.child("day").getValue(Integer.class);
+            Integer hours = snapshot.child("hours").getValue(Integer.class);
+            Integer minutes = snapshot.child("minutes").getValue(Integer.class);
+            Integer seconds = snapshot.child("seconds").getValue(Integer.class);
+
+            // Check that the date related values are valid before setting anything
+            if (year == null || month == null || date == null) {
+                return null;
+            }
+
+            // If they are valid then create an object that represents the exact start/end time
+            Calendar cal = Calendar.getInstance();
+
+            // Set date related values
+            cal.set(Calendar.DATE, date);
+            cal.set(Calendar.YEAR, year + 1900);
+            cal.set(Calendar.MONTH, month);
+            cal.set(Calendar.DAY_OF_MONTH, date);
+
+            // Set time related values
+            if (hours != null) {
+                cal.set(Calendar.HOUR_OF_DAY, hours);
+            } else {
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+            }
+            if (minutes != null) {
+                cal.set(Calendar.MINUTE, minutes);
+            } else {
+                cal.set(Calendar.MINUTE, 0);
+            }
+            if (seconds != null) {
+                cal.set(Calendar.SECOND, seconds);
+            } else {
+                cal.set(Calendar.SECOND, 0);
+            }
+            cal.set(Calendar.MILLISECOND, 0);
+
+            return cal.getTime();
+        }
+        return null;
     }
 
     @Override
