@@ -22,6 +22,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -148,11 +150,31 @@ public class StudentDashboardActivity extends AppCompatActivity {
                     }
                 }
 
+                // Sort sessions in chronological order (most recent first)
+                sortSessionsChronologically(sessionList);
+
                 populateRecyclerView(sessionList);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+    private void sortSessionsChronologically(List<Session> sessions) {
+        sessions.sort(new Comparator<Session>() {
+            @Override
+            public int compare(Session s1, Session s2) {
+                // First compare by date string (assuming format allows string comparison like "yyyy-MM-dd")
+                int dateCompare = s2.getDate().compareTo(s1.getDate());
+
+                // If dates are the same, compare by start time
+                if (dateCompare == 0 && s1.getStartTime() != null && s2.getStartTime() != null) {
+                    return s2.getStartTime().compareTo(s1.getStartTime());
+                }
+
+                return dateCompare;
             }
         });
     }
