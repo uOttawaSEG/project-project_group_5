@@ -150,13 +150,42 @@ public class StudentDashboardActivity extends AppCompatActivity {
                 List<Session> sessionList = new ArrayList<>();
 
                 if (snapshot.exists()) {
+                    Calendar c = Calendar.getInstance();
+                    Date now = c.getTime();
+
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String requestStatusFromDatabase = ds.child("sessionStatus").getValue(String.class);
                         String studentPhoneNumberCheck = ds.child("studentPhoneNumber").getValue(String.class);
 
-                        if (studentPhoneNumber.equals(studentPhoneNumberCheck) && sessionStatus.toString().equals(requestStatusFromDatabase)) {
+                        if (studentPhoneNumber.equals(studentPhoneNumberCheck)) {
                             Session s = ds.getValue(Session.class);
-                            sessionList.add(s);
+
+                            if (s != null) {
+                                // Reconstruct the start/end times from Firebase
+                                Date startTime = reconstructSessionDate(ds.child("startTime"));
+                                Date endTime = reconstructSessionDate(ds.child("endTime"));
+                                s.setStartTime(startTime);
+                                s.setEndTime(endTime);
+
+                                // Handle sessions that have already passed
+                                if (endTime != null && endTime.before(now)) {
+                                    if ("PENDING".equals(requestStatusFromDatabase)) {
+                                        // Delete session requests that are still pending and have already passed from the database
+                                        ds.getRef().removeValue();
+                                        continue; // Skips adding this session to the list
+                                    } else if ("APPROVED".equals(requestStatusFromDatabase)) {
+                                        // Update the status of approved sessions that have passed to completed to indicate that they should go in the past session tab
+                                        s.setSessionStatus(SessionStatus.COMPLETED);
+                                        ds.getRef().child("sessionStatus").setValue("COMPLETED");
+                                        requestStatusFromDatabase = "COMPLETED";
+                                    }
+                                }
+
+                                // Only add sessions that match the current tab's filter
+                                if (sessionStatus.toString().equals(requestStatusFromDatabase)) {
+                                    sessionList.add(s);
+                                }
+                            }
                         }
                     }
                 }
