@@ -108,8 +108,8 @@ public class StudentInfoPendingActivity extends AppCompatActivity {
 
     public void onClickCancel(View view) {
         // Change the session back to an open timeslot
-        // Check whether session is >24 hours from current time
-        if (sessionId != null && currentSession != null && isMoreThan24HoursAway(currentSession)) {
+        // No time check required when trying to cancel pending session requests
+        if (sessionId != null && currentSession != null) {
             DatabaseReference session = FirebaseDatabase.getInstance().getReference("sessions").child(sessionId);
             session.child("studentName").setValue(null);
             session.child("studentPhoneNumber").setValue(null);
@@ -120,28 +120,6 @@ public class StudentInfoPendingActivity extends AppCompatActivity {
         } else {
             // Show error message if cancellation is not allowed
             Toast.makeText(this, "Cannot cancel: Session must be more than 24 hours away", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private boolean isMoreThan24HoursAway(Session session) {
-        try {
-            // Get current time
-            Date currentTime = new Date();
-
-            // Get session start time
-            Date sessionStartTime = session.getStartTime();
-
-            // Calculate the difference in milliseconds
-            long diffInMillis = sessionStartTime.getTime() - currentTime.getTime();
-
-            // Convert to hours
-            long diffInHours = TimeUnit.MILLISECONDS.toHours(diffInMillis);
-
-            // Return true if more than 24 hours away
-            return diffInHours > 24;
-        } catch (Exception e) {
-            // If there's an error, default to not allowing cancellation
-            return false;
         }
     }
 

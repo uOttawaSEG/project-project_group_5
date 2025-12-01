@@ -18,7 +18,7 @@
             android:id="@+id/sessionDetailsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pending Session With Tutor"
+            android:text="@string/pending_session_with_tutor"
             android:textColor="@color/white"
             android:textSize="25sp"
             android:textStyle="bold"
