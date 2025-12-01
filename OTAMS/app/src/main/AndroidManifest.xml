@@ -51,8 +51,9 @@
             android:exported="false" />
         <activity android:name=".StudentInfoPendingActivity"
             android:exported="false" />
-        gi
         <activity android:name=".CourseSearchActivity"
+            android:exported="false" />
+        <activity android:name=".RateTutorActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
